@@ -1,0 +1,9 @@
+node_modules/
+app/bundle.js
+app/bundle.js.map
+.byebug_history
+.DS_Store
+npm-debug.log
+app/.env
+.todo
+tmp/**/*
