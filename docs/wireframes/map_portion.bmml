@@ -5,30 +5,29 @@
         <model>IPhone5</model>
       </controlProperties>
     </control>
-    <control controlID="1" controlTypeID="com.balsamiq.mockups::iPhoneKeyboard" x="564" y="470" w="357" h="207" measuredW="226" measuredH="160" zOrder="1" locked="false" isInGroup="-1"/>
-    <control controlID="2" controlTypeID="com.balsamiq.mockups::Map" x="597" y="180" w="293" h="290" measuredW="252" measuredH="222" zOrder="2" locked="false" isInGroup="-1"/>
-    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="952" y="219" w="-1" h="-1" measuredW="60" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Map" x="598" y="162" w="297" h="514" measuredW="252" measuredH="222" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="952" y="219" w="-1" h="-1" measuredW="60" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>3D%20map</text>
       </controlProperties>
     </control>
-    <control controlID="4" controlTypeID="com.balsamiq.mockups::Arrow" x="823" y="229" w="126" h="70" measuredW="150" measuredH="100" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Arrow" x="823" y="229" w="126" h="70" measuredW="150" measuredH="100" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <direction>bottom</direction>
         <rightArrow>false</rightArrow>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="6" controlTypeID="com.balsamiq.mockups::VSlider" x="662" y="213" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="5" locked="false" isInGroup="-1"/>
-    <control controlID="7" controlTypeID="com.balsamiq.mockups::VSlider" x="740" y="228" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="6" locked="false" isInGroup="-1"/>
-    <control controlID="8" controlTypeID="com.balsamiq.mockups::VSlider" x="707" y="385" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="7" locked="false" isInGroup="-1"/>
-    <control controlID="9" controlTypeID="com.balsamiq.mockups::VSlider" x="801" y="324" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="8" locked="false" isInGroup="-1"/>
-    <control controlID="10" controlTypeID="com.balsamiq.mockups::TextInput" x="952" y="312" w="-1" h="-1" measuredW="76" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::VSlider" x="662" y="213" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::VSlider" x="740" y="228" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::VSlider" x="707" y="385" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="6" locked="false" isInGroup="-1"/>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::VSlider" x="801" y="324" w="-1" h="-1" measuredW="11" measuredH="33" zOrder="7" locked="false" isInGroup="-1"/>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::TextInput" x="952" y="312" w="-1" h="-1" measuredW="76" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>landmarks</text>
       </controlProperties>
     </control>
-    <control controlID="11" controlTypeID="com.balsamiq.mockups::Arrow" x="812" y="324" w="137" h="32" measuredW="150" measuredH="100" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Arrow" x="812" y="324" w="137" h="32" measuredW="150" measuredH="100" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <direction>bottom</direction>
         <rightArrow>false</rightArrow>
