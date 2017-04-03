@@ -1,6 +1,6 @@
 import express from 'express';
-import * as usersController from './usersController';
-import * as badgesController from './badgesController';
+import * as usersController from './users.controller';
+import * as badgesController from './badges.controller';
 
 const router = express.Router();
 
