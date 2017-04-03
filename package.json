@@ -1,0 +1,27 @@
+{
+  "name": "areality",
+  "version": "1.0.0",
+  "description": "an AR app to help players discover local landmarks",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerweng/areality.git"
+  },
+  "author": "Diane Zheng, Michael Hooton, Terry O'Shea, Tyler Weng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tylerweng/areality/issues"
+  },
+  "homepage": "https://github.com/tylerweng/areality#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "mongodb": "^2.2.25",
+    "mongoose": "^4.9.3"
+  }
+}
