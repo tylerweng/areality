@@ -60,7 +60,7 @@ into the following script files:
 and collect coins
 - [] `LoadingScreenActivity.java`: Loading page to deliver a smooth UI/UX
 
-We will use the Google Maps API, Google Places API, and OpenGL to build our 3D map.
+We will use the Google Places API (built in Android API), Google Static Maps API (http request with image response), and OpenGL (built in Android) to build our 3D map.
 On the backend, we will use Node/Express and a PostgreSQL database.
 We will style the app using XML.
 We will use Gradle as the build tool.
@@ -99,21 +99,21 @@ Our group consists of Diane Zheng, Michael Hooton, Terry O’Shea, and Tyler Wen
 
 - [] Terry: write backend (users table; badges table; badging (join table)) and user email signup; API endpoints to add points/badges
 - [] Tyler: Google places API connection
-- [] Michael: Display map in view
+- [] Michael: Display map in view using OpenGL ES and display a map as its texture. Texture will come from the Google Maps Static API that returns a static image for a set of coordinates that we will get from gps eventually
 - [] Diane: Connect front end/backend; check API endpoints; finish setting up new computer
 
 ### Day 3:
 
 - [] Terry: users can use Facebook (https://developers.facebook.com/docs/facebook-login/android) or Google+ (https://developers.google.com/+/mobile/android/getting-started) to sign up
 - [] Tyler: Places filtering and saving
-- [] Michael: Display landmarks on map
+- [] Michael: Display landmarks on map by instancing the objects at their corresponding coordinates
 - [] Diane: Spinning/Cleaning/Interacting with landmark; display info and increment coins
 
 ### Day 4:
 
 - [] Terry: loading screen (http://www.41post.com/4588/programming/android-coding-a-loading-screen-part-1)
 - [] Tyler: User Profile Page
-- [] Michael: Limit clicking on landmarks based on distance
+- [] Michael: Limit tapping on landmarks based on distance
 - [] Diane: Linking landmarks to their landmark pages
 
 ### Day 5:
