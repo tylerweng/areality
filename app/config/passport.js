@@ -16,9 +16,10 @@ const configurePassport = () => {
 
   passport.use('local-register', new LocalStrategy(
     (username, password, done) => {
+      username = username.toLowerCase();
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
-        if (user) return done(null, false);
+        if (user) return done(null, false, { message: "That username is taken." });
 
         const newUser = new User();
         newUser.username = username;
@@ -36,8 +37,8 @@ const configurePassport = () => {
     (username, password, done) => {
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
-        if (!user) return done(null, false);
-        if (!user.validPassword(password)) return done(null, false);
+        if (!user) return done(null, false, { message: "That user could not be found." });
+        if (!user.validPassword(password)) return done(null, false, { message: "Incorrect password." });
         return done(null, user);
       });
     }

@@ -1,19 +1,28 @@
-import requireLogin from '../middlewares/auth';
+import passport from 'passport';
 import User from '../models/user';
 
 export const getUsers = (req, res) => {
-  console.log("getting all users");
   User.find({}, (err, users) => {
     if (err) throw err;
-    res.json({ users: users });
+    res.json({ users });
   });
 };
 
 export const getUser = (req, res) => {
-  Users.findOne({ _id: req.params.id }, (err, user) => {
-    res.json({ user: user });
+  User.findOne({ username: req.params.username.toLowerCase() }, (err, user) => {
+    res.json({ user });
   });
 };
+
+export const postUser = (req, res) => {
+  res.json(req.user);
+};
+
+export const deleteUser = (req, res) => {
+  User.findOneAndDelete({ username: req.params.username.toLowerCase() }, (err, user) => {
+    res.json({ user });
+  });
+}
 
 export const patchUser = (req, res) => {
 
