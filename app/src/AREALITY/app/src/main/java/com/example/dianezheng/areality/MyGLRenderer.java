@@ -4,9 +4,6 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
-/**
- * Created by dianezheng on 4/4/17.
- */
 
 import javax.microedition.khronos.opengles.GL10;
 
