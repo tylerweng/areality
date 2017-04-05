@@ -71,6 +71,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Update the rotational angle after each refresh.
         angleCube += speedCube;
     }
+
+    public void setAngle(float newAngle){
+        angleCube =newAngle;
+        speedCube = 0;
+    }
+
+    public float getAngle(){
+        return angleCube;
+    }
+
+    public void setSpeedCube(float speed){
+        speedCube = speed;
+
+    }
 }
 
 
