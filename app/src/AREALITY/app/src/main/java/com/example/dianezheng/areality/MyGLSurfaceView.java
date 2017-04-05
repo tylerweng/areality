@@ -2,6 +2,7 @@ package com.example.dianezheng.areality;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
@@ -9,10 +10,24 @@ import android.view.MotionEvent;
  */
 
 class MyGLSurfaceView extends GLSurfaceView {
-    private final MyGLRenderer mRenderer;
+    private MyGLRenderer mRenderer;
 
-    public MyGLSurfaceView(Context context){
+    public MyGLSurfaceView(Context context) {
         super(context);
+        init(context);
+    }
+
+    public MyGLSurfaceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+//
+//    public MyGLSurfaceView(Context context, AttributeSet attrs, int defStyle) {
+//        super(context, attrs, defStyle);
+//        init(context);
+//    }
+
+    private void init(Context context) {
 
         // Create an OpenGL ES 2.0 context
 //        setEGLContextClientVersion(2);
@@ -22,7 +37,32 @@ class MyGLSurfaceView extends GLSurfaceView {
 //         Set the Renderer for drawing on the GLSurfaceView
         setRenderer(mRenderer);
 
+        //do stuff that was in your original constructor...
     }
+
+
+//
+//    public MyGLSurfaceView(Context context){
+//            super(context);
+//
+//    // Create an OpenGL ES 2.0 context
+////        setEGLContextClientVersion(2);
+//
+//    mRenderer = new MyGLRenderer(context);
+//
+//    //         Set the Renderer for drawing on the GLSurfaceView
+//    setRenderer(mRenderer);
+//
+//
+//    }
+
+    public void setMyGLRenderer(Context context){
+        mRenderer = new MyGLRenderer(context);
+        setRenderer(mRenderer);
+
+
+    }
+
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;

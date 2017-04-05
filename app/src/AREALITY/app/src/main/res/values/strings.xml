@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AREALITY</string>
+    <string name="title_activity_gmaps">Map</string>
 </resources>

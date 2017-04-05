@@ -3,8 +3,12 @@ package com.example.dianezheng.areality;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.opengl.GLUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -15,6 +19,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.Media;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -33,6 +40,7 @@ public class PhotoCube {
 
     private FloatBuffer vertexBuffer;  // Vertex Buffer
     private FloatBuffer texBuffer;     // Texture Coords Buffer
+    private MediaStore.Images.Media mstore = new MediaStore.Images.Media();
 
     private int numFaces = 6;
     private int[] imageFileIDs = {  // Image file IDs
@@ -58,6 +66,20 @@ public class PhotoCube {
         for (int face = 0; face < numFaces; face++) {
             bitmap[face] = BitmapFactory.decodeStream(
                     context.getResources().openRawResource(imageFileIDs[face]));
+//            if (face ==1){
+//                URL imageURL = "https://www.royalcanin.com/~/media/Royal-Canin/Product-Categories/cat-adult-landing-hero.ashx"
+//                Uri imageUri = null;
+//                try {
+//                    imageUri = imageURL.toURI();
+//                } catch (URISyntaxException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    bitmap[face] = mstore.getBitmap(context.getContentResolver(), imageUri);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
             int imgWidth = bitmap[face].getWidth();
             int imgHeight = bitmap[face].getHeight();
             float faceWidth = 2.0f;
