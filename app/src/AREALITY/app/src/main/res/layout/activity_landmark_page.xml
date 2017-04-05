@@ -4,7 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dianezheng.areality.LandmarkPage">
+    tools:context=".LandmarkPage">
+
+
+    <com.example.dianezheng.areality.MyGLSurfaceView
+        android:id="@+id/glsurfaceview"
+        android:layout_width="122dp"
+        android:layout_height="503dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp" />
 
     <Button
         android:id="@+id/button"
