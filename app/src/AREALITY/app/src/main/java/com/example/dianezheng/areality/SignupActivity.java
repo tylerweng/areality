@@ -1,6 +1,7 @@
 package com.example.dianezheng.areality;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -19,11 +21,17 @@ import java.io.*;
 
 public class SignupActivity extends Activity {
     private static final String TAG = "SignupActivity";
+    private static final int REQUEST_LOGIN = 0;
 
     @BindView(R.id.signupName) EditText _nameText;
     @BindView(R.id.signupEmail) EditText _emailText;
     @BindView(R.id.signupPassword) EditText _passwordText;
     @BindView(R.id.signupButton) Button _signupButton;
+
+    @OnClick(R.id.loginLink) void switchToLogin() {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivityForResult(intent, REQUEST_LOGIN);
+    }
 
     @OnClick(R.id.signupButton) void submit() {
         signup();
@@ -33,7 +41,6 @@ public class SignupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
         ButterKnife.bind(this);
     }
 
