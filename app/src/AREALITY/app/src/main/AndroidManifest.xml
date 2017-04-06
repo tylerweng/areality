@@ -17,24 +17,23 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" >
         </meta-data>
+      
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".LandmarkPage">
-        </activity>
-        <activity android:name=".MyGLActivity"></activity>
-
         <activity android:name=".LandmarkPage"></activity>
         <activity android:name=".MyGLActivity"></activity>
+
         <activity android:name=".MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+      
+        <activity android:name="com.example.terryoshea.LoginActivity" />
+        <activity android:name="com.example.terryoshea.SignupActivity"></activity>
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+          android:name="com.google.android.geo.API_KEY"
+          android:value="@string/google_maps_key" />
 
     </application>
 
