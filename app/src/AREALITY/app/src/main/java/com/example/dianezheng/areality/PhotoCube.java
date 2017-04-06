@@ -87,7 +87,7 @@ public class PhotoCube {
 
             float faceWidth = 2.0f;
             float faceHeight = 2.0f;
-            
+
             // Adjust for aspect ratio
             if (imgWidth > imgHeight) {
 //                faceHeight = faceHeight * imgHeight / imgWidth;
@@ -100,7 +100,6 @@ public class PhotoCube {
             }
 
             bitmap[face]=Bitmap.createBitmap(bitmap[face], resizeStartX,resizeStartY,imgWidth, imgHeight);
-
 
             // Change to crop
 
