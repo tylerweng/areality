@@ -18,7 +18,6 @@
             android:value="@integer/google_play_services_version" >
         </meta-data>
         <activity android:name=".MainActivity"></activity>
-<<<<<<< HEAD
         <activity android:name=".LandmarkPage">
         </activity>
         <activity android:name=".MyGLActivity"></activity>
@@ -27,10 +26,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-=======
         <activity android:name=".LandmarkPage"></activity>
         <activity android:name=".MyGLActivity"></activity>
->>>>>>> update fetch buttons to be semi-functional
         <activity android:name=".MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
