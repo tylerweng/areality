@@ -45,7 +45,7 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
     private GoogleMap mMap;
     double latitude;
     double longitude;
-    private int PROXIMITY_RADIUS = 10000;
+    private int PROXIMITY_RADIUS = 1000;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -119,12 +119,12 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
 
         Button btnLandmarks = (Button) findViewById(R.id.btnLandmarks);
         btnLandmarks.setOnClickListener(new View.OnClickListener() {
-            String Restaurant = "landmark";
+            String Landmark = "landmark";
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Restaurant);
+                String url = getUrl(latitude, longitude, Landmark);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
