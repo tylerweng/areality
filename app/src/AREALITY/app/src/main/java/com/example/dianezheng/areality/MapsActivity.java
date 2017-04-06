@@ -221,7 +221,7 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&key=" + "AIzaSyD_iEjEmj-eYghuNDQT1P2bJHr8G-yOubk");
+        googlePlacesUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
         googlePlacesUrl.append("&sensor=true");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
