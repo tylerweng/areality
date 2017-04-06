@@ -4,34 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LandmarkPage">
+    tools:context=".LandmarkPage"
+    tools:layout_editor_absoluteY="73dp"
+    tools:layout_editor_absoluteX="0dp">
 
 
     <com.example.dianezheng.areality.MyGLSurfaceView
         android:id="@+id/glsurfaceview"
         android:layout_width="374dp"
         android:layout_height="332dp"
-        tools:layout_editor_absoluteY="5dp"
+        tools:layout_editor_absoluteY="-3dp"
         tools:layout_editor_absoluteX="5dp" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="154dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="366dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Information about landmark"
-        app:layout_constraintTop_toBottomOf="@+id/glsurfaceview"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="367dp"
+        android:layout_height="142dp"
+        android:text="TextView"
         tools:layout_editor_absoluteX="9dp"
-        tools:layout_editor_absoluteY="348dp" />
+        android:layout_marginTop="17dp"
+        app:layout_constraintTop_toBottomOf="@+id/glsurfaceview" />
+
 </android.support.constraint.ConstraintLayout>

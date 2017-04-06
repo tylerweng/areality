@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class LandmarkPage extends Activity {
 
@@ -18,8 +19,16 @@ public class LandmarkPage extends Activity {
 
         setContentView(R.layout.activity_landmark_page);
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
+        setInfo("Information about landmarks. Notes: " +
+                "1. center image" +
+                "2. Does line breaks work" +
+                "3. ");
 
 //        glView.setMyGLRenderer(this);
+    }
+    private void setInfo(String message){
+        TextView textView = (TextView) findViewById(R.id.textView);
+        textView.setText(message);
     }
 
     @Override

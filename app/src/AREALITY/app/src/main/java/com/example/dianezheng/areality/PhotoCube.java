@@ -67,13 +67,13 @@ public class PhotoCube {
             bitmap[face] = BitmapFactory.decodeStream(
                     context.getResources().openRawResource(imageFileIDs[face]));
 //            if (face ==1){
-//                URL imageURL = "https://www.royalcanin.com/~/media/Royal-Canin/Product-Categories/cat-adult-landing-hero.ashx"
-//                Uri imageUri = null;
-//                try {
-//                    imageUri = imageURL.toURI();
-//                } catch (URISyntaxException e) {
-//                    e.printStackTrace();
-//                }
+////                URL imageURL = ;
+//                Uri imageUri = Uri.parse("https://www.royalcanin.com/~/media/Royal-Canin/Product-Categories/cat-adult-landing-hero.ashx");
+////                try {
+////                    imageUri = imageUri.toURI();
+////                } catch (URISyntaxException e) {
+////                    e.printStackTrace();
+////                }
 //                try {
 //                    bitmap[face] = mstore.getBitmap(context.getContentResolver(), imageUri);
 //                } catch (IOException e) {
@@ -82,14 +82,28 @@ public class PhotoCube {
 //            }
             int imgWidth = bitmap[face].getWidth();
             int imgHeight = bitmap[face].getHeight();
+            int resizeStartX = 0;
+            int resizeStartY = 0;
+
             float faceWidth = 2.0f;
             float faceHeight = 2.0f;
+            
             // Adjust for aspect ratio
             if (imgWidth > imgHeight) {
-                faceHeight = faceHeight * imgHeight / imgWidth;
+//                faceHeight = faceHeight * imgHeight / imgWidth;
+                resizeStartX = (imgWidth-imgHeight)/2;
+                imgWidth = imgHeight;
             } else {
-                faceWidth = faceWidth * imgWidth / imgHeight;
+//                faceWidth = faceWidth * imgWidth / imgHeight;
+                resizeStartY = (imgHeight-imgWidth)/2;
+                imgHeight = imgWidth;
             }
+
+            bitmap[face]=Bitmap.createBitmap(bitmap[face], resizeStartX,resizeStartY,imgWidth, imgHeight);
+
+
+            // Change to crop
+
             float faceLeft = -faceWidth / 2;
             float faceRight = -faceLeft;
             float faceTop = faceHeight / 2;
