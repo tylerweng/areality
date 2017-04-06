@@ -8,13 +8,18 @@ import android.os.Bundle;
 public class LandmarkPage extends Activity {
 
     private MyGLSurfaceView glView;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_gl);
 
-        glView = new MyGLSurfaceView(this);           // Allocate a GLSurfaceView
-//        glView.setRenderer(new MyGLRenderer(this)); // Use a custom renderer
-        setContentView(glView);
+//        glView = new MyGLSurfaceView(this);           // Allocate a GLSurfaceView
+//        setContentView(glView);
+
+        setContentView(R.layout.activity_landmark_page);
+        glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
+
+//        glView.setMyGLRenderer(this);
     }
 
     @Override

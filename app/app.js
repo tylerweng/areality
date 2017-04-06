@@ -2,10 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import passport from 'passport';
+import routes from './controllers/routes';
+import configurePassport from './config/passport';
 
 require('dotenv').config({ silent: true });
-
-import routes from './controllers/routes';
 
 const app = express();
 
@@ -13,9 +14,13 @@ mongoose.connect(process.env.MLAB_URI, err => {
   if (err) throw err;
   else console.log('Mongoose successfully connected.');
 
+  configurePassport();
+
   app.use(express.static(__dirname + '/assets'));
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(session({ secret: 'gveikcisdxhbrmyedcazxyxdcrshhnduffu', resave: false, saveUninitialized: false }));
+  app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use('/api', routes);
 
