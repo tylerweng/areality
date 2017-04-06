@@ -1,4 +1,4 @@
-import requireLogin from '../middlewares/auth';
+import requireLogin from '../middlewares/require.login';
 
 const router = app => {
   app.post('/', requireLogin, (req, res) => {

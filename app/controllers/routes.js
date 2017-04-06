@@ -1,12 +1,21 @@
+import passport from 'passport';
 import express from 'express';
-import * as usersController from './usersController';
-import * as badgesController from './badgesController';
+import * as usersController from './users.controller';
+import * as badgesController from './badges.controller';
+import requireLogin from '../middlewares/require.login';
 
 const router = express.Router();
 
 router.route('/users').get(usersController.getUsers);
-router.route('/user/:id').get(usersController.getUser);
-router.route('/user').post(usersController.postUser);
-router.route('/user/:id').patch(usersController.patchUser);
+router.route('/user/:username')
+  .get(usersController.getUser)
+  .delete(usersController.deleteUser);
+router.route('/signup').post(passport.authenticate('local-register'), usersController.postUser);
+
+
+// router.route('/login').post(passport.authenticate('local-signin'), {
+//
+// });
+// router.route('/user/:username').patch(usersController.patchUser);
 
 export default router;
