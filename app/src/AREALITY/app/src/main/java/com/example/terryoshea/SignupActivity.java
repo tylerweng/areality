@@ -11,7 +11,7 @@ import butterknife.InjectView;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    @InjectView(R.id.signupName)
+//    @InjectView(R.id.signupName)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

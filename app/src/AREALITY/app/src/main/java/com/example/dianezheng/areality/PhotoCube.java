@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.opengl.GLUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -19,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
@@ -57,6 +60,8 @@ public class PhotoCube {
 
     // Constructor - Set up the vertex buffer
     public PhotoCube(Context context) {
+        String urls[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
+        Integer urlsLength = urls.length;
         // Allocate vertex buffer. An float has 4 bytes
         ByteBuffer vbb = ByteBuffer.allocateDirect(12 * 4 * numFaces);
         vbb.order(ByteOrder.nativeOrder());
@@ -64,32 +69,52 @@ public class PhotoCube {
 
         // Read images. Find the aspect ratio and adjust the vertices accordingly.
         for (int face = 0; face < numFaces; face++) {
+            if (urlsLength > face) {
+//            if(face==1){
+                try {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    URL url = new URL(urls[face]);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    bitmap[face] = BitmapFactory.decodeStream(input);
+                    String dummy = "sdlf";
+
+                } catch (IOException e) {
+                    // Log exception
+
+                }
+            }
+            else{
             bitmap[face] = BitmapFactory.decodeStream(
                     context.getResources().openRawResource(imageFileIDs[face]));
-//            if (face ==1){
-//                URL imageURL = "https://www.royalcanin.com/~/media/Royal-Canin/Product-Categories/cat-adult-landing-hero.ashx"
-//                Uri imageUri = null;
-//                try {
-//                    imageUri = imageURL.toURI();
-//                } catch (URISyntaxException e) {
-//                    e.printStackTrace();
-//                }
-//                try {
-//                    bitmap[face] = mstore.getBitmap(context.getContentResolver(), imageUri);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            }
+
             int imgWidth = bitmap[face].getWidth();
             int imgHeight = bitmap[face].getHeight();
+            int resizeStartX = 0;
+            int resizeStartY = 0;
+
             float faceWidth = 2.0f;
             float faceHeight = 2.0f;
+
             // Adjust for aspect ratio
             if (imgWidth > imgHeight) {
-                faceHeight = faceHeight * imgHeight / imgWidth;
+//                faceHeight = faceHeight * imgHeight / imgWidth;
+                resizeStartX = (imgWidth-imgHeight)/2;
+                imgWidth = imgHeight;
             } else {
-                faceWidth = faceWidth * imgWidth / imgHeight;
+//                faceWidth = faceWidth * imgWidth / imgHeight;
+                resizeStartY = (imgHeight-imgWidth)/2;
+                imgHeight = imgWidth;
             }
+
+            bitmap[face]=Bitmap.createBitmap(bitmap[face], resizeStartX,resizeStartY,imgWidth, imgHeight);
+
+            // Change to crop
+
             float faceLeft = -faceWidth / 2;
             float faceRight = -faceLeft;
             float faceTop = faceHeight / 2;

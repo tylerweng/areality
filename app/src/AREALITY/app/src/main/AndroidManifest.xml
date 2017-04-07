@@ -19,7 +19,10 @@
         </meta-data>
       
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".LandmarkPage"></activity>
+
+        <activity android:name=".LandmarkPage">
+
+        </activity>
         <activity android:name=".MyGLActivity"></activity>
 
         <activity android:name=".MapsActivity">

@@ -11,6 +11,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private PhotoCube cube;     // (NEW)
     private static float angleCube = 0;     // rotational angle in degree for cube
     private static float speedCube = 0.5f; // rotational speed for cube
+    private float xRot = 0.15f;
+    private float yRot = 1.0f;
 
     public MyGLRenderer(Context context) {
         cube = new PhotoCube(context);    // (NEW)
@@ -52,8 +54,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);  // Select model-view matrix
         gl.glLoadIdentity();                 // Reset
 
-        // You OpenGL|ES display re-sizing code here
-        // ......
+
     }
 
     // Call back to draw the current frame.
@@ -65,7 +66,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // ----- Render the Cube -----
         gl.glLoadIdentity();                  // Reset the model-view matrix
         gl.glTranslatef(0.0f, 0.0f, -6.0f);   // Translate into the screen
-        gl.glRotatef(angleCube, 0.15f, 1.0f, 0.3f); // Rotate
+        gl.glRotatef(angleCube, xRot, yRot, 0.3f); // Rotate
         cube.draw(gl);
 
         // Update the rotational angle after each refresh.
@@ -74,7 +75,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setAngle(float newAngle){
         angleCube =newAngle;
-        speedCube = 0;
+//        speedCube = 0;
     }
 
     public float getAngle(){
@@ -84,6 +85,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setSpeedCube(float speed){
         speedCube = speed;
 
+    }
+
+    public void setRot(float x, float y){
+
+        xRot = x;
+        yRot = y;
     }
 }
 
