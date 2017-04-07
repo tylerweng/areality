@@ -18,14 +18,14 @@
             android:value="@integer/google_play_services_version" >
         </meta-data>
       
-        <activity android:name="com.example.areality.MainActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
 
-        <activity android:name="com.example.areality.LandmarkPage">
+        <activity android:name=".LandmarkPage">
 
         </activity>
-        <activity android:name="com.example.areality.MyGLActivity"></activity>
+        <activity android:name=".MyGLActivity"></activity>
 
-        <activity android:name="com.example.areality.MapsActivity">
+        <activity android:name=".MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
