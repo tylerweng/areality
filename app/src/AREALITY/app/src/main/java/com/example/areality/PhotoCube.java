@@ -59,9 +59,8 @@ public class PhotoCube {
     private float cubeHalfSize = 1.2f;
 
     // Constructor - Set up the vertex buffer
-    public PhotoCube(Context context) {
-        String urls[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
-        Integer urlsLength = urls.length;
+    public PhotoCube(Context context, String[] photos) {
+        Integer urlsLength = photos.length;
         // Allocate vertex buffer. An float has 4 bytes
         ByteBuffer vbb = ByteBuffer.allocateDirect(12 * 4 * numFaces);
         vbb.order(ByteOrder.nativeOrder());
@@ -74,7 +73,7 @@ public class PhotoCube {
                 try {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
-                    URL url = new URL(urls[face]);
+                    URL url = new URL(photos[face]);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.connect();

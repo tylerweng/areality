@@ -14,8 +14,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float xRot = 0.15f;
     private float yRot = 1.0f;
 
-    public MyGLRenderer(Context context) {
-        cube = new PhotoCube(context);    // (NEW)
+    public MyGLRenderer(Context context, String[] photos) {
+        cube = new PhotoCube(context, photos);    // (NEW)
     }
 
     // Call back when the surface is first created or re-created.
