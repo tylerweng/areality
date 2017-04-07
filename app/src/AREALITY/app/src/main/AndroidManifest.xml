@@ -17,7 +17,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" >
         </meta-data>
-      
+
         <activity android:name=".MainActivity"></activity>
 
         <activity android:name=".LandmarkPage">
@@ -26,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".MyGLActivity"></activity>
 
         <activity android:name=".MapsActivity">
@@ -33,8 +34,19 @@
 
         </activity>
       
-        <activity android:name=".LoginActivity" />
         <activity android:name=".SignupActivity"></activity>
+
+        <!-- this is for when we want people to log in/sign up prior to using the app -->
+        <!--<activity android:name=".MapsActivity" />-->
+        <!--<activity android:name=".SignupActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <activity android:name=".LoginActivity" />
+
         <meta-data
           android:name="com.google.android.geo.API_KEY"
           android:value="@string/google_maps_key" />
