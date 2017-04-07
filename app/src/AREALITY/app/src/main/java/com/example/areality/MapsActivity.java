@@ -1,6 +1,7 @@
 package com.example.areality;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.Manifest;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -67,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
+
+    private Projection projection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +241,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                Toast.makeText(MapsActivity.this,"Nearby Schools", Toast.LENGTH_LONG).show();
 //            }
 //        });
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -259,6 +264,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
+
+
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
@@ -421,8 +428,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double distance = Math.pow(x - mDownX, 2) + Math.pow(y - mDownY, 2);
                 if(time < TOUCH_CLICK_CUTOFF_TIME && distance < TOUCH_CLICK_CUTOFF_LENGTH) {
                     // Register Click!
-                    mLat += 0.0001;
-                    setPosition();
+
+                    mMap.addMarker(new MarkerOptions()
+                            .position(projection.fromScreenLocation(new Point((int) x, (int) y))));
+                    
+                    String url = getUrl(mLat, mLong, "restaurant");
+                    Object[] DataTransfer = new Object[2];
+                    DataTransfer[0] = mMap;
+                    DataTransfer[1] = url;
+                    Log.d("onClick", url);
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData(mGoogleApiClient);
+                    getNearbyPlacesData.execute(DataTransfer);
+                    Toast.makeText(MapsActivity.this,"Nearby Landmarks", Toast.LENGTH_LONG).show();
                 }
         }
         mPreviousX = x;
@@ -439,5 +456,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .bearing(mAngle)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camera));
+        projection = mMap.getProjection();
     }
 }
