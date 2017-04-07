@@ -1,4 +1,4 @@
-package com.example.dianezheng.areality;
+package com.example.areality;
 
 import android.util.Log;
 

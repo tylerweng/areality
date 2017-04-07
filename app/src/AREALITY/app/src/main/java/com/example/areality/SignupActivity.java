@@ -1,9 +1,7 @@
-package com.example.terryoshea;
+package com.example.areality;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.example.dianezheng.areality.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
