@@ -10,6 +10,9 @@ require('dotenv').config({ silent: true });
 
 const app = express();
 
+console.log("mlab uri:");
+console.log(process.env.MLAB_URI);
+
 mongoose.connect(process.env.MLAB_URI, err => {
   if (err) throw err;
   else console.log('Mongoose successfully connected.');

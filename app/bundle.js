@@ -396,6 +396,9 @@ __webpack_require__(8).config({ silent: true });
 
 var app = (0, _express2.default)();
 
+console.log("mlab uri:");
+console.log(process.env.MLAB_URI);
+
 _mongoose2.default.connect(process.env.MLAB_URI, function (err) {
   if (err) throw err;else console.log('Mongoose successfully connected.');
 
