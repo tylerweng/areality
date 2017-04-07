@@ -1,7 +1,5 @@
-package com.example.dianezheng.areality;
+package com.example.areality;
 
-import android.app.Activity;
-import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 

@@ -1,4 +1,4 @@
-package com.example.dianezheng.areality;
+package com.example.areality;
 
 import android.app.Activity;
 import android.os.Bundle;

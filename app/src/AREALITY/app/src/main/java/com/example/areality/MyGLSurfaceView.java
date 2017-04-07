@@ -1,4 +1,4 @@
-package com.example.dianezheng.areality;
+package com.example.areality;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
