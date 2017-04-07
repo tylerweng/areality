@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,23 +29,45 @@ public class LandmarkPage extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-
-        setContentView(R.layout.activity_my_gl);
-
-
-
-
         setContentView(R.layout.activity_landmark_page);
+
+
+        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
+        String urlString = getDetailUrl(testPlaceId);
+        String result = "didn't work";
+        JSONObject jsonObject = null;
+        List<String> photoUrls = new ArrayList<String>();
+
+
+
+        try {
+            result = makeHTTPRequest(urlString);
+            jsonObject = new JSONObject(result);
+            photoUrls = getPhotoUrlsList(jsonObject);
+            Log.d("photoUrls", "photoUrls");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
         String info = "Information about landmarks. Notes: " +
                 "1. center image" +
                 "2. Does line breaks work" +
                 "3";
-        String photos[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
+        String photos[] = new String[photoUrls.size()];
+        photos = photoUrls.toArray(photos);
         setInfo(info, photos);
 
 
 
     }
+
+
+
     private void setInfo(String message, String[] photos){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
@@ -53,6 +76,8 @@ public class LandmarkPage extends Activity {
         textView.setText(message);
 
     }
+
+
 
     @Override
     protected void onPause() {
@@ -98,5 +123,28 @@ public class LandmarkPage extends Activity {
             Log.d("error", e.toString());
             return e.toString();
         }
+    }
+
+
+    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
+        List<String> photoUrls = new ArrayList<>();
+        JSONArray photoArray = null;
+        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
+
+        for (int i = 0; i < photoArray.length(); i++) {
+            JSONObject photo = photoArray.getJSONObject(i);
+            String photoReference = photo.getString("photo_reference");
+            String photoUrl = getPhotoUrl(photoReference);
+            photoUrls.add(photoUrl);
+        }
+        return photoUrls;
+    }
+    private String getPhotoUrl(String photoReference) {
+        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+        photoUrl.append("maxheight=" + "600");
+        photoUrl.append("&maxwidth=" + "600");
+        photoUrl.append("&photoreference=" + photoReference);
+        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        return photoUrl.toString();
     }
 }
