@@ -14,8 +14,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float xRot = 0.15f;
     private float yRot = 1.0f;
 
-    public MyGLRenderer(Context context) {
-        cube = new PhotoCube(context);    // (NEW)
+    public MyGLRenderer(Context context, String[] photos) {
+        cube = new PhotoCube(context, photos);    // (NEW)
     }
 
     // Call back when the surface is first created or re-created.
@@ -68,7 +68,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glTranslatef(0.0f, 0.0f, -6.0f);   // Translate into the screen
         gl.glRotatef(angleCube, xRot, yRot, 0.3f); // Rotate
         cube.draw(gl);
-
+        if(speedCube > 0.5f){
+            speedCube -= 1f;
+        }else if (speedCube > 30f){
+            speedCube = 30f;
+        }else if (speedCube < 0){
+            speedCube *= -1;
+        }else{
+            speedCube = 0.5f;
+        }
         // Update the rotational angle after each refresh.
         angleCube += speedCube;
     }
@@ -91,8 +99,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         xRot = x;
         yRot = y;
+        setSpeedCube((x+y)*10);
     }
 }
-
-
 
