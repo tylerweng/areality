@@ -64,14 +64,14 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 //        DownloadUrl downloadUrl = new DownloadUrl();
 //        downloadUrl.readUrl(getDetailUrl("ChIJIQBpAG2ahYAR_6128GcTUEo"));
 
-        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
-        String urlString = getDetailUrl(testPlaceId);
-
-        try {
-            makeHTTPRequest(urlString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
+//        String urlString = getDetailUrl(testPlaceId);
+//
+//        try {
+//            makeHTTPRequest(urlString);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 //        PlacesDetail placesDetail = new PlacesDetail(mGoogleApiClient);
 //        placesDetail.fetchDetail(mGoogleApiClient, testPlaceId);
