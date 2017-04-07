@@ -60,7 +60,8 @@ public class PhotoCube {
 
     // Constructor - Set up the vertex buffer
     public PhotoCube(Context context) {
-//        String urls[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
+        String urls[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
+        Integer urlsLength = urls.length;
         // Allocate vertex buffer. An float has 4 bytes
         ByteBuffer vbb = ByteBuffer.allocateDirect(12 * 4 * numFaces);
         vbb.order(ByteOrder.nativeOrder());
@@ -68,17 +69,18 @@ public class PhotoCube {
 
         // Read images. Find the aspect ratio and adjust the vertices accordingly.
         for (int face = 0; face < numFaces; face++) {
-//            if (urls[face] != null) {
-            if(face==1){
+            if (urlsLength > face) {
+//            if(face==1){
                 try {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
-                    URL url = new URL("https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg");
+                    URL url = new URL(urls[face]);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     bitmap[face] = BitmapFactory.decodeStream(input);
+                    String dummy = "sdlf";
 
                 } catch (IOException e) {
                     // Log exception
