@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 public class LandmarkPage extends Activity {
 
@@ -31,8 +33,10 @@ public class LandmarkPage extends Activity {
         Intent intent = getIntent();
         setContentView(R.layout.activity_landmark_page);
 
-
         String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
+
+        testPlaceId = intent.getStringExtra(EXTRA_MESSAGE);
+
         String urlString = getDetailUrl(testPlaceId);
         String result = "didn't work";
         JSONObject jsonObject = null;
