@@ -69,7 +69,6 @@ public class PhotoCube {
         // Read images. Find the aspect ratio and adjust the vertices accordingly.
         for (int face = 0; face < numFaces; face++) {
             if (urlsLength > face) {
-//            if(face==1){
                 try {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
@@ -82,8 +81,6 @@ public class PhotoCube {
                     String dummy = "sdlf";
 
                 } catch (IOException e) {
-                    // Log exception
-
                 }
             }
             else{
@@ -99,21 +96,17 @@ public class PhotoCube {
             float faceWidth = 2.0f;
             float faceHeight = 2.0f;
 
-            // Adjust for aspect ratio
+            //Make pictures squares
             if (imgWidth > imgHeight) {
-//                faceHeight = faceHeight * imgHeight / imgWidth;
                 resizeStartX = (imgWidth-imgHeight)/2;
                 imgWidth = imgHeight;
             } else {
-//                faceWidth = faceWidth * imgWidth / imgHeight;
                 resizeStartY = (imgHeight-imgWidth)/2;
                 imgHeight = imgWidth;
             }
 
             bitmap[face]=Bitmap.createBitmap(bitmap[face], resizeStartX,resizeStartY,imgWidth, imgHeight);
-
-            // Change to crop
-
+            
             float faceLeft = -faceWidth / 2;
             float faceRight = -faceLeft;
             float faceTop = faceHeight / 2;
