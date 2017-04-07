@@ -1,6 +1,7 @@
 package com.example.areality;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -25,18 +26,12 @@ public class LandmarkPage extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+
         setContentView(R.layout.activity_my_gl);
 
-        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
-        String urlString = getDetailUrl(testPlaceId);
-        String result = "didn't work";
-        List<HashMap<String, String>> results;
-        try {
-            result = makeHTTPRequest(urlString);
-//            results = parse(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
 
         setContentView(R.layout.activity_landmark_page);
@@ -48,7 +43,6 @@ public class LandmarkPage extends Activity {
         setInfo(info, photos);
 
 
-//        Toast.makeText(LandmarkPage.this,result.toString(), Toast.LENGTH_LONG).show();
 
     }
     private void setInfo(String message, String[] photos){

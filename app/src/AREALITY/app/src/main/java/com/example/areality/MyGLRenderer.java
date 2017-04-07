@@ -21,7 +21,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // Call back when the surface is first created or re-created.
     @Override
     public void onSurfaceCreated(GL10 gl,javax.microedition.khronos.egl.EGLConfig config) {
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // Set color's clear-value to black
+        gl.glClearColor(225.0f, 225.0f, 225.0f, .1f);  // Set color's clear-value to white
         gl.glClearDepthf(1.0f);            // Set depth's clear-value to farthest
         gl.glEnable(GL10.GL_DEPTH_TEST);   // Enables depth-buffer for hidden surface removal
         gl.glDepthFunc(GL10.GL_LEQUAL);    // The type of depth testing to do
