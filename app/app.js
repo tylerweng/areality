@@ -24,7 +24,7 @@ mongoose.connect(process.env.MLAB_URI, err => {
 
   app.use('/api', routes);
 
-  app.listen(8080, () => {
-    console.log("Listening on port 8080...");
+  app.listen(process.env.PORT || 8080, () => {
+    console.log(`Listening on port ${process.env.PORT || 8080}...`);
   });
 });
