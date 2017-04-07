@@ -11,43 +11,26 @@ import android.view.MotionEvent;
 
 class MyGLSurfaceView extends GLSurfaceView {
     private MyGLRenderer mRenderer;
+    private Context ctx;
 
     public MyGLSurfaceView(Context context) {
         super(context);
-        init(context);
+        ctx = context;
     }
 
     public MyGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        ctx = context;
+
     }
 
-    private void init(Context context) {
+    private void init(Context context, String[] photos) {
 
-        mRenderer = new MyGLRenderer(context);
+        mRenderer = new MyGLRenderer(context, photos);
         setRenderer(mRenderer);
     }
 
 
-//
-//    public MyGLSurfaceView(Context context){
-//            super(context);
-//
-//    // Create an OpenGL ES 2.0 context
-////        setEGLContextClientVersion(2);
-//
-//    mRenderer = new MyGLRenderer(context);
-//
-//    //         Set the Renderer for drawing on the GLSurfaceView
-//    setRenderer(mRenderer);
-//
-//
-//    }
-
-    public void setMyGLRenderer(Context context){
-        mRenderer = new MyGLRenderer(context);
-        setRenderer(mRenderer);
-    }
 
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
@@ -93,6 +76,11 @@ class MyGLSurfaceView extends GLSurfaceView {
     public void autoStart(){
         float speedCube = 0.5f; // rotational speed for cube
         mRenderer.setSpeedCube(speedCube);
+    }
+
+    public void setPhotos(String[] photos){
+        init(ctx, photos);
+
     }
 
 

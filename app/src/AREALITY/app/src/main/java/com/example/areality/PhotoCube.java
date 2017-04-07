@@ -59,9 +59,8 @@ public class PhotoCube {
     private float cubeHalfSize = 1.2f;
 
     // Constructor - Set up the vertex buffer
-    public PhotoCube(Context context) {
-        String urls[] = {"https://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg"};
-        Integer urlsLength = urls.length;
+    public PhotoCube(Context context, String[] photos) {
+        Integer urlsLength = photos.length;
         // Allocate vertex buffer. An float has 4 bytes
         ByteBuffer vbb = ByteBuffer.allocateDirect(12 * 4 * numFaces);
         vbb.order(ByteOrder.nativeOrder());
@@ -70,11 +69,10 @@ public class PhotoCube {
         // Read images. Find the aspect ratio and adjust the vertices accordingly.
         for (int face = 0; face < numFaces; face++) {
             if (urlsLength > face) {
-//            if(face==1){
                 try {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
-                    URL url = new URL(urls[face]);
+                    URL url = new URL(photos[face]);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.connect();
@@ -83,8 +81,6 @@ public class PhotoCube {
                     String dummy = "sdlf";
 
                 } catch (IOException e) {
-                    // Log exception
-
                 }
             }
             else{
@@ -100,21 +96,17 @@ public class PhotoCube {
             float faceWidth = 2.0f;
             float faceHeight = 2.0f;
 
-            // Adjust for aspect ratio
+            //Make pictures squares
             if (imgWidth > imgHeight) {
-//                faceHeight = faceHeight * imgHeight / imgWidth;
                 resizeStartX = (imgWidth-imgHeight)/2;
                 imgWidth = imgHeight;
             } else {
-//                faceWidth = faceWidth * imgWidth / imgHeight;
                 resizeStartY = (imgHeight-imgWidth)/2;
                 imgHeight = imgWidth;
             }
 
             bitmap[face]=Bitmap.createBitmap(bitmap[face], resizeStartX,resizeStartY,imgWidth, imgHeight);
-
-            // Change to crop
-
+            
             float faceLeft = -faceWidth / 2;
             float faceRight = -faceLeft;
             float faceTop = faceHeight / 2;

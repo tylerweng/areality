@@ -14,14 +14,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float xRot = 0.15f;
     private float yRot = 1.0f;
 
-    public MyGLRenderer(Context context) {
-        cube = new PhotoCube(context);    // (NEW)
+    public MyGLRenderer(Context context, String[] photos) {
+        cube = new PhotoCube(context, photos);    // (NEW)
     }
 
     // Call back when the surface is first created or re-created.
     @Override
     public void onSurfaceCreated(GL10 gl,javax.microedition.khronos.egl.EGLConfig config) {
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // Set color's clear-value to black
+        gl.glClearColor(225.0f, 225.0f, 225.0f, .1f);  // Set color's clear-value to white
         gl.glClearDepthf(1.0f);            // Set depth's clear-value to farthest
         gl.glEnable(GL10.GL_DEPTH_TEST);   // Enables depth-buffer for hidden surface removal
         gl.glDepthFunc(GL10.GL_LEQUAL);    // The type of depth testing to do
@@ -68,7 +68,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glTranslatef(0.0f, 0.0f, -6.0f);   // Translate into the screen
         gl.glRotatef(angleCube, xRot, yRot, 0.3f); // Rotate
         cube.draw(gl);
-
+        if(speedCube > 0.5f){
+            speedCube -= 1f;
+        }else if (speedCube > 30f){
+            speedCube = 30f;
+        }else if (speedCube < 0){
+            speedCube *= -1;
+        }else{
+            speedCube = 0.5f;
+        }
         // Update the rotational angle after each refresh.
         angleCube += speedCube;
     }
@@ -91,8 +99,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         xRot = x;
         yRot = y;
+        setSpeedCube((x+y)*10);
     }
 }
-
-
 
