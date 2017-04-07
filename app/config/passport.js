@@ -38,7 +38,7 @@ const configurePassport = () => {
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
         if (!user) return done(null, false, { message: "That user could not be found." });
-        if (!user.validPassword(password)) return done(null, false, { message: "Incorrect password." });
+        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { message: "Incorrect password." });
         return done(null, user);
       });
     }
