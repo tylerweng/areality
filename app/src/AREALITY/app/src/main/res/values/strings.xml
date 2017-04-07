@@ -6,4 +6,6 @@
     <string name="passwordText">Password</string>
     <string name="signupButtonText">SIGN UP</string>
     <string name="loginButtonText">LOG IN</string>
+    <string name="loginLinkText">Already have an account? Log in</string>
+    <string name="signupLinkText">New here? Sign up</string>
 </resources>

@@ -64,14 +64,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 //        DownloadUrl downloadUrl = new DownloadUrl();
 //        downloadUrl.readUrl(getDetailUrl("ChIJIQBpAG2ahYAR_6128GcTUEo"));
 
-        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
-        String urlString = getDetailUrl(testPlaceId);
 
-        try {
-            makeHTTPRequest(urlString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 //        PlacesDetail placesDetail = new PlacesDetail(mGoogleApiClient);
 //        placesDetail.fetchDetail(mGoogleApiClient, testPlaceId);
@@ -87,7 +80,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             String placeId = googlePlace.get("place_id");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName);
+            markerOptions.title(placeName + ": " + placeId);
             mMap.addMarker(markerOptions);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
@@ -95,36 +88,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     }
 
-    private String getDetailUrl(String placeId) {
 
-        StringBuilder googlePlacesDetailUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
-        googlePlacesDetailUrl.append("placeid=" + placeId);
-        googlePlacesDetailUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
-        Log.d("getUrl", googlePlacesDetailUrl.toString());
-        return (googlePlacesDetailUrl.toString());
-    }
-
-    protected String makeHTTPRequest(String urlString) throws IOException {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        HttpURLConnection connection;
-        try {
-            URL url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setDoOutput(true);
-            connection.connect();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String content = "", line;
-            while ((line = rd.readLine()) != null) {
-                content += line + "\n";
-            }
-            return content;
-        } catch (IOException e) {
-            Log.d("error", e.toString());
-            return e.toString();
-        }
-    }
 
 }
 
