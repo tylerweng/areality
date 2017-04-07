@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LandmarkPage extends Activity {
 
@@ -71,9 +73,9 @@ public class LandmarkPage extends Activity {
 
         for (int i = 0; i < photoArray.length(); i++) {
             JSONObject photo = photoArray.getJSONObject(i);
-            JSONArray htmlAttributions = photo.getJSONArray("html_attributions");
-            String href = htmlAttributions.get(0).toString();
-            photoUrls.add(href);
+            String photoReference = photo.getString("photo_reference");
+            String photoUrl = getPhotoUrl(photoReference);
+            photoUrls.add(photoUrl);
         }
         return photoUrls;
     }
@@ -96,8 +98,16 @@ public class LandmarkPage extends Activity {
         StringBuilder googlePlacesDetailUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
         googlePlacesDetailUrl.append("placeid=" + placeId);
         googlePlacesDetailUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
-        Log.d("getUrl", googlePlacesDetailUrl.toString());
         return (googlePlacesDetailUrl.toString());
+    }
+
+    private String getPhotoUrl(String photoReference) {
+        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+        photoUrl.append("maxheight=" + "600");
+        photoUrl.append("&maxwidth=" + "600");
+        photoUrl.append("&photoreference=" + photoReference);
+        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        return photoUrl.toString();
     }
 
     protected String makeHTTPRequest(String urlString) throws IOException {
