@@ -7,11 +7,17 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LandmarkPage extends Activity {
 
@@ -24,10 +30,19 @@ public class LandmarkPage extends Activity {
         String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
         String urlString = getDetailUrl(testPlaceId);
         String result = "didn't work";
+        JSONObject jsonObject = null;
+        List<String> photoUrls = new ArrayList<String>();
+
+
 
         try {
             result = makeHTTPRequest(urlString);
+            jsonObject = new JSONObject(result);
+            photoUrls = getPhotoUrlsList(jsonObject);
+            Log.d("photoUrls", "photoUrls");
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -40,12 +55,27 @@ public class LandmarkPage extends Activity {
                 "3. ");
 
 
-//        Toast.makeText(LandmarkPage.this,result.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(LandmarkPage.this, photoUrls.get(0), Toast.LENGTH_LONG).show();
 
     }
+
     private void setInfo(String message){
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(message);
+    }
+
+    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
+        List<String> photoUrls = new ArrayList<>();
+        JSONArray photoArray = null;
+        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
+
+        for (int i = 0; i < photoArray.length(); i++) {
+            JSONObject photo = photoArray.getJSONObject(i);
+            JSONArray htmlAttributions = photo.getJSONArray("html_attributions");
+            String href = htmlAttributions.get(0).toString();
+            photoUrls.add(href);
+        }
+        return photoUrls;
     }
 
     @Override
