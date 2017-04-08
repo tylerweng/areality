@@ -1,5 +1,6 @@
 package com.example.areality;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -45,6 +46,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     GoogleApiClient.OnConnectionFailedListener,
     View.OnTouchListener,
     LocationListener {
+
+  public static final String LANDMARK_ID = "com.example.areality.MESSAGE";
 
   private float mAngle;
   private float mPreviousX;
@@ -362,8 +365,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
           mClickDisplay = mMap.addCircle(new CircleOptions()
               .center(clickPos)
               .radius(5)
-              .strokeColor(Color.RED)
-              .fillColor(Color.BLUE));
+              .strokeColor(Color.rgb(211, 103, 43))
+              .fillColor(Color.rgb(105, 51, 21)));
 
           new android.os.Handler().postDelayed(
               new Runnable() {
@@ -371,7 +374,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void run() {
                   removeClick();
                 }
-              }, 200
+              }, 100
           );
 
           List<HashMap<String, String>> nearbyPlaces = getNearbyPlacesData.getPlacesList();
@@ -383,7 +386,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = Double.parseDouble(googlePlace.get("lng"));
             double markerDistance = Math.pow(lat - clickPos.latitude, 2) + Math.pow(lng - clickPos.longitude, 2);
             if(Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE ) {
-              Toast.makeText(MapsActivity.this, googlePlace.get("place_name"), Toast.LENGTH_SHORT).show();
+              // For testing click distance/etc
+//              Toast.makeText(MapsActivity.this, googlePlace.get("place_name"), Toast.LENGTH_SHORT).show();
+              Intent intent = new Intent(this, LandmarkPage.class);
+              String landmarkId = googlePlace.get("place_id");
+              intent.putExtra(LANDMARK_ID, landmarkId);
+              startActivity(intent);
             }
           }
         }
