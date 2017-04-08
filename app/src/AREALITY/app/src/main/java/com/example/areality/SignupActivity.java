@@ -2,6 +2,7 @@ package com.example.areality;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -14,8 +15,13 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import java.net.*;
-import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.DataOutputStream;
+import javax.net.ssl.HttpsURLConnection;
 
 public class SignupActivity extends Activity {
     private static final String TAG = "SignupActivity";
@@ -32,7 +38,11 @@ public class SignupActivity extends Activity {
     }
 
     @OnClick(R.id.signupButton) void submit() {
-        signup();
+        try {
+            signup();
+        } catch(Exception e) {
+            Log.d(TAG, "request could not be completed: " + e);
+        }
     }
 
     @Override
@@ -42,7 +52,7 @@ public class SignupActivity extends Activity {
         ButterKnife.bind(this);
     }
 
-    public void signup() {
+    public void signup() throws Exception {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
@@ -66,7 +76,82 @@ public class SignupActivity extends Activity {
         Log.d(TAG, email);
         Log.d(TAG, password);
 
+        // make HTTP post request
+
+//        String url = "https://areality.herokuapp.com/api/signup";
+//        URL areality = new URL(url);
+//        HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
+//
+//        con.setRequestMethod("POST");
+//        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+//
+//        String urlParameters = "username=" + name + "&password=" + password;
+//
+//        con.setDoOutput(true);
+//        DataOutputStream dos = new DataOutputStream(con.getOutputStream());
+//        dos.writeBytes(urlParameters);
+//        dos.flush();
+//        dos.close();
+//
+//        int responseCode = con.getResponseCode();
+//        Log.d(TAG, "\nSending 'POST' request to URL: " + url);
+//        Log.d(TAG, "Post parameters: " + urlParameters);
+//        Log.d(TAG, "Response code: " + responseCode);
+//
+//        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        String inputLine;
+//        StringBuffer response = new StringBuffer();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//
+//        Log.d(TAG, response.toString());
+
         // implement signup logic
+    }
+
+    private class PostUser extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... data) {
+//            HttpClient httpclient = new DefaultHttpClient();
+//            HttpPost httppost = new HttpPost("https://areality.herokuapp.com/api/signup");
+
+            try {
+                URL areality = new URL("https://areality.herokuapp.com/api/signup");
+                HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
+
+                con.setRequestMethod("POST");
+                con.setRequestProperty("User-Agent", "Mozilla/5.0");
+                con.setDoOutput(true);
+                con.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+                String urlParameters = "username=" + data[0] + "&password=" + data[1];
+
+                con.setDoOutput(true);
+                DataOutputStream dos = new DataOutputStream(con.getOutputStream());
+                dos.writeBytes(urlParameters);
+                dos.flush();
+                dos.close();
+
+                int responseCode = con.getResponseCode();
+                Log.d(TAG, "\nSending 'POST' request to URL: " + url);
+                Log.d(TAG, "Post parameters: " + urlParameters);
+                Log.d(TAG, "Response code: " + responseCode);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                Log.d(TAG, response.toString());
+            }
+        }
     }
 
     public void onSignupSuccess() {

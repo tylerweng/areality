@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AREALITY</string>
     <string name="title_activity_gmaps">Map</string>
-    <string name="nameText">Name</string>
+    <string name="nameText">Username</string>
     <string name="emailText">Email</string>
     <string name="passwordText">Password</string>
     <string name="signupButtonText">SIGN UP</string>
