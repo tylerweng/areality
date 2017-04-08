@@ -28,9 +28,15 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
 
+    private List<HashMap<String, String>> nearbyPlacesList;
+
 
     public GetNearbyPlacesData(GoogleApiClient googleApiClient){
         mGoogleApiClient = googleApiClient;
+    }
+
+    public List<HashMap<String, String>> getPlacesList() {
+        return nearbyPlacesList;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-        List<HashMap<String, String>> nearbyPlacesList = null;
+//        List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
         nearbyPlacesList = dataParser.parse(result);
         ShowNearbyPlaces(nearbyPlacesList);
@@ -60,16 +66,6 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     }
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
-
-//        DownloadUrl downloadUrl = new DownloadUrl();
-//        downloadUrl.readUrl(getDetailUrl("ChIJIQBpAG2ahYAR_6128GcTUEo"));
-
-
-
-//        PlacesDetail placesDetail = new PlacesDetail(mGoogleApiClient);
-//        placesDetail.fetchDetail(mGoogleApiClient, testPlaceId);
-
-
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             Log.d("onPostExecute", "Entered into showing locations");
             MarkerOptions markerOptions = new MarkerOptions();
