@@ -1,8 +1,8 @@
 node_modules/
-app/bundle.js
 app/bundle.js.map
 .DS_Store
 npm-debug.log
 app/.env
+.env
 .todo
 tmp/**/*
