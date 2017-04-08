@@ -13,14 +13,4 @@ router.route('/user/:username')
 router.route('/signup').post(passport.authenticate('local-register'), usersController.postUser);
 router.route('/login').post(passport.authenticate('local-signin'), usersController.postUser);
 
-// router.route('/login').post((req, res) => {
-//   console.log(req.query.username);
-//   res.send();
-// });
-
-// router.route('/login').post(passport.authenticate('local-signin'), (req, res) => {
-//   res.send("ok");
-// })
-
-
 export default router;

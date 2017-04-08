@@ -240,16 +240,6 @@ router.route('/user/:username').get(usersController.getUser).delete(usersControl
 router.route('/signup').post(_passport2.default.authenticate('local-register'), usersController.postUser);
 router.route('/login').post(_passport2.default.authenticate('local-signin'), usersController.postUser);
 
-// router.route('/login').post((req, res) => {
-//   console.log(req.query.username);
-//   res.send();
-// });
-
-// router.route('/login').post(passport.authenticate('local-signin'), (req, res) => {
-//   res.send("ok");
-// })
-
-
 exports.default = router;
 
 /***/ }),

@@ -25,14 +25,23 @@
         <activity android:name=".LandmarkPage">
 
         </activity>
+
         <activity android:name=".MyGLActivity"></activity>
 
         <activity android:name=".MapsActivity">
+<<<<<<< HEAD
+=======
+
+>>>>>>> d43e7505f30517683d043bdb78e9e9f8cc5dc966
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
+=======
+      
+>>>>>>> d43e7505f30517683d043bdb78e9e9f8cc5dc966
         <activity android:name=".SignupActivity"></activity>
 
         <!-- this is for when we want people to log in/sign up prior to using the app -->
