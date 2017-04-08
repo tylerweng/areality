@@ -3,7 +3,6 @@
     package="com.example.areality">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -14,42 +13,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD9cySsoGl5BRYvAq1zDLewGyyfsprckdg" />
+        <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" >
-        </meta-data>
+            android:value="@integer/google_play_services_version" />
 
         <activity android:name=".MainActivity"></activity>
 
-        <activity android:name=".LandmarkPage">
-
-        </activity>
-
-        <activity android:name=".MyGLActivity"></activity>
-
         <activity android:name=".MapsActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-      
+        <activity android:name=".LandmarkPage" />
+        <activity android:name=".MyGLActivity"></activity>
         <activity android:name=".SignupActivity"></activity>
-
-        <!-- this is for when we want people to log in/sign up prior to using the app -->
-        <!--<activity android:name=".MapsActivity" />-->
-        <!--<activity android:name=".SignupActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-
-        <activity android:name=".LoginActivity" />
-
-        <meta-data
-          android:name="com.google.android.geo.API_KEY"
-          android:value="@string/google_maps_key" />
 
     </application>
 
