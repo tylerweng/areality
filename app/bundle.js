@@ -339,8 +339,7 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  console.log(req);
-  _user2.default.findOne({ username: req.user.username.toLowerCase() }, function (err, user) {
+  _user2.default.findOne({ _id: req.user }, function (err, user) {
     res.json({ user: user });
   });
 };
