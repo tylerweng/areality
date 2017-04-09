@@ -245,7 +245,9 @@ router.route('/profile').get(usersController.getUser).delete(usersController.del
 router.route('/signup').post(function (req, res, next) {
   _passport2.default.authenticate('local-register', function (err, user, info) {
     if (err) {
-      res.status(500).json(info);
+      res.status(500).send(err);
+    } else if (!user) {
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }

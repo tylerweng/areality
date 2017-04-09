@@ -14,7 +14,9 @@ router.route('/profile')
 router.route('/signup').post((req, res, next) => {
   passport.authenticate('local-register', (err, user, info) => {
     if (err) {
-      res.status(500).json(info);
+      res.status(500).send(err);
+    } else if (!user) {
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }
