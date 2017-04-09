@@ -22,10 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 
@@ -39,30 +36,27 @@ public class LandmarkPage extends Activity {
         Intent intent = getIntent();
         setContentView(R.layout.activity_landmark_page);
 
-        String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
+        String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
 
-        testPlaceId = intent.getStringExtra(MapsActivity.LANDMARK_ID);
+//        testPlaceId = intent.getStringExtra(MapsActivity.LANDMARK_ID);
 
         String urlString = getDetailUrl(testPlaceId);
         String result = "didn't work";
         JSONObject jsonObject = null;
-        List<String> photoUrls = new ArrayList<String>();
-
+        List<String> photoUrls = new ArrayList<>();
+        List<Hashtable> reviewList = new ArrayList<>();
 
 
         try {
             result = makeHTTPRequest(urlString);
             jsonObject = new JSONObject(result);
+            reviewList = getReviewList(jsonObject);
             photoUrls = getPhotoUrlsList(jsonObject);
-            Log.d("photoUrls", "photoUrls");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
 
         String schedule = "Schedules. " + "\n"+
                 "1. center image" + "\n"+
@@ -85,15 +79,14 @@ public class LandmarkPage extends Activity {
         setInfo(schedule, photos);
 
 
-        Toast.makeText(LandmarkPage.this, photoUrls.get(0), Toast.LENGTH_LONG).show();
+        Hashtable review = reviewList.get(0);
+        String reviewText = review.get("reviewText").toString();
+
+        TextView textView = (TextView) findViewById(R.id.textView);
+        textView.setText(reviewText.toString());
+//        Toast.makeText(LandmarkPage.this, reviewText, Toast.LENGTH_LONG).show();
 
     }
-
-    private void setInfo(String message){
-
-    }
-
-
 
     private void setInfo(String schedule, String[] photos){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
@@ -101,8 +94,8 @@ public class LandmarkPage extends Activity {
         TableLayout layout = (TableLayout) findViewById(R.id.tableView);
 
         //first child is schedule
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(schedule);
+//        TextView textView = (TextView) findViewById(R.id.textView);
+//        textView.setText(schedule);
 
 
         for (int i = 1; i < layout.getChildCount(); i++) {
@@ -117,6 +110,29 @@ public class LandmarkPage extends Activity {
                 }
             }
         }
+    }
+
+    public List<Hashtable> getReviewList(JSONObject jsonObject) throws JSONException {
+        List<Hashtable> reviewList = new ArrayList<>();
+        JSONArray reviewArray = null;
+        reviewArray = jsonObject.getJSONObject("result").getJSONArray("reviews");
+
+
+
+        for (int i = 0; i < 5; i++) {
+            Hashtable<String, String> review = new Hashtable<>();
+            JSONObject reviewDetail = reviewArray.getJSONObject(i);
+            String rating = Integer.toString(reviewDetail.getInt("rating"));
+            String authorName = reviewDetail.getString("author_name");
+            String reviewText = reviewDetail.getString("text");
+
+            review.put("rating", rating);
+            review.put("authorName", authorName);
+            review.put("reviewText", reviewText);
+            reviewList.add(review);
+        }
+
+        return reviewList;
     }
 
 
@@ -188,26 +204,4 @@ public class LandmarkPage extends Activity {
         }
     }
 
-
-    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
-        List<String> photoUrls = new ArrayList<>();
-        JSONArray photoArray = null;
-        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
-
-        for (int i = 0; i < photoArray.length(); i++) {
-            JSONObject photo = photoArray.getJSONObject(i);
-            String photoReference = photo.getString("photo_reference");
-            String photoUrl = getPhotoUrl(photoReference);
-            photoUrls.add(photoUrl);
-        }
-        return photoUrls;
-    }
-    private String getPhotoUrl(String photoReference) {
-        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
-        photoUrl.append("maxheight=" + "600");
-        photoUrl.append("&maxwidth=" + "600");
-        photoUrl.append("&photoreference=" + photoReference);
-        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
-        return photoUrl.toString();
-    }
 }
