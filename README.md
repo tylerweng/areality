@@ -10,10 +10,10 @@ AREALITY was built using a Java/Android front-end client and a Node.js backend f
 
 ### Technologies & Frameworks
 
-- [ ] MongoDB
-- [ ] Express.js
-- [ ] Android
-- [ ] Node.js
+- [x] MongoDB
+- [x] Express.js
+- [x] Android
+- [x] Node.js
 
 ## Features & Implementation
 
