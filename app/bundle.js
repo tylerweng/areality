@@ -295,12 +295,7 @@ module.exports = require("connect-flash");
 module.exports = require("dotenv");
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("express-session");
-
-/***/ }),
+/* 10 */,
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -403,9 +398,9 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _expressSession = __webpack_require__(10);
+var _cookieSession = __webpack_require__(19);
 
-var _expressSession2 = _interopRequireDefault(_expressSession);
+var _cookieSession2 = _interopRequireDefault(_cookieSession);
 
 var _bodyParser = __webpack_require__(7);
 
@@ -443,9 +438,9 @@ _mongoose2.default.connect(process.env.MLAB_URI, function (err) {
   (0, _passport4.default)();
 
   app.use(_express2.default.static(__dirname + '/assets'));
-  app.use((0, _cookieParser2.default)());
+  app.use((0, _cookieParser2.default)(process.env.SESSION_SECRET));
   app.use(_bodyParser2.default.urlencoded({ extended: true }));
-  app.use((0, _expressSession2.default)({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+  app.use((0, _cookieSession2.default)({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
   app.use((0, _connectFlash2.default)());
   app.use(_passport2.default.initialize());
   app.use(_passport2.default.session());
@@ -657,6 +652,665 @@ module.exports = require("cookie");
 /***/ (function(module, exports) {
 
 module.exports = require("cookie-signature");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*!
+ * cookie-session
+ * Copyright(c) 2013 Jonathan Ong
+ * Copyright(c) 2014-2017 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+
+
+/**
+ * Module dependencies.
+ * @private
+ */
+
+var debug = __webpack_require__(23)('cookie-session')
+var Cookies = __webpack_require__(20)
+var onHeaders = __webpack_require__(26)
+
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports = cookieSession
+
+/**
+ * Create a new cookie session middleware.
+ *
+ * @param {object} [options]
+ * @param {boolean} [options.httpOnly=true]
+ * @param {array} [options.keys]
+ * @param {string} [options.name=session] Name of the cookie to use
+ * @param {boolean} [options.overwrite=true]
+ * @param {string} [options.secret]
+ * @param {boolean} [options.signed=true]
+ * @return {function} middleware
+ * @public
+ */
+
+function cookieSession (options) {
+  var opts = options || {}
+
+  // cookie name
+  var name = opts.name || 'session'
+
+  // secrets
+  var keys = opts.keys
+  if (!keys && opts.secret) keys = [opts.secret]
+
+  // defaults
+  if (opts.overwrite == null) opts.overwrite = true
+  if (opts.httpOnly == null) opts.httpOnly = true
+  if (opts.signed == null) opts.signed = true
+
+  if (!keys && opts.signed) throw new Error('.keys required.')
+
+  debug('session options %j', opts)
+
+  return function _cookieSession (req, res, next) {
+    var cookies = new Cookies(req, res, {
+      keys: keys
+    })
+    var sess
+
+    // to pass to Session()
+    req.sessionCookies = cookies
+    req.sessionOptions = Object.create(opts)
+    req.sessionKey = name
+
+    // define req.session getter / setter
+    Object.defineProperty(req, 'session', {
+      configurable: true,
+      enumerable: true,
+      get: getSession,
+      set: setSession
+    })
+
+    function getSession () {
+      // already retrieved
+      if (sess) {
+        return sess
+      }
+
+      // unset
+      if (sess === false) {
+        return null
+      }
+
+      // get or create session
+      return (sess = tryGetSession(req) || createSession(req))
+    }
+
+    function setSession (val) {
+      if (val == null) {
+        // unset session
+        sess = false
+        return val
+      }
+
+      if (typeof val === 'object') {
+        // create a new session
+        sess = Session.create(this, val)
+        return sess
+      }
+
+      throw new Error('req.session can only be set as null or an object.')
+    }
+
+    onHeaders(res, function setHeaders () {
+      if (sess === undefined) {
+        // not accessed
+        return
+      }
+
+      try {
+        if (sess === false) {
+          // remove
+          cookies.set(name, '', req.sessionOptions)
+        } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
+          // save populated or non-new changed session
+          sess.save()
+        }
+      } catch (e) {
+        debug('error saving session %s', e.message)
+      }
+    })
+
+    next()
+  }
+};
+
+/**
+ * Session model.
+ *
+ * @param {Context} ctx
+ * @param {Object} obj
+ * @private
+ */
+
+function Session (ctx, obj) {
+  Object.defineProperty(this, '_ctx', {
+    value: ctx
+  })
+
+  if (obj) {
+    for (var key in obj) {
+      this[key] = obj[key]
+    }
+  }
+}
+
+/**
+ * Create new session.
+ * @private
+ */
+
+Session.create = function create (req, obj) {
+  var ctx = new SessionContext(req)
+  return new Session(ctx, obj)
+}
+
+/**
+ * Create session from serialized form.
+ * @private
+ */
+
+Session.deserialize = function deserialize (req, str) {
+  var ctx = new SessionContext(req)
+  var obj = decode(str)
+
+  ctx._new = false
+  ctx._val = str
+
+  return new Session(ctx, obj)
+}
+
+/**
+ * Serialize a session to a string.
+ * @private
+ */
+
+Session.serialize = function serialize (sess) {
+  return encode(sess)
+}
+
+/**
+ * Return if the session is changed for this request.
+ *
+ * @return {Boolean}
+ * @public
+ */
+
+Object.defineProperty(Session.prototype, 'isChanged', {
+  get: function getIsChanged () {
+    return this._ctx._new || this._ctx._val !== Session.serialize(this)
+  }
+})
+
+/**
+ * Return if the session is new for this request.
+ *
+ * @return {Boolean}
+ * @public
+ */
+
+Object.defineProperty(Session.prototype, 'isNew', {
+  get: function getIsNew () {
+    return this._ctx._new
+  }
+})
+
+/**
+ * Return how many values there are in the session object.
+ * Used to see if it's "populated".
+ *
+ * @return {Number}
+ * @public
+ */
+
+Object.defineProperty(Session.prototype, 'length', {
+  get: function getLength () {
+    return Object.keys(this).length
+  }
+})
+
+/**
+ * populated flag, which is just a boolean alias of .length.
+ *
+ * @return {Boolean}
+ * @public
+ */
+
+Object.defineProperty(Session.prototype, 'isPopulated', {
+  get: function getIsPopulated () {
+    return Boolean(this.length)
+  }
+})
+
+/**
+ * Save session changes by performing a Set-Cookie.
+ * @private
+ */
+
+Session.prototype.save = function save () {
+  var ctx = this._ctx
+  var val = Session.serialize(this)
+
+  var cookies = ctx.req.sessionCookies
+  var name = ctx.req.sessionKey
+  var opts = ctx.req.sessionOptions
+
+  debug('save %s', val)
+  cookies.set(name, val, opts)
+}
+
+/**
+ * Session context to tie session to req.
+ *
+ * @param {Request} req
+ * @private
+ */
+
+function SessionContext (req) {
+  this.req = req
+
+  this._new = true
+  this._val = undefined
+}
+
+/**
+ * Create a new session.
+ * @private
+ */
+
+function createSession (req) {
+  debug('new session')
+  return Session.create(req)
+}
+
+/**
+ * Decode the base64 cookie value to an object.
+ *
+ * @param {String} string
+ * @return {Object}
+ * @private
+ */
+
+function decode (string) {
+  var body = new Buffer(string, 'base64').toString('utf8')
+  return JSON.parse(body)
+}
+
+/**
+ * Encode an object into a base64-encoded JSON string.
+ *
+ * @param {Object} body
+ * @return {String}
+ * @private
+ */
+
+function encode (body) {
+  var str = JSON.stringify(body)
+  return new Buffer(str).toString('base64')
+}
+
+/**
+ * Try getting a session from a request.
+ * @private
+ */
+
+function tryGetSession (req) {
+  var cookies = req.sessionCookies
+  var name = req.sessionKey
+  var opts = req.sessionOptions
+
+  var str = cookies.get(name, opts)
+
+  if (!str) {
+    return undefined
+  }
+
+  debug('parse %s', str)
+
+  try {
+    return Session.deserialize(req, str)
+  } catch (err) {
+    if (!(err instanceof SyntaxError)) throw err
+    return undefined
+  }
+}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*!
+ * cookies
+ * Copyright(c) 2014 Jed Schmidt, http://jed.is/
+ * Copyright(c) 2015-2016 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+
+
+var deprecate = __webpack_require__(24)('cookies')
+var Keygrip = __webpack_require__(21)
+var http = __webpack_require__(25)
+var cache = {}
+
+/**
+ * RegExp to match field-content in RFC 7230 sec 3.2
+ *
+ * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+ * field-vchar   = VCHAR / obs-text
+ * obs-text      = %x80-FF
+ */
+
+var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+
+/**
+ * RegExp to match Same-Site cookie attribute value.
+ */
+
+var sameSiteRegExp = /^(?:lax|strict)$/i
+
+function Cookies(request, response, options) {
+  if (!(this instanceof Cookies)) return new Cookies(request, response, options)
+
+  this.secure = undefined
+  this.request = request
+  this.response = response
+
+  if (options) {
+    if (Array.isArray(options)) {
+      // array of key strings
+      deprecate('"keys" argument; provide using options {"keys": [...]}')
+      this.keys = new Keygrip(options)
+    } else if (options.constructor && options.constructor.name === 'Keygrip') {
+      // any keygrip constructor to allow different versions
+      deprecate('"keys" argument; provide using options {"keys": keygrip}')
+      this.keys = options
+    } else {
+      this.keys = Array.isArray(options.keys) ? new Keygrip(options.keys) : options.keys
+      this.secure = options.secure
+    }
+  }
+}
+
+Cookies.prototype.get = function(name, opts) {
+  var sigName = name + ".sig"
+    , header, match, value, remote, data, index
+    , signed = opts && opts.signed !== undefined ? opts.signed : !!this.keys
+
+  header = this.request.headers["cookie"]
+  if (!header) return
+
+  match = header.match(getPattern(name))
+  if (!match) return
+
+  value = match[1]
+  if (!opts || !signed) return value
+
+  remote = this.get(sigName)
+  if (!remote) return
+
+  data = name + "=" + value
+  if (!this.keys) throw new Error('.keys required for signed cookies');
+  index = this.keys.index(data, remote)
+
+  if (index < 0) {
+    this.set(sigName, null, {path: "/", signed: false })
+  } else {
+    index && this.set(sigName, this.keys.sign(data), { signed: false })
+    return value
+  }
+};
+
+Cookies.prototype.set = function(name, value, opts) {
+  var res = this.response
+    , req = this.request
+    , headers = res.getHeader("Set-Cookie") || []
+    , secure = this.secure !== undefined ? !!this.secure : req.protocol === 'https' || req.connection.encrypted
+    , cookie = new Cookie(name, value, opts)
+    , signed = opts && opts.signed !== undefined ? opts.signed : !!this.keys
+
+  if (typeof headers == "string") headers = [headers]
+
+  if (!secure && opts && opts.secure) {
+    throw new Error('Cannot send secure cookie over unencrypted connection')
+  }
+
+  cookie.secure = secure
+  if (opts && "secure" in opts) cookie.secure = opts.secure
+
+  if (opts && "secureProxy" in opts) {
+    deprecate('"secureProxy" option; use "secure" option, provide "secure" to constructor if needed')
+    cookie.secure = opts.secureProxy
+  }
+
+  headers = pushCookie(headers, cookie)
+
+  if (opts && signed) {
+    if (!this.keys) throw new Error('.keys required for signed cookies');
+    cookie.value = this.keys.sign(cookie.toString())
+    cookie.name += ".sig"
+    headers = pushCookie(headers, cookie)
+  }
+
+  var setHeader = res.set ? http.OutgoingMessage.prototype.setHeader : res.setHeader
+  setHeader.call(res, 'Set-Cookie', headers)
+  return this
+};
+
+function Cookie(name, value, attrs) {
+  if (!fieldContentRegExp.test(name)) {
+    throw new TypeError('argument name is invalid');
+  }
+
+  if (value && !fieldContentRegExp.test(value)) {
+    throw new TypeError('argument value is invalid');
+  }
+
+  value || (this.expires = new Date(0))
+
+  this.name = name
+  this.value = value || ""
+
+  for (var name in attrs) {
+    this[name] = attrs[name]
+  }
+
+  if (this.path && !fieldContentRegExp.test(this.path)) {
+    throw new TypeError('option path is invalid');
+  }
+
+  if (this.domain && !fieldContentRegExp.test(this.domain)) {
+    throw new TypeError('option domain is invalid');
+  }
+
+  if (this.sameSite && this.sameSite !== true && !sameSiteRegExp.test(this.sameSite)) {
+    throw new TypeError('option sameSite is invalid')
+  }
+}
+
+Cookie.prototype.path = "/";
+Cookie.prototype.expires = undefined;
+Cookie.prototype.domain = undefined;
+Cookie.prototype.httpOnly = true;
+Cookie.prototype.sameSite = false;
+Cookie.prototype.secure = false;
+Cookie.prototype.overwrite = false;
+
+Cookie.prototype.toString = function() {
+  return this.name + "=" + this.value
+};
+
+Cookie.prototype.toHeader = function() {
+  var header = this.toString()
+
+  if (this.maxAge) this.expires = new Date(Date.now() + this.maxAge);
+
+  if (this.path     ) header += "; path=" + this.path
+  if (this.expires  ) header += "; expires=" + this.expires.toUTCString()
+  if (this.domain   ) header += "; domain=" + this.domain
+  if (this.sameSite ) header += "; samesite=" + (this.sameSite === true ? 'strict' : this.sameSite.toLowerCase())
+  if (this.secure   ) header += "; secure"
+  if (this.httpOnly ) header += "; httponly"
+
+  return header
+};
+
+// back-compat so maxage mirrors maxAge
+Object.defineProperty(Cookie.prototype, 'maxage', {
+  configurable: true,
+  enumerable: true,
+  get: function () { return this.maxAge },
+  set: function (val) { return this.maxAge = val }
+});
+deprecate.property(Cookie.prototype, 'maxage', '"maxage"; use "maxAge" instead')
+
+function getPattern(name) {
+  if (cache[name]) return cache[name]
+
+  return cache[name] = new RegExp(
+    "(?:^|;) *" +
+    name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") +
+    "=([^;]*)"
+  )
+}
+
+function pushCookie(cookies, cookie) {
+  if (cookie.overwrite) {
+    cookies = cookies.filter(function(c) { return c.indexOf(cookie.name+'=') !== 0 })
+  }
+  cookies.push(cookie.toHeader())
+  return cookies
+}
+
+Cookies.connect = Cookies.express = function(keys) {
+  return function(req, res, next) {
+    req.cookies = res.cookies = new Cookies(req, res, {
+      keys: keys
+    })
+
+    next()
+  }
+}
+
+Cookies.Cookie = Cookie
+
+module.exports = Cookies
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var crypto = __webpack_require__(22)
+  
+function Keygrip(keys, algorithm, encoding) {
+  if (!algorithm) algorithm = "sha1";
+  if (!encoding) encoding = "base64";
+  if (!(this instanceof Keygrip)) return new Keygrip(keys, algorithm, encoding)
+
+  if (!keys || !(0 in keys)) {
+    throw new Error("Keys must be provided.")
+  }
+
+  function sign(data, key) {
+    return crypto
+      .createHmac(algorithm, key)
+      .update(data).digest(encoding)
+      .replace(/\/|\+|=/g, function(x) {
+        return ({ "/": "_", "+": "-", "=": "" })[x]
+      })
+  }
+
+  this.sign = function(data){ return sign(data, keys[0]) }
+
+  this.verify = function(data, digest) {
+    return this.index(data, digest) > -1
+  }
+
+  this.index = function(data, digest) {
+    for (var i = 0, l = keys.length; i < l; i++) {
+      if (constantTimeCompare(digest, sign(data, keys[i]))) return i
+    }
+
+    return -1
+  }
+}
+
+Keygrip.sign = Keygrip.verify = Keygrip.index = function() {
+  throw new Error("Usage: require('keygrip')(<array-of-keys>)")
+}
+
+//http://codahale.com/a-lesson-in-timing-attacks/
+var constantTimeCompare = function(val1, val2){
+    if(val1 == null && val2 != null){
+        return false;
+    } else if(val2 == null && val1 != null){
+        return false;
+    } else if(val1 == null && val2 == null){
+        return true;
+    }
+
+    if(val1.length !== val2.length){
+        return false;
+    }
+
+    var matches = 1;
+
+    for(var i = 0; i < val1.length; i++){
+        matches &= (val1.charAt(i) === val2.charAt(i) ? 1 : 0); //Don't short circuit
+    }
+
+    return matches === 1;
+};
+
+module.exports = Keygrip
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+module.exports = require("debug");
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+module.exports = require("depd");
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+module.exports = require("on-headers");
 
 /***/ })
 /******/ ]);
