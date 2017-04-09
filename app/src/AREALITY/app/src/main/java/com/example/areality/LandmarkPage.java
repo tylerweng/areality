@@ -89,12 +89,6 @@ public class LandmarkPage extends Activity {
 
     }
 
-    private void setInfo(String message){
-
-    }
-
-
-
     private void setInfo(String schedule, String[] photos){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
@@ -188,26 +182,4 @@ public class LandmarkPage extends Activity {
         }
     }
 
-
-    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
-        List<String> photoUrls = new ArrayList<>();
-        JSONArray photoArray = null;
-        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
-
-        for (int i = 0; i < photoArray.length(); i++) {
-            JSONObject photo = photoArray.getJSONObject(i);
-            String photoReference = photo.getString("photo_reference");
-            String photoUrl = getPhotoUrl(photoReference);
-            photoUrls.add(photoUrl);
-        }
-        return photoUrls;
-    }
-    private String getPhotoUrl(String photoReference) {
-        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
-        photoUrl.append("maxheight=" + "600");
-        photoUrl.append("&maxwidth=" + "600");
-        photoUrl.append("&photoreference=" + photoReference);
-        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
-        return photoUrl.toString();
-    }
 }
