@@ -49,6 +49,7 @@ class MyGLSurfaceView extends GLSurfaceView {
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
                 mRenderer.setRot(dy/10, dx/10);
+
                 mRenderer.setAngle(
                         mRenderer.getAngle() +
                                 ((dx + dy) * TOUCH_SCALE_FACTOR));
