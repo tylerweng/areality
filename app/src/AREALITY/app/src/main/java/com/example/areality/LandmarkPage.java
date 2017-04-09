@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,13 +61,25 @@ public class LandmarkPage extends Activity {
 
 
 
-        String info = "Information about landmarks. Notes: " +
-                "1. center image" +
-                "2. Does line breaks work" +
+        String schedule = "Schedules. " + "\n"+
+                "1. center image" + "\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
+                "2. Does line breaks work" +"\n"+
                 "3";
         String photos[] = new String[photoUrls.size()];
         photos = photoUrls.toArray(photos);
-        setInfo(info, photos);
+        setInfo(schedule, photos);
 
 
 
@@ -72,13 +87,28 @@ public class LandmarkPage extends Activity {
 
 
 
-    private void setInfo(String message, String[] photos){
+    private void setInfo(String schedule, String[] photos){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
+        TableLayout layout = (TableLayout) findViewById(R.id.tableView);
 
+        //first child is schedule
         TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(message);
+        textView.setText(schedule);
 
+
+        for (int i = 1; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+
+            if (child instanceof TableRow) {
+                TableRow row = (TableRow) child;
+
+                for (int x = 0; x < row.getChildCount(); x++) {
+                    View view = row.getChildAt(x);
+                    //add reviews to view
+                }
+            }
+        }
     }
 
 
