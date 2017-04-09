@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.net.URLEncoder;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -24,7 +25,11 @@ public class LoginActivity extends Activity {
     @BindView(R.id.loginButton) Button _loginButton;
 
     @OnClick(R.id.loginButton) void submit() {
-        login();
+        try {
+            login();
+        } catch(Exception e) {
+            Log.d(TAG, "request could not be completed: " + e);
+        }
     }
 
     @OnClick(R.id.signupLink) void switchToSignup() {
@@ -39,7 +44,7 @@ public class LoginActivity extends Activity {
         ButterKnife.bind(this);
     }
 
-    public void login() {
+    public void login() throws Exception {
         Log.d(TAG, "Login");
 
         if (!validate()) {
@@ -61,7 +66,29 @@ public class LoginActivity extends Activity {
         Log.d(TAG, email);
         Log.d(TAG, password);
 
-        // implement login logic
+        // make HTTP post request
+        String[] emailChars = email.split("");
+        StringBuilder newEmail = new StringBuilder();
+
+        for (int i = 0; i < emailChars.length; i++) {
+            if (emailChars[i].equals(".")) {
+                newEmail.append("%2E");
+            } else {
+                newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
+            }
+        }
+
+        String urlParameters = "email=" + newEmail.toString()
+                             + "&password=" + URLEncoder.encode(password, "UTF-8");
+
+        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
+        String result = pr.execute();
+
+        if (result.equals("no")) {
+            progressDialog.hide();
+        } else {
+            onLoginSuccess();
+        }
     }
 
     public void onLoginFailed() {

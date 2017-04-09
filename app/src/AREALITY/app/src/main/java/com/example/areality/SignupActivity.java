@@ -2,7 +2,6 @@ package com.example.areality;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -15,13 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import java.net.URL;
 import java.net.URLEncoder;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.DataOutputStream;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class SignupActivity extends Activity {
     private static final String TAG = "SignupActivity";
@@ -77,74 +70,41 @@ public class SignupActivity extends Activity {
         Log.d(TAG, password);
 
         // make HTTP post request
+        String[] emailChars = email.split("");
+        StringBuilder newEmail = new StringBuilder();
 
-        String[] data = new String[3];
-        data[0] = name;
-        data[1] = email;
-        data[2] = password;
-
-        PostUser pu = new PostUser();
-        pu.execute(data);
-    }
-
-    private class PostUser extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... data) {
-            try {
-                URL areality = new URL("https://areality.herokuapp.com/api/signup");
-                HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
-
-                con.setRequestMethod("POST");
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
-                con.setDoOutput(true);
-
-                String[] emailChars = data[1].split("");
-                StringBuilder newEmail = new StringBuilder();
-
-                for (int i = 0; i < emailChars.length; i++) {
-                    if (emailChars[i].equals(".")) {
-                        newEmail.append("%2E");
-                    } else {
-                        newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
-                    }
-                }
-
-                String urlParameters = "username=" + URLEncoder.encode(data[0], "UTF-8")
-                                     + "&email=" + newEmail.toString()
-                                     + "&password=" + URLEncoder.encode(data[2], "UTF-8");
-
-                con.setDoOutput(true);
-                DataOutputStream dos = new DataOutputStream(con.getOutputStream());
-                dos.writeBytes(urlParameters);
-                dos.flush();
-                dos.close();
-
-                int responseCode = con.getResponseCode();
-                Log.d(TAG, "\nSending 'POST' request to URL: " + areality);
-                Log.d(TAG, "Post parameters: " + urlParameters);
-                Log.d(TAG, "Response code: " + responseCode);
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                Log.d(TAG, response.toString());
-                return "yes";
-            } catch (Exception e) {
-                return "no";
+        for (int i = 0; i < emailChars.length; i++) {
+            if (emailChars[i].equals(".")) {
+                newEmail.append("%2E");
+            } else {
+                newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
             }
+        }
+
+        String urlParameters = "username=" + URLEncoder.encode(name, "UTF-8")
+                             + "&email=" + newEmail.toString()
+                             + "&password=" + URLEncoder.encode(password, "UTF-8");
+
+        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
+        String result = pr.execute();
+
+        if (result.equals("no")) {
+            progressDialog.hide();
+            onUsernameTaken();
+        } else {
+            onSignupSuccess();
         }
     }
 
     public void onSignupSuccess() {
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivityForResult(intent, REQUEST_LOGIN);
+    }
+
+    public void onUsernameTaken() {
+        String name = _nameText.getText().toString();
+        _nameText.setError("That username is taken");
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
     }
 
     public void onSignupFailed() {

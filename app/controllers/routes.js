@@ -16,7 +16,7 @@ router.route('/signup').post((req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(401).json(info);
+      res.status(403).json(info);
     } else {
       res.status(200).json(user);
     }
@@ -27,11 +27,23 @@ router.route('/error').get((req, res) => {
   res.json(req.session.flash);
 });
 
-router.route('/login').post(passport.authenticate('local-signin', {
-  successRedirect: '/api/profile',
-  failureRedirect: '/api/error',
-  failureFlash: true
-}));
+// router.route('/login').post(passport.authenticate('local-signin', {
+//   successRedirect: '/api/profile',
+//   failureRedirect: '/api/error',
+//   failureFlash: true
+// }));
+
+router.route('/login').post((req, res, next) => {
+  passport.authenticate('local-signin', (err, user, info) => {
+    if (err) {
+      res.status(500).send(err);
+    } else if (!user) {
+      res.status(403).json(info);
+    } else {
+      res.status(200).json(user);
+    }
+  })(req, res, next);
+});
 
 function logIn(req, res, next) {
   if (req.isAuthenticated()) {

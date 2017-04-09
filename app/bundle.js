@@ -247,7 +247,7 @@ router.route('/signup').post(function (req, res, next) {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(401).json(info);
+      res.status(403).json(info);
     } else {
       res.status(200).json(user);
     }
@@ -258,11 +258,23 @@ router.route('/error').get(function (req, res) {
   res.json(req.session.flash);
 });
 
-router.route('/login').post(_passport2.default.authenticate('local-signin', {
-  successRedirect: '/api/profile',
-  failureRedirect: '/api/error',
-  failureFlash: true
-}));
+// router.route('/login').post(passport.authenticate('local-signin', {
+//   successRedirect: '/api/profile',
+//   failureRedirect: '/api/error',
+//   failureFlash: true
+// }));
+
+router.route('/login').post(function (req, res, next) {
+  _passport2.default.authenticate('local-signin', function (err, user, info) {
+    if (err) {
+      res.status(500).send(err);
+    } else if (!user) {
+      res.status(403).json(info);
+    } else {
+      res.status(200).json(user);
+    }
+  })(req, res, next);
+});
 
 function logIn(req, res, next) {
   if (req.isAuthenticated()) {
