@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -111,7 +111,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var mongoose = __webpack_require__(2);
-var bcrypt = __webpack_require__(12);
+var bcrypt = __webpack_require__(13);
 
 var userSchema = mongoose.Schema({
   username: { type: String, trim: true, required: true },
@@ -146,7 +146,7 @@ var _passport = __webpack_require__(0);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _passportLocal = __webpack_require__(13);
+var _passportLocal = __webpack_require__(14);
 
 var _passportLocal2 = _interopRequireDefault(_passportLocal);
 
@@ -176,7 +176,7 @@ var configurePassport = function configurePassport() {
     username = username.toLowerCase();
     _user2.default.findOne({ username: username }, function (err, user) {
       if (err) return done(err);
-      if (user) return done(null, false, { message: "That username is taken." });
+      if (user) return done(null, false, req.flash('error', 'That username is taken'));
 
       var newUser = new _user2.default();
       newUser.username = username;
@@ -185,7 +185,7 @@ var configurePassport = function configurePassport() {
 
       newUser.save(function (err) {
         if (err) return done(err);
-        return done(null, newUser);
+        return done(null, newUser, req.flash('success', 'Welcome, ' + newUser.username + '!'));
       });
     });
   }));
@@ -193,8 +193,8 @@ var configurePassport = function configurePassport() {
   _passport2.default.use('local-signin', new LocalStrategy(function (username, password, done) {
     _user2.default.findOne({ username: username }, function (err, user) {
       if (err) return done(err);
-      if (!user) return done(null, false, { message: "That user could not be found." });
-      if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { message: "Incorrect password." });
+      if (!user) return done(null, false, req.flash('error', "That user could not be found"));
+      if (!user.validPassword(password, user.passwordDigest)) return done(null, false, req.flash('error', "Incorrect password"));
       return done(null, user);
     });
   }));
@@ -221,11 +221,11 @@ var _express = __webpack_require__(1);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _users = __webpack_require__(11);
+var _users = __webpack_require__(12);
 
 var usersController = _interopRequireWildcard(_users);
 
-var _badges = __webpack_require__(10);
+var _badges = __webpack_require__(11);
 
 var badgesController = _interopRequireWildcard(_badges);
 
@@ -240,9 +240,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var router = _express2.default.Router();
 
 router.route('/users').get(usersController.getUsers);
-router.route('/user/:username').get(usersController.getUser).delete(usersController.deleteUser);
-router.route('/signup').post(_passport2.default.authenticate('local-register'), usersController.postUser);
-router.route('/login').post(_passport2.default.authenticate('local-signin'), usersController.postUser);
+router.route('/profile').get(usersController.getUser).delete(usersController.deleteUser);
+
+router.route('/signup').post(_passport2.default.authenticate('local-register', {
+  successRedirect: '/api/profile',
+  failureRedirect: '/api/error',
+  failureFlash: true
+}));
+
+router.route('/error').get(function (req, res) {
+  res.json(req.session.flash);
+});
+
+router.route('/login').post(_passport2.default.authenticate('local-signin', {
+  successRedirect: '/api/profile',
+  failureRedirect: '/api/error',
+  failureFlash: true
+}));
 
 exports.default = router;
 
@@ -256,16 +270,22 @@ module.exports = require("body-parser");
 /* 8 */
 /***/ (function(module, exports) {
 
-module.exports = require("dotenv");
+module.exports = require("connect-flash");
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("express-session");
+module.exports = require("dotenv");
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-session");
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -290,7 +310,7 @@ var router = function router(app) {
 exports.default = router;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -299,7 +319,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.patchUser = exports.deleteUser = exports.postUser = exports.getUser = exports.getUsers = undefined;
+exports.patchUser = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
 
 var _passport = __webpack_require__(0);
 
@@ -319,13 +339,9 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  _user2.default.findOne({ username: req.params.username.toLowerCase() }, function (err, user) {
+  _user2.default.findOne({ username: req.user.username.toLowerCase() }, function (err, user) {
     res.json({ user: user });
   });
-};
-
-var postUser = exports.postUser = function postUser(req, res) {
-  res.json(req.user);
 };
 
 var deleteUser = exports.deleteUser = function deleteUser(req, res) {
@@ -337,19 +353,19 @@ var deleteUser = exports.deleteUser = function deleteUser(req, res) {
 var patchUser = exports.patchUser = function patchUser(req, res) {};
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcrypt-nodejs");
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = require("passport-local");
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -363,13 +379,17 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _expressSession = __webpack_require__(9);
+var _expressSession = __webpack_require__(10);
 
 var _expressSession2 = _interopRequireDefault(_expressSession);
 
 var _bodyParser = __webpack_require__(7);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _connectFlash = __webpack_require__(8);
+
+var _connectFlash2 = _interopRequireDefault(_connectFlash);
 
 var _passport = __webpack_require__(0);
 
@@ -385,7 +405,7 @@ var _passport4 = _interopRequireDefault(_passport3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(8).config({ silent: true });
+__webpack_require__(9).config({ silent: true });
 
 var app = (0, _express2.default)();
 
@@ -397,6 +417,7 @@ _mongoose2.default.connect(process.env.MLAB_URI, function (err) {
   app.use(_express2.default.static(__dirname + '/assets'));
   app.use(_bodyParser2.default.urlencoded({ extended: true }));
   app.use((0, _expressSession2.default)({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+  app.use((0, _connectFlash2.default)());
   app.use(_passport2.default.initialize());
   app.use(_passport2.default.session());
 

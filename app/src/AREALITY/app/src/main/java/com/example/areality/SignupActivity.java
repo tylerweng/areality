@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.DataOutputStream;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -101,8 +102,27 @@ public class SignupActivity extends Activity {
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");
                 con.setDoOutput(true);
 
+                char[] emailChars = data[1].toCharArray();
+                int numPeriods = 0;
+                for (int i = 0; i < emailChars.length; i++) {
+                    if (emailChars[i] == '.') numPeriods++;
+                }
+
+                CharBuffer newEmail = CharBuffer.allocate(emailChars.length + (2 * numPeriods));
+                for (int i = 0; i < emailChars.length; i++) {
+                    if (emailChars[i] == '.') {
+                        newEmail.append('%');
+                        newEmail.append('2');
+                        newEmail.append('E');
+                    } else {
+                        newEmail.append(emailChars[i]);
+                    }
+                }
+
+                Log.d(TAG, "CharBuffer toString(): " + newEmail.toString());
+
                 String urlParameters = "username=" + URLEncoder.encode(data[0], "UTF-8")
-                                     + "&email=" + URLEncoder.encode(data[1],"UTF-8")
+                                     + "&email=" + URLEncoder.encode(newEmail.toString(), "UTF-8")
                                      + "&password=" + URLEncoder.encode(data[2], "UTF-8");
 
                 con.setDoOutput(true);

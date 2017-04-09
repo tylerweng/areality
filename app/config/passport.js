@@ -21,7 +21,7 @@ const configurePassport = () => {
       username = username.toLowerCase();
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
-        if (user) return done(null, false, { message: "That username is taken." });
+        if (user) return done(null, false, req.flash('error', 'That username is taken'));
 
         const newUser = new User();
         newUser.username = username;
@@ -30,7 +30,7 @@ const configurePassport = () => {
 
         newUser.save(err => {
           if (err) return done(err);
-          return done(null, newUser);
+          return done(null, newUser, req.flash('success', `Welcome, ${newUser.username}!`));
         });
       });
     }
@@ -40,8 +40,8 @@ const configurePassport = () => {
     (username, password, done) => {
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
-        if (!user) return done(null, false, { message: "That user could not be found." });
-        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { message: "Incorrect password." });
+        if (!user) return done(null, false, req.flash('error', "That user could not be found"));
+        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, req.flash('error', "Incorrect password"));
         return done(null, user);
       });
     }
