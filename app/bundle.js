@@ -185,6 +185,8 @@ var configurePassport = function configurePassport() {
 
       newUser.save(function (err) {
         if (err) return done(err);
+        console.log("new user: ");
+        console.log(newUser);
         return done(null, newUser, req.flash('success', 'Welcome, ' + newUser.username + '!'));
       });
     });
@@ -267,6 +269,8 @@ function logIn(req, res, next) {
     return next();
   }
   console.log("was not authenticated");
+  console.log("req.user: ");
+  console.log(req.user);
   return next();
 }
 

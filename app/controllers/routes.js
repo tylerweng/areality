@@ -36,6 +36,8 @@ function logIn(req, res, next) {
     return next();
   }
   console.log("was not authenticated");
+  console.log("req.user: ");
+  console.log(req.user);
   return next();
 }
 

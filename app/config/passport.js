@@ -30,6 +30,8 @@ const configurePassport = () => {
 
         newUser.save(err => {
           if (err) return done(err);
+          console.log("new user: ");
+          console.log(newUser);
           return done(null, newUser, req.flash('success', `Welcome, ${newUser.username}!`));
         });
       });
