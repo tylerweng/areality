@@ -4,14 +4,18 @@ A cross between Foursquare and Pokémon Go, AREALITY is an Android app that rewa
 
 AREALITY is a group project by Diane Zheng, Michael Hooton, Terry O'Shea and Tyler Weng.
 
-## Features & Implementation
+## Overall Structure
 
-<!-- - [ ] User accounts with secure authentication
-- [ ] 3D map of user's current location displaying Landmarks in the
-vicinity
-- [ ] Interact with a Landmark by tapping when nearby
-- [ ] Fetch user reviews
-- [ ] User profile points and badges (e.g. "Walked 5 miles", "Explored 5 days in a row", "Achieved XX distance between landmarks") -->
+AREALITY was built using a Java/Android front-end client and a Node.js backend following the Express.js application framework with a MongoDB database.
+
+### Technologies & Frameworks
+
+- [ ] MongoDB
+- [ ] Express.js
+- [ ] Android
+- [ ] Node.js
+
+## Features & Implementation
 
 ### 3-D Map with Intelligent Camera
 
@@ -36,8 +40,8 @@ private void setCameraPosition() {
 
 ### Landmark Page with Photo Cube Rotation
 
-Users navigate to a landmark's page upon tapping its marker in the Maps Page.
-In the landmark page, the user is presented with that landmark's overall rating, its hours of availability and user reviews. The user may also swipe the photo cube to rotate it.
+Users enter a landmark's page upon tapping its marker in the Maps Page.
+In the landmark page, the user is presented with that landmark's overall rating, photos, its hours of availability and user reviews. The user may also swipe the photo cube to rotate it.
 
 #### Photo Cube Rotation
 
@@ -68,120 +72,18 @@ public boolean onTouchEvent(MotionEvent e) {
 }
 ```
 
-## Overall Structure
+### User Profiles with Points and Badges
 
-AREALITY was built using a Java/Android front-end client and a Node.js backend following the Express.js application framework with a MongoDB database.
+Users accumulate points upon discovery and entry of a new landmark. Users are also awarded badges upon accomplishing certain feats (e.g. "Walked 5 km", "Explored 3 days in a row ", etc.).
 
-### Technologies & Frameworks
+## New Directions
 
-- [ ] Android
-- [ ] Node.js
-- [ ] Express.js
-- [ ] MongoDB
+AREALITY is built upon an easily extensible foundation and can be used as a sandbox to create any sort of app based upon discovery and navigation. Future avenues include:
 
+### Integration with OpenTable API
 
-## Wireframes
+Some restaurants are truly historic and have earned their place as a landmark in AREALITY. Users will be able to make reservations to these restaurants upon visiting their landmark page.
 
-### Loading Page
+### AREALITY Store
 
-[![areality][loadingpage]][areality]
-
-[areality]: https://github.com/tylerweng/areality
-[loadingpage]: docs/wireframes/loading_page.png
-
-### Map Page
-
-[![areality][mappage]][areality]
-
-[mappage]: docs/wireframes/map_portion.png
-
-### Landmark Page
-
-[![areality][landmarkpage]][areality]
-
-[landmarkpage]: docs/wireframes/landmark_page.png
-
-### Profile Page
-
-[![areality][profilepage]][areality]
-
-[profilepage]: docs/wireframes/profile_page.png
-
-## Technologies & Technical Challenges
-
-This app will be built with Java through the Android SDK. The app will be split
-into the following script files:
-
-- [ ] `MapActivity.java`: Users can navigate across a map
-- [ ] `ProfileActivity.java`: User may view their points / accomplishments
-- [ ] `LandmarkActivity.java`: User may swipe on landmark and reveal interesting information
-and collect coins
-- [ ] `LoadingScreenActivity.java`: Loading page to deliver a smooth UI/UX
-
-We will use the Google Places API (built in Android API), Google Static Maps API (http request with image response), and OpenGL (built in Android) to build our 3D map.
-On the backend, we will use Node/Express and a PostgreSQL database.
-We will style the app using XML.
-We will use Gradle as the build tool.
-
-## Group Members & Work Breakdown
-
-Our group consists of Diane Zheng, Michael Hooton, Terry O’Shea, and Tyler Weng.
-
-### Terry’s Primary Responsibilities:
-
-- [ ] Backend
-- [ ] Loading Page
-
-### Tyler’s Primary Responsibilities:
-
-- [ ] Places
-
-### Michael’s Primary Responsibilities:
-
-- [ ] Map
-
-### Diane’s Primary Responsibilities:
-
-- [ ] Landmark Page
-
-## Implementation Timeline
-
-### Day 1:
-
-- [ ] Terry: relearn Java/Android development
-- [ ] Tyler: learn Java/Android development
-- [ ] Michael: relearn Java/Android development
-- [ ] Diane: relearn Java/Android development
-
-### Day 2:
-
-- [ ] Terry: write backend (users table; badges table; badging (join table)) and user email signup; API endpoints to add points/badges
-- [ ] Tyler: Google places API connection
-- [ ] Michael: Display map in view using OpenGL ES and display a map as its texture. Texture will come from the Google Maps Static API that returns a static image for a set of coordinates that we will get from gps eventually
-- [ ] Diane: Connect front end/backend; check API endpoints; finish setting up new computer
-
-### Day 3:
-
-- [ ] Terry: users can use Facebook (https://developers.facebook.com/docs/facebook-login/android) or Google+ (https://developers.google.com/+/mobile/android/getting-started) to sign up
-- [ ] Tyler: Places filtering and saving
-- [ ] Michael: Display landmarks on map by instancing the objects at their corresponding coordinates
-- [ ] Diane: Spinning/Cleaning/Interacting with landmark; display info and increment coins
-
-### Day 4:
-
-- [ ] Terry: loading screen (http://www.41post.com/4588/programming/android-coding-a-loading-screen-part-1)
-- [ ] Tyler: User Profile Page
-- [ ] Michael: Limit tapping on landmarks based on distance
-- [ ] Diane: Linking landmarks to their landmark pages
-
-### Day 5:
-
-- [ ] Terry: production README
-- [ ] Tyler: emulator
-- [ ] Michael: emulator (and Youtube video)
-- [ ] Diane: demo page
-
-## Userbase Plan
-
-Terry, Tyler, Diane, and Michael will each share with at least 10 friends and family and ask for good reviews.
-Tyler will find an appropriate subreddit and make a post there to show off the app.
+Users work tirelessly to accumulate points and should be rewarded for their dedication to the game. Users will be able to purchase in-game items (e.g. stamps) in exchange for their hard-earned points. 
