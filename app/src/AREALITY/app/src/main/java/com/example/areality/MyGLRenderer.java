@@ -69,9 +69,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glRotatef(angleCube, xRot, yRot, 0.3f); // Rotate
         cube.draw(gl);
         if(speedCube > 0.5f){
-            speedCube -= 1f;
-        }else if (speedCube > 30f){
-            speedCube = 30f;
+            speedCube -= 0.5f;
+        }else if (speedCube > 15f){
+            speedCube = 15f;
         }else if (speedCube < 0){
             speedCube *= -1;
         }else{
