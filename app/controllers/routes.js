@@ -16,7 +16,7 @@ router.route('/signup').post((req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(403).json(info);
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }
@@ -38,7 +38,7 @@ router.route('/login').post((req, res, next) => {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(403).json(info);
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }

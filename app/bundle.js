@@ -176,7 +176,7 @@ var configurePassport = function configurePassport() {
     username = username.toLowerCase();
     _user2.default.findOne({ username: username }, function (err, user) {
       if (err) return done(err);
-      if (user) return done(null, false, req.flash('error', 'That username is taken'));
+      if (user) return done(null, false, { error: 'That username is taken' });
 
       var newUser = new _user2.default();
       newUser.username = username;
@@ -185,7 +185,7 @@ var configurePassport = function configurePassport() {
 
       newUser.save(function (err) {
         if (err) return done(err);
-        return done(null, newUser, req.flash('success', 'Welcome, ' + newUser.username + '!'));
+        return done(null, newUser, { success: 'Welcome, ' + newUser.username + '!' });
       });
     });
   }));
@@ -193,9 +193,9 @@ var configurePassport = function configurePassport() {
   _passport2.default.use('local-signin', new LocalStrategy(function (username, password, done) {
     _user2.default.findOne({ username: username }, function (err, user) {
       if (err) return done(err);
-      if (!user) return done(null, false, req.flash('error', "That user could not be found"));
-      if (!user.validPassword(password, user.passwordDigest)) return done(null, false, req.flash('error', "Incorrect password"));
-      return done(null, user);
+      if (!user) return done(null, false, { error: "That user could not be found" });
+      if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
+      return done(null, user, { success: 'Welcome, ' + user.username + '!' });
     });
   }));
 };
@@ -247,7 +247,7 @@ router.route('/signup').post(function (req, res, next) {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(403).json(info);
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }
@@ -269,7 +269,7 @@ router.route('/login').post(function (req, res, next) {
     if (err) {
       res.status(500).send(err);
     } else if (!user) {
-      res.status(403).json(info);
+      res.status(401).json(info);
     } else {
       res.status(200).json(user);
     }
