@@ -11,11 +11,6 @@ router.route('/user/:username')
   .get(usersController.getUser)
   .delete(usersController.deleteUser);
 router.route('/signup').post(passport.authenticate('local-register'), usersController.postUser);
-
-
-// router.route('/login').post(passport.authenticate('local-signin'), {
-//
-// });
-// router.route('/user/:username').patch(usersController.patchUser);
+router.route('/login').post(passport.authenticate('local-signin'), usersController.postUser);
 
 export default router;

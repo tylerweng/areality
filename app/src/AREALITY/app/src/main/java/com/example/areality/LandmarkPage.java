@@ -1,6 +1,7 @@
 package com.example.areality;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -17,9 +18,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class LandmarkPage extends Activity {
 
@@ -27,9 +32,14 @@ public class LandmarkPage extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_gl);
+
+        Intent intent = getIntent();
+        setContentView(R.layout.activity_landmark_page);
 
         String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
+
+        testPlaceId = intent.getStringExtra(MapsActivity.LANDMARK_ID);
+
         String urlString = getDetailUrl(testPlaceId);
         String result = "didn't work";
         JSONObject jsonObject = null;
@@ -49,12 +59,15 @@ public class LandmarkPage extends Activity {
         }
 
 
-        setContentView(R.layout.activity_landmark_page);
-        glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
-        setInfo("Information about landmarks. Notes: " +
+
+
+        String info = "Information about landmarks. Notes: " +
                 "1. center image" +
                 "2. Does line breaks work" +
-                "3. ");
+                "3";
+        String photos[] = new String[photoUrls.size()];
+        photos = photoUrls.toArray(photos);
+        setInfo(info, photos);
 
 
         Toast.makeText(LandmarkPage.this, photoUrls.get(0), Toast.LENGTH_LONG).show();
@@ -62,9 +75,20 @@ public class LandmarkPage extends Activity {
     }
 
     private void setInfo(String message){
+
+    }
+
+
+
+    private void setInfo(String message, String[] photos){
+        glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
+        glView.setPhotos(photos);
+
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(message);
+
     }
+
 
     public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
         List<String> photoUrls = new ArrayList<>();
@@ -92,6 +116,8 @@ public class LandmarkPage extends Activity {
         super.onResume();
         glView.onResume();
     }
+
+
 
     private String getDetailUrl(String placeId) {
 
@@ -130,5 +156,28 @@ public class LandmarkPage extends Activity {
             Log.d("error", e.toString());
             return e.toString();
         }
+    }
+
+
+    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
+        List<String> photoUrls = new ArrayList<>();
+        JSONArray photoArray = null;
+        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
+
+        for (int i = 0; i < photoArray.length(); i++) {
+            JSONObject photo = photoArray.getJSONObject(i);
+            String photoReference = photo.getString("photo_reference");
+            String photoUrl = getPhotoUrl(photoReference);
+            photoUrls.add(photoUrl);
+        }
+        return photoUrls;
+    }
+    private String getPhotoUrl(String photoReference) {
+        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+        photoUrl.append("maxheight=" + "600");
+        photoUrl.append("&maxwidth=" + "600");
+        photoUrl.append("&photoreference=" + photoReference);
+        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        return photoUrl.toString();
     }
 }
