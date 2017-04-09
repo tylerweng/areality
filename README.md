@@ -90,7 +90,12 @@ Some restaurants are truly historic and have earned their place as a landmark in
 
 ### AR
 
-Users will be able to see informtion from a nearby landmark by looking at it through their phone's camera a la Yelp Monocle.
+Users will be able to see information from a nearby landmark by looking at it through their phone's camera a la Yelp Monocle.
+
+
+### Integration with Google Account
+
+Users will be able to create an AREALITY account through their Google account. These users will be able to upload their own images and write their own reviews on a landmark page.
 
 ### Avatar
 
