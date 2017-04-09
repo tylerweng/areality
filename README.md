@@ -16,21 +16,55 @@ vicinity
 
 Upon signing in, the user is immersed into the world of AREALITY, where they are presented with a 3-D map of their surroundings. The camera is centered around our protagonist, and follows them to wherever their desires may lead them.
 
-#### Camera Method to Follow User
+#### Camera Position
 
 `MapsActivity.java`
 ```java
 private void setCameraPosition() {
-    mCurrLocationMarker.setPosition(new LatLng(mLat, mLong));
-    CameraPosition camera = new CameraPosition.Builder()
-        .target(new LatLng(mLat, mLong))
-        .zoom(18)
-        .tilt(67.5f)
-        .bearing(mAngle)
-        .build();
-    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camera));
-    projection = mMap.getProjection();
+  mCurrLocationMarker.setPosition(new LatLng(mLat, mLong));
+  CameraPosition camera = new CameraPosition.Builder()
+    .target(new LatLng(mLat, mLong))
+    .zoom(18)
+    .tilt(67.5f)
+    .bearing(mAngle)
+    .build();
+  mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camera));
+  projection = mMap.getProjection();
+}
+```
+
+### Landmark Page with Photo Cube swiping
+
+Users navigate to a landmark's page upon tapping its marker in the Maps Page.
+In the Landmark page
+
+#### Photo Cube Rotation
+
+`MYGLSurfaceView.java`
+```java
+
+public boolean onTouchEvent(MotionEvent e) {
+
+  float x = e.getX();
+  float y = e.getY();
+
+  switch (e.getAction()) {
+    case MotionEvent.ACTION_MOVE:
+
+      float dx = x - mPreviousX;
+      float dy = y - mPreviousY;
+
+      mRenderer.setRot(dy/100, dx/10);
+      mRenderer.setAngle(
+        mRenderer.getAngle() +
+        ((dx + dy) * TOUCH_SCALE_FACTOR));
+      requestRender();
   }
+
+  mPreviousX = x;
+  mPreviousY = y;
+  return true;
+}
 ```
 
 ## Overall Structure
