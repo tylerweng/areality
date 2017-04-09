@@ -1,6 +1,6 @@
 # AREALITY
 
-Diane Zheng, Michael Hooton, Terry O’Shea, and Tyler Weng
+Diane Zheng, Michael Hooton, Terry O’Shea, and Tyler Weng  
 A cross between Foursquare and Pokémon Go, AREALITY is an Android app that rewards users for discovering local landmarks.
 
 ## Features & Implementation
