@@ -19,7 +19,7 @@ AREALITY was built using a Java/Android front-end client and a Node.js backend f
 
 ### 3-D Map with Intelligent Camera
 
-![Map](images/Map.png)
+![Map](images/Map.png =250x)
 
 Upon signing in, the user is immersed into the world of AREALITY, where they are presented with a 3-D map of their surroundings. The camera is centered around our protagonist, and follows them to wherever their desires may lead them.
 
