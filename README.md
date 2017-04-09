@@ -33,10 +33,10 @@ private void setCameraPosition() {
 }
 ```
 
-### Landmark Page with Photo Cube swiping
+### Landmark Page with Photo Cube Rotation
 
 Users navigate to a landmark's page upon tapping its marker in the Maps Page.
-In the Landmark page
+In the landmark page, the user is presented with that landmark's overall rating, its hours of availability and user reviews. The user may also swipe the photo cube to rotate it.
 
 #### Photo Cube Rotation
 
