@@ -20,7 +20,6 @@ AREALITY was built using a Java/Android front-end client and a Node.js backend f
 ### 3-D Map with Intelligent Camera
 
 <img src="images/Map.png" width="250px">
-<!-- ![Map](images/Map.png) -->
 
 Upon signing in, the user is immersed into the world of AREALITY, where they are presented with a 3-D map of their surroundings. The camera is centered around our protagonist, and follows them to wherever their desires may lead them.
 
@@ -42,6 +41,8 @@ private void setCameraPosition() {
 ```
 
 ### Landmark Page with Photo Cube Rotation
+
+<img src="images/Landmark.png" width="250px">
 
 Users visit a landmark's page upon tapping its marker in the Maps Page.
 In the landmark page, the user is presented with that landmark's overall rating, photos, its hours of availability and user reviews. The user may also swipe the photo cube to rotate it.
