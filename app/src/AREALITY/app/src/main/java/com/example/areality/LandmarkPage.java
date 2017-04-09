@@ -82,9 +82,6 @@ public class LandmarkPage extends Activity {
         Hashtable review = reviewList.get(0);
         String reviewText = review.get("reviewText").toString();
 
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(reviewText.toString());
-//        Toast.makeText(LandmarkPage.this, reviewText, Toast.LENGTH_LONG).show();
 
     }
 
