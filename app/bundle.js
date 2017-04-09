@@ -174,13 +174,16 @@ var configurePassport = function configurePassport() {
     passReqToCallback: true
   }, function (req, username, password, done) {
     username = username.toLowerCase();
-    _user2.default.findOne({ username: username }, function (err, user) {
+    email = req.body.email || req.query.email;
+    _user2.default.findOne({ $or: [{ username: username }, { email: email }] }, function (err, user) {
       if (err) return done(err);
-      if (user) return done(null, false, { error: 'That username is taken' });
+      if (user) return done(null, false, {
+        error: user.username == username ? 'That username is taken' : 'That email is already registered'
+      });
 
       var newUser = new _user2.default();
       newUser.username = username;
-      newUser.email = req.body.email || req.query.email;
+      newUser.email = email;
       newUser.passwordDigest = newUser.generateHash(password);
 
       newUser.save(function (err) {
@@ -190,8 +193,10 @@ var configurePassport = function configurePassport() {
     });
   }));
 
-  _passport2.default.use('local-signin', new LocalStrategy(function (username, password, done) {
-    _user2.default.findOne({ username: username }, function (err, user) {
+  _passport2.default.use('local-signin', new LocalStrategy({
+    usernameField: 'email'
+  }, function (email, password, done) {
+    _user2.default.findOne({ email: email }, function (err, user) {
       if (err) return done(err);
       if (!user) return done(null, false, { error: "That user could not be found" });
       if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
@@ -371,7 +376,7 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  _user2.default.findOne({ _id: req.user }, function (err, user) {
+  _user2.default.findOne({ username: req.username }, function (err, user) {
     res.json({ user: user });
   });
 };

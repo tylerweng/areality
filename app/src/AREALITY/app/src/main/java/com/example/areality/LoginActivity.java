@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.net.URLEncoder;
 
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -82,13 +84,31 @@ public class LoginActivity extends Activity {
                              + "&password=" + URLEncoder.encode(password, "UTF-8");
 
         PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
-        String result = pr.execute();
 
-        if (result.equals("no")) {
+        JSONObject result = new JSONObject(pr.execute());
+
+        if (result.has("error")) {
+            Log.d(TAG, "error: " + result.getString("error"));
             progressDialog.hide();
+            if (result.getString("error").equals("That user could not be found")) {
+                onUserNotFound();
+            } else {
+                onIncorrectPassword();
+            }
         } else {
+            Log.d(TAG, "success: " + result.getString("success"));
             onLoginSuccess();
         }
+    }
+
+    public void onUserNotFound() {
+        Toast.makeText(getBaseContext(), "That user could not be found", Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
+    }
+
+    public void onIncorrectPassword() {
+        _passwordText.setError("That username is taken");
+        _loginButton.setEnabled(true);
     }
 
     public void onLoginFailed() {

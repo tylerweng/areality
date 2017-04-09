@@ -9,7 +9,7 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  User.findOne({ _id: req.user }, (err, user) => {
+  User.findOne({ username: req.username }, (err, user) => {
     res.json({ user });
   });
 };

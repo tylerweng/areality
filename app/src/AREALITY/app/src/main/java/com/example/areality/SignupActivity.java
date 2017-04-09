@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -86,12 +88,18 @@ public class SignupActivity extends Activity {
                              + "&password=" + URLEncoder.encode(password, "UTF-8");
 
         PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
-        String result = pr.execute();
+        JSONObject result = new JSONObject(pr.execute());
 
-        if (result.equals("no")) {
+        if (result.has("error")) {
+            Log.d(TAG, "error: " + result.getString("error"));
             progressDialog.hide();
-            onUsernameTaken();
+            if (result.getString("error").equals("That username is taken")) {
+                onUsernameTaken();
+            } else {
+                onEmailRegistered();
+            }
         } else {
+            Log.d(TAG, "success: " + result.getString("success"));
             onSignupSuccess();
         }
     }
@@ -102,8 +110,12 @@ public class SignupActivity extends Activity {
     }
 
     public void onUsernameTaken() {
-        String name = _nameText.getText().toString();
         _nameText.setError("That username is taken");
+        _signupButton.setEnabled(true);
+    }
+
+    public void onEmailRegistered() {
+        _emailText.setError("That email is already registered");
         _signupButton.setEnabled(true);
     }
 

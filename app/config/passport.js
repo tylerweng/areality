@@ -19,13 +19,16 @@ const configurePassport = () => {
     },
     (req, username, password, done) => {
       username = username.toLowerCase();
-      User.findOne({ username: username }, (err, user) => {
+      email = req.body.email || req.query.email;
+      User.findOne({ $or: [{ username: username }, { email: email }] }, (err, user) => {
         if (err) return done(err);
-        if (user) return done(null, false, { error: 'That username is taken' });
+        if (user) return done(null, false, {
+          error: user.username == username ? 'That username is taken' : 'That email is already registered'
+        });
 
         const newUser = new User();
         newUser.username = username;
-        newUser.email = req.body.email || req.query.email;
+        newUser.email = email;
         newUser.passwordDigest = newUser.generateHash(password);
 
         newUser.save(err => {
@@ -36,9 +39,11 @@ const configurePassport = () => {
     }
   ));
 
-  passport.use('local-signin', new LocalStrategy(
-    (username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
+  passport.use('local-signin', new LocalStrategy({
+      usernameField: 'email'
+    },
+    (email, password, done) => {
+      User.findOne({ email: email }, (err, user) => {
         if (err) return done(err);
         if (!user) return done(null, false, { error: "That user could not be found" });
         if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });

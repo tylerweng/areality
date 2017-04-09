@@ -52,35 +52,25 @@ public class PostRequest {
                 Log.d(TAG, "Post parameters: " + params[0]);
                 Log.d(TAG, "Response code: " + responseCode);
 
+                BufferedReader in;
+
                 if (responseCode == 401) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    Log.d(TAG, "your error: ");
-                    Log.d(TAG, response.toString());
-                    return "no";
+                    in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                } else {
+                    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 }
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
-                StringBuffer response = new StringBuffer();
+                StringBuilder response = new StringBuilder();
 
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();
 
-                Log.d(TAG, response.toString());
-
                 return response.toString();
             } catch (Exception e) {
-                return "no";
+                return "{ \"error\": \"could not complete request\" }";
             }
         }
     }
