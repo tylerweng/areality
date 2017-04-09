@@ -260,9 +260,13 @@ router.route('/login').post(_passport2.default.authenticate('local-signin', {
 
 function logIn(req, res, next) {
   if (req.isAuthenticated()) {
+    console.log("in middleware, req.user: ");
+    console.log(req.user);
+
     res.user = req.user;
     return next();
   }
+  console.log("was not authenticated");
   return next();
 }
 
