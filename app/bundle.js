@@ -339,7 +339,12 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
+  console.log("req.user: ");
+  console.log(req.user);
+
   _user2.default.findOne({ _id: req.user }, function (err, user) {
+    console.log("found user: ");
+    console.log(user);
     res.json({ user: user });
   });
 };

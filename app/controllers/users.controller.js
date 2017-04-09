@@ -9,7 +9,12 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
+  console.log("req.user: ");
+  console.log(req.user);
+
   User.findOne({ _id: req.user }, (err, user) => {
+    console.log("found user: ");
+    console.log(user);
     res.json({ user });
   });
 };
