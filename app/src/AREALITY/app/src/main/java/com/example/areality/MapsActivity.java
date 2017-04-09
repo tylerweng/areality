@@ -69,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   Marker mCurrLocationMarker;
   LocationRequest mLocationRequest;
 
+  private Location mLastPlacesUpdateLocation;
+
   private Projection projection;
   private Circle mClickDisplay;
 
@@ -185,8 +187,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     setSelfPositionMarker();
     mLocationRequest = new LocationRequest();
-    mLocationRequest.setInterval(1000);
-    mLocationRequest.setFastestInterval(1000);
+    mLocationRequest.setInterval(100);
+    mLocationRequest.setFastestInterval(100);
     mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     if (ContextCompat.checkSelfPermission(this,
         Manifest.permission.ACCESS_FINE_LOCATION)
@@ -216,25 +218,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Log.d("onLocationChanged", "entered");
 
     mLastLocation = location;
-//        if (mCurrLocationMarker != null) {
-//            mCurrLocationMarker.remove();
-//        }
     mLat = location.getLatitude();
     mLong = location.getLongitude();
 
     //move map camera
     setCameraPosition();
-
     Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", mLat, mLong));
 
-    //stop location updates
-    if (mGoogleApiClient != null) {
-      LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-      Log.d("onLocationChanged", "Removing Location Updates");
+    if(mLastPlacesUpdateLocation == null || mLastPlacesUpdateLocation.distanceTo(location) > 100) {
+      setPlacesMarkers();
+      mLastPlacesUpdateLocation = location;
     }
-    Log.d("onLocationChanged", "Exit");
-
-    setPlacesMarkers();
   }
 
   private void setPlacesMarkers() {
@@ -246,7 +240,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     getNearbyPlacesData = new GetNearbyPlacesData(mGoogleApiClient);
     getNearbyPlacesData.execute(DataTransfer);
-//    Toast.makeText(MapsActivity.this, "Nearby Landmarks", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -379,19 +372,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
           List<HashMap<String, String>> nearbyPlaces = getNearbyPlacesData.getPlacesList();
 
-          for (int i = 0; i < nearbyPlaces.size(); i++) {
-            HashMap<String, String> googlePlace = nearbyPlaces.get(i);
+          if(nearbyPlaces != null) {
+            for (int i = 0; i < nearbyPlaces.size(); i++) {
+              HashMap<String, String> googlePlace = nearbyPlaces.get(i);
 
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-            double markerDistance = Math.pow(lat - clickPos.latitude, 2) + Math.pow(lng - clickPos.longitude, 2);
-            if(Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE ) {
-              // For testing click distance/etc
+              double lat = Double.parseDouble(googlePlace.get("lat"));
+              double lng = Double.parseDouble(googlePlace.get("lng"));
+              double markerDistance = Math.pow(lat - clickPos.latitude, 2) + Math.pow(lng - clickPos.longitude, 2);
+              if (Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE) {
+                // For testing click distance/etc
 //              Toast.makeText(MapsActivity.this, googlePlace.get("place_name"), Toast.LENGTH_SHORT).show();
-              Intent intent = new Intent(this, LandmarkPage.class);
-              String landmarkId = googlePlace.get("place_id");
-              intent.putExtra(LANDMARK_ID, landmarkId);
-              startActivity(intent);
+                Intent intent = new Intent(this, LandmarkPage.class);
+                String landmarkId = googlePlace.get("place_id");
+                intent.putExtra(LANDMARK_ID, landmarkId);
+                startActivity(intent);
+              }
             }
           }
         }
