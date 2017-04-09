@@ -63,10 +63,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Clear color and depth buffers
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        // ----- Render the Cube -----
-        gl.glLoadIdentity();                  // Reset the model-view matrix
-        gl.glTranslatef(0.0f, 0.0f, -6.0f);   // Translate into the screen
-        gl.glRotatef(angleCube, xRot, yRot, 0.3f); // Rotate
+        //Render the Cube
+        gl.glLoadIdentity();
+        gl.glTranslatef(0.0f, 0.0f, -6.0f);
+        gl.glRotatef(angleCube, xRot, yRot, 0.3f);
         cube.draw(gl);
         if(speedCube > 0.5f){
             speedCube -= 0.5f;
@@ -83,7 +83,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setAngle(float newAngle){
         angleCube =newAngle;
-//        speedCube = 0;
     }
 
     public float getAngle(){
@@ -92,11 +91,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setSpeedCube(float speed){
         speedCube = speed;
-
     }
 
     public void setRot(float x, float y){
-
         xRot = x;
         yRot = y;
         setSpeedCube((x+y)*10);

@@ -39,9 +39,6 @@ class MyGLSurfaceView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        // MotionEvent reports input details from the touch screen
-        // and other input controls. In this case, you are only
-        // interested in events where the touch position changed.
 
         float x = e.getX();
         float y = e.getY();
@@ -61,11 +58,6 @@ class MyGLSurfaceView extends GLSurfaceView {
         mPreviousX = x;
         mPreviousY = y;
         return true;
-    }
-
-    public void autoStart(){
-        float speedCube = 0.5f; // rotational speed for cube
-        mRenderer.setSpeedCube(speedCube);
     }
 
     public void setPhotos(String[] photos){
