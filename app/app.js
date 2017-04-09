@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import session from 'cookie-session';
+import session from 'express-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import flash from 'connect-flash';

@@ -8,14 +8,32 @@ const router = express.Router();
 
 router.route('/users').get(usersController.getUsers);
 router.route('/profile')
-  .get(logIn, usersController.getUser)
+  .get(usersController.getUser)
   .delete(usersController.deleteUser);
 
-router.route('/signup').post(passport.authenticate('local-register', {
-  successRedirect: '/api/profile',
-  failureRedirect: '/api/error',
-  failureFlash: true
-}));
+// router.route('/signup').post(passport.authenticate('local-register', {
+//   successRedirect: '/api/profile',
+//   failureRedirect: '/api/error',
+//   failureFlash: true
+// }));
+
+router.route('/signup').post((req, res, next) => {
+  passport.authenticate('local-register', (err, user, info) => {
+    if (err) {
+      console.log("in if");
+      res.status(500).json(req.session.flash);
+    } else {
+      console.log("in else");
+      res.status(200).json(user);
+    }
+  })(req, res, next);
+});
+
+// {
+//   successRedirect: '/api/profile',
+//   failureRedirect: '/api/error',
+//   failureFlash: true
+// }));
 
 router.route('/error').get((req, res) => {
   res.json(req.session.flash);

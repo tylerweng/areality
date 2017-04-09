@@ -25,11 +25,17 @@ const configurePassport = () => {
 
         const newUser = new User();
         newUser.username = username;
-        newUser.email = req.body.email;
+        newUser.email = req.body.email || req.query.email;
         newUser.passwordDigest = newUser.generateHash(password);
 
+        console.log("new user:");
+        console.log(newUser);
+
         newUser.save(err => {
-          if (err) return done(err);
+          if (err) {
+            console.log('save err');
+            return done(err);
+          }
           console.log("new user: ");
           console.log(newUser);
           return done(null, newUser, req.flash('success', `Welcome, ${newUser.username}!`));
