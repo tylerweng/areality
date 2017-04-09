@@ -174,7 +174,8 @@ var configurePassport = function configurePassport() {
     passReqToCallback: true
   }, function (req, username, password, done) {
     username = username.toLowerCase();
-    email = req.body.email || req.query.email;
+    var email = req.body.email || req.query.email;
+
     _user2.default.findOne({ $or: [{ username: username }, { email: email }] }, function (err, user) {
       if (err) return done(err);
       if (user) return done(null, false, {

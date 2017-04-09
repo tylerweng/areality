@@ -19,7 +19,8 @@ const configurePassport = () => {
     },
     (req, username, password, done) => {
       username = username.toLowerCase();
-      email = req.body.email || req.query.email;
+      const email = req.body.email || req.query.email;
+
       User.findOne({ $or: [{ username: username }, { email: email }] }, (err, user) => {
         if (err) return done(err);
         if (user) return done(null, false, {
