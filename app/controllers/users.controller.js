@@ -15,7 +15,6 @@ export const getUser = (req, res) => {
 };
 
 export const postUser = (req, res) => {
-  console.log(req);
   res.json(req.user);
 };
 

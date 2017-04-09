@@ -15,12 +15,15 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+
 import javax.net.ssl.HttpsURLConnection;
 
 public class SignupActivity extends Activity {
@@ -78,46 +81,18 @@ public class SignupActivity extends Activity {
 
         // make HTTP post request
 
-//        String url = "https://areality.herokuapp.com/api/signup";
-//        URL areality = new URL(url);
-//        HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
-//
-//        con.setRequestMethod("POST");
-//        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-//
-//        String urlParameters = "username=" + name + "&password=" + password;
-//
-//        con.setDoOutput(true);
-//        DataOutputStream dos = new DataOutputStream(con.getOutputStream());
-//        dos.writeBytes(urlParameters);
-//        dos.flush();
-//        dos.close();
-//
-//        int responseCode = con.getResponseCode();
-//        Log.d(TAG, "\nSending 'POST' request to URL: " + url);
-//        Log.d(TAG, "Post parameters: " + urlParameters);
-//        Log.d(TAG, "Response code: " + responseCode);
-//
-//        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//        String inputLine;
-//        StringBuffer response = new StringBuffer();
-//
-//        while ((inputLine = in.readLine()) != null) {
-//            response.append(inputLine);
-//        }
-//        in.close();
-//
-//        Log.d(TAG, response.toString());
+        String[] data = new String[3];
+        data[0] = name;
+        data[1] = email;
+        data[2] = password;
 
-        // implement signup logic
+        PostUser pu = new PostUser();
+        pu.execute(data);
     }
 
     private class PostUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... data) {
-//            HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("https://areality.herokuapp.com/api/signup");
-
             try {
                 URL areality = new URL("https://areality.herokuapp.com/api/signup");
                 HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
@@ -125,9 +100,10 @@ public class SignupActivity extends Activity {
                 con.setRequestMethod("POST");
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");
                 con.setDoOutput(true);
-                con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-                String urlParameters = "username=" + data[0] + "&password=" + data[1];
+                String urlParameters = "username=" + URLEncoder.encode(data[0], "UTF-8")
+                                     + "&email=" + URLEncoder.encode(data[1],"UTF-8")
+                                     + "&password=" + URLEncoder.encode(data[2], "UTF-8");
 
                 con.setDoOutput(true);
                 DataOutputStream dos = new DataOutputStream(con.getOutputStream());
@@ -136,7 +112,7 @@ public class SignupActivity extends Activity {
                 dos.close();
 
                 int responseCode = con.getResponseCode();
-                Log.d(TAG, "\nSending 'POST' request to URL: " + url);
+                Log.d(TAG, "\nSending 'POST' request to URL: " + areality);
                 Log.d(TAG, "Post parameters: " + urlParameters);
                 Log.d(TAG, "Response code: " + responseCode);
 
@@ -150,6 +126,9 @@ public class SignupActivity extends Activity {
                 in.close();
 
                 Log.d(TAG, response.toString());
+                return "yes";
+            } catch (Exception e) {
+                return "no";
             }
         }
     }

@@ -14,8 +14,10 @@ const configurePassport = () => {
     });
   });
 
-  passport.use('local-register', new LocalStrategy(
-    (username, password, done) => {
+  passport.use('local-register', new LocalStrategy({
+      passReqToCallback: true
+    },
+    (req, username, password, done) => {
       username = username.toLowerCase();
       User.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
@@ -23,6 +25,7 @@ const configurePassport = () => {
 
         const newUser = new User();
         newUser.username = username;
+        newUser.email = req.query.email;
         newUser.passwordDigest = newUser.generateHash(password);
 
         newUser.save(err => {

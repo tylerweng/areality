@@ -20,38 +20,27 @@
             android:value="@integer/google_play_services_version" >
         </meta-data>
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
 
-        <activity android:name=".LandmarkPage">
+        <activity android:name=".LandmarkPage" />
+        <activity android:name=".MyGLActivity" />
 
-        </activity>
-
-        <activity android:name=".MyGLActivity"></activity>
-
-        <activity android:name=".MapsActivity">
-<<<<<<< HEAD
-=======
-
->>>>>>> d43e7505f30517683d043bdb78e9e9f8cc5dc966
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-<<<<<<< HEAD
-=======
-      
->>>>>>> d43e7505f30517683d043bdb78e9e9f8cc5dc966
-        <activity android:name=".SignupActivity"></activity>
-
-        <!-- this is for when we want people to log in/sign up prior to using the app -->
-        <!--<activity android:name=".MapsActivity" />-->
-        <!--<activity android:name=".SignupActivity">-->
+        <!--<activity android:name=".MapsActivity">-->
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         <!--</activity>-->
+        <!--<activity android:name=".SignupActivity" />-->
+
+        <!-- this is for when we want people to log in/sign up prior to using the app -->
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".SignupActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".LoginActivity" />
 

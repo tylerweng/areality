@@ -114,8 +114,9 @@ var mongoose = __webpack_require__(2);
 var bcrypt = __webpack_require__(12);
 
 var userSchema = mongoose.Schema({
-  username: { type: String, trim: true },
-  passwordDigest: String,
+  username: { type: String, trim: true, required: true },
+  email: { type: String, trim: true, required: true },
+  passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] }
 });
@@ -169,7 +170,9 @@ var configurePassport = function configurePassport() {
     });
   });
 
-  _passport2.default.use('local-register', new LocalStrategy(function (username, password, done) {
+  _passport2.default.use('local-register', new LocalStrategy({
+    passReqToCallback: true
+  }, function (req, username, password, done) {
     username = username.toLowerCase();
     _user2.default.findOne({ username: username }, function (err, user) {
       if (err) return done(err);
@@ -177,6 +180,7 @@ var configurePassport = function configurePassport() {
 
       var newUser = new _user2.default();
       newUser.username = username;
+      newUser.email = req.query.email;
       newUser.passwordDigest = newUser.generateHash(password);
 
       newUser.save(function (err) {
@@ -321,7 +325,6 @@ var getUser = exports.getUser = function getUser(req, res) {
 };
 
 var postUser = exports.postUser = function postUser(req, res) {
-  console.log(req);
   res.json(req.user);
 };
 
