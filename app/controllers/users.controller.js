@@ -9,6 +9,7 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
+  console.log(req);
   User.findOne({ username: req.user.username.toLowerCase() }, (err, user) => {
     res.json({ user });
   });
