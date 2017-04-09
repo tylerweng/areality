@@ -15,15 +15,11 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.DataOutputStream;
-import java.nio.CharBuffer;
-import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -102,24 +98,17 @@ public class SignupActivity extends Activity {
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");
                 con.setDoOutput(true);
 
-                char[] emailChars = data[1].toCharArray();
-                int numPeriods = 0;
-                for (int i = 0; i < emailChars.length; i++) {
-                    if (emailChars[i] == '.') numPeriods++;
-                }
+                String[] emailChars = data[1].split("");
+                StringBuilder newEmail = new StringBuilder();
 
-                CharBuffer newEmail = CharBuffer.allocate(emailChars.length + (2 * numPeriods));
                 for (int i = 0; i < emailChars.length; i++) {
-                    if (emailChars[i] == '.') {
-                        newEmail.append('%');
-                        newEmail.append('2');
-                        newEmail.append('E');
-                    } else {
-                        newEmail.append(emailChars[i]);
+                    if (emailChars[i].equals(".")) {
+                        emailChars[i] = "%2E";
                     }
+                    newEmail.append(emailChars[i]);
                 }
 
-                Log.d(TAG, "CharBuffer toString(): " + newEmail.toString());
+                Log.d(TAG, "new email: " + newEmail.toString());
 
                 String urlParameters = "username=" + URLEncoder.encode(data[0], "UTF-8")
                                      + "&email=" + URLEncoder.encode(newEmail.toString(), "UTF-8")
