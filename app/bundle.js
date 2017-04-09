@@ -183,16 +183,8 @@ var configurePassport = function configurePassport() {
       newUser.email = req.body.email || req.query.email;
       newUser.passwordDigest = newUser.generateHash(password);
 
-      console.log("new user:");
-      console.log(newUser);
-
       newUser.save(function (err) {
-        if (err) {
-          console.log('save err');
-          return done(err);
-        }
-        console.log("new user: ");
-        console.log(newUser);
+        if (err) return done(err);
         return done(null, newUser, req.flash('success', 'Welcome, ' + newUser.username + '!'));
       });
     });
@@ -250,29 +242,15 @@ var router = _express2.default.Router();
 router.route('/users').get(usersController.getUsers);
 router.route('/profile').get(usersController.getUser).delete(usersController.deleteUser);
 
-// router.route('/signup').post(passport.authenticate('local-register', {
-//   successRedirect: '/api/profile',
-//   failureRedirect: '/api/error',
-//   failureFlash: true
-// }));
-
 router.route('/signup').post(function (req, res, next) {
   _passport2.default.authenticate('local-register', function (err, user, info) {
     if (err) {
-      console.log("in if");
-      res.status(500).json(req.session.flash);
+      res.status(500).json(info);
     } else {
-      console.log("in else");
       res.status(200).json(user);
     }
   })(req, res, next);
 });
-
-// {
-//   successRedirect: '/api/profile',
-//   failureRedirect: '/api/error',
-//   failureFlash: true
-// }));
 
 router.route('/error').get(function (req, res) {
   res.json(req.session.flash);
@@ -379,15 +357,7 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  // console.log("req.user: ");
-  // // console.log(Object.keys(req.sessionStore.sessions[Object.keys(req.sessionStore.sessions)[0]]));
-  // console.log(req.user);
-  // console.log("res.user: ");
-  // console.log(res.user);
-
   _user2.default.findOne({ _id: req.user }, function (err, user) {
-    console.log("found user: ");
-    console.log(user);
     res.json({ user: user });
   });
 };

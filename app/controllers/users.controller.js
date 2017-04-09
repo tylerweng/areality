@@ -9,15 +9,7 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  // console.log("req.user: ");
-  // // console.log(Object.keys(req.sessionStore.sessions[Object.keys(req.sessionStore.sessions)[0]]));
-  // console.log(req.user);
-  // console.log("res.user: ");
-  // console.log(res.user);
-
   User.findOne({ _id: req.user }, (err, user) => {
-    console.log("found user: ");
-    console.log(user);
     res.json({ user });
   });
 };
