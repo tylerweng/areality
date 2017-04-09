@@ -1,49 +1,25 @@
-# AREALITY
+# AREALITY (Flex Project Proposal)
 
 Diane Zheng, Michael Hooton, Terry O’Shea, and Tyler Weng
-A cross between Foursquare and Pokémon Go, AREALITY is an Android app that rewards users for discovering local landmarks.
 
-## Features & Implementation
+## Background
 
-<!-- - [ ] User accounts with secure authentication
-- [ ] 3D map of user's current location displaying Landmarks in the
-vicinity
-- [ ] Interact with a Landmark by tapping when nearby
-- [ ] Fetch user reviews
-- [ ] User profile points and badges (e.g. "Walked 5 miles", "Explored 5 days in a row", "Achieved XX distance between landmarks") -->
+A cross between Foursquare and Pokémon Go, AREALITY is an AR app that rewards users for discovering local landmarks.
 
-### 3-D Map with Intelligent Camera
+[add more later]
 
-Upon signing in, the user is immersed into the world of AREALITY, where they are presented with a 3-D map of their surroundings. The camera is centered around our protagonist, and follows them to wherever their desires may lead them.
+## Functionality & MVP
 
-#### Camera Method to Follow User
+With this app, users will be able to:
+- [ ] Access a map (2D, 3D if we can manage) of their current location showing Landmarks in the area.
+- [ ] Interact with (“clean”? “uncover”?) a Landmark by swiping when nearby
+- [ ] Save their badges (e.g. “Walked 5 miles,” “Uncovered 10 (25, 50, 100) landmarks,” “Explored 5 days in a row,” “Achieved XX distance between landmarks,” “Hit XX landmarks within 24 hours”) and points/coins
 
-`MapsActivity.java`
-```java
-private void setCameraPosition() {
-    mCurrLocationMarker.setPosition(new LatLng(mLat, mLong));
-    CameraPosition camera = new CameraPosition.Builder()
-        .target(new LatLng(mLat, mLong))
-        .zoom(18)
-        .tilt(67.5f)
-        .bearing(mAngle)
-        .build();
-    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camera));
-    projection = mMap.getProjection();
-  }
-```
+## Bonus Features:
 
-## Overall Structure
-
-AREALITY was built using a Java/Android front-end client and a Node.js backend following the Express.js application framework with a MongoDB database.
-
-### Technologies & Frameworks
-
-- [ ] Android
-- [ ] Node.js
-- [ ] Express.js
-- [ ] MongoDB
-
+- [ ] Store
+- [ ] 3D map
+- [ ] AR Landmark interface
 
 ## Wireframes
 
@@ -52,25 +28,25 @@ AREALITY was built using a Java/Android front-end client and a Node.js backend f
 [![areality][loadingpage]][areality]
 
 [areality]: https://github.com/tylerweng/areality
-[loadingpage]: docs/wireframes/loading_page.png
+[loadingpage]: wireframes/loading_page.png
 
 ### Map Page
 
 [![areality][mappage]][areality]
 
-[mappage]: docs/wireframes/map_portion.png
+[mappage]: wireframes/map_portion.png
 
 ### Landmark Page
 
 [![areality][landmarkpage]][areality]
 
-[landmarkpage]: docs/wireframes/landmark_page.png
+[landmarkpage]: wireframes/landmark_page.png
 
 ### Profile Page
 
 [![areality][profilepage]][areality]
 
-[profilepage]: docs/wireframes/profile_page.png
+[profilepage]: wireframes/profile_page.png
 
 ## Technologies & Technical Challenges
 
