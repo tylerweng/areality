@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,10 +47,14 @@ public class LandmarkPage extends Activity {
         List<String> photoUrls = new ArrayList<>();
         List<Hashtable> reviewList = new ArrayList<>();
 
-
+        String rating = "1.0";
         try {
             result = makeHTTPRequest(urlString);
             jsonObject = new JSONObject(result);
+            rating =jsonObject.getJSONObject("result").getString("rating");
+            Toast.makeText(LandmarkPage.this, rating, Toast.LENGTH_LONG).show();
+//            Toast.makeText(MapsActivity.this, "Connection Suspended", Toast.LENGTH_LONG).show();
+
             reviewList = getReviewList(jsonObject);
             photoUrls = getPhotoUrlsList(jsonObject);
         } catch (IOException e) {
@@ -59,24 +64,12 @@ public class LandmarkPage extends Activity {
         }
 
         String schedule = "Schedules. " + "\n"+
-                "1. center image" + "\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
-                "2. Does line breaks work" +"\n"+
                 "3";
         String photos[] = new String[photoUrls.size()];
+
+
         photos = photoUrls.toArray(photos);
-        setInfo(schedule, photos);
+        setInfo(schedule,reviewList, photos, Float.valueOf(rating));
 
 
         Hashtable review = reviewList.get(0);
@@ -85,25 +78,31 @@ public class LandmarkPage extends Activity {
 
     }
 
-    private void setInfo(String schedule, String[] photos){
+    private void setInfo(String schedule, List<Hashtable> reviews, String[] photos, float rating){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
         TableLayout layout = (TableLayout) findViewById(R.id.tableView);
 
         //first child is schedule
-//        TextView textView = (TextView) findViewById(R.id.textView);
-//        textView.setText(schedule);
+        TextView textView = (TextView) findViewById(R.id.textView);
+        textView.setText(schedule);
+        RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setRating(2.7f);
 
 
-        for (int i = 1; i < layout.getChildCount(); i++) {
+
+        for (int i = 1; i < 6; i++) {
+            Hashtable review = reviews.get(i-1);
             View child = layout.getChildAt(i);
 
             if (child instanceof TableRow) {
                 TableRow row = (TableRow) child;
 
                 for (int x = 0; x < row.getChildCount(); x++) {
-                    View view = row.getChildAt(x);
-                    //add reviews to view
+                    TextView view = (TextView) row.getChildAt(x);
+                    String entry = review.get("authorName").toString() + "\n"
+                                 + review.get("reviewText").toString();
+                    view.setText(entry);
                 }
             }
         }
@@ -119,11 +118,9 @@ public class LandmarkPage extends Activity {
         for (int i = 0; i < 5; i++) {
             Hashtable<String, String> review = new Hashtable<>();
             JSONObject reviewDetail = reviewArray.getJSONObject(i);
-            String rating = Integer.toString(reviewDetail.getInt("rating"));
             String authorName = reviewDetail.getString("author_name");
             String reviewText = reviewDetail.getString("text");
 
-            review.put("rating", rating);
             review.put("authorName", authorName);
             review.put("reviewText", reviewText);
             reviewList.add(review);
