@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.route('/users').get(usersController.getUsers);
 router.route('/profile')
-  .get(usersController.getUser)
+  .get(logIn, usersController.getUser)
   .delete(usersController.deleteUser);
 
 router.route('/signup').post(passport.authenticate('local-register', {
@@ -26,5 +26,13 @@ router.route('/login').post(passport.authenticate('local-signin', {
   failureRedirect: '/api/error',
   failureFlash: true
 }));
+
+function logIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    res.user = req.user;
+    return next();
+  }
+  return next();
+}
 
 export default router;

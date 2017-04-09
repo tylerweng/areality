@@ -240,7 +240,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var router = _express2.default.Router();
 
 router.route('/users').get(usersController.getUsers);
-router.route('/profile').get(usersController.getUser).delete(usersController.deleteUser);
+router.route('/profile').get(logIn, usersController.getUser).delete(usersController.deleteUser);
 
 router.route('/signup').post(_passport2.default.authenticate('local-register', {
   successRedirect: '/api/profile',
@@ -257,6 +257,14 @@ router.route('/login').post(_passport2.default.authenticate('local-signin', {
   failureRedirect: '/api/error',
   failureFlash: true
 }));
+
+function logIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    res.user = req.user;
+    return next();
+  }
+  return next();
+}
 
 exports.default = router;
 
@@ -342,6 +350,8 @@ var getUser = exports.getUser = function getUser(req, res) {
   console.log("req.user: ");
   // console.log(Object.keys(req.sessionStore.sessions[Object.keys(req.sessionStore.sessions)[0]]));
   console.log(req.user);
+  console.log("res.user: ");
+  console.log(res.user);
 
   _user2.default.findOne({ _id: req.user }, function (err, user) {
     console.log("found user: ");
