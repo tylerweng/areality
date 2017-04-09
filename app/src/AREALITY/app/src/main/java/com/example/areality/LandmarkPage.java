@@ -21,9 +21,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.HashMap;
 import java.util.List;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 
 public class LandmarkPage extends Activity {
@@ -38,7 +41,7 @@ public class LandmarkPage extends Activity {
 
         String testPlaceId = "ChIJIQBpAG2ahYAR_6128GcTUEo";
 
-        testPlaceId = intent.getStringExtra(EXTRA_MESSAGE);
+        testPlaceId = intent.getStringExtra(MapsActivity.LANDMARK_ID);
 
         String urlString = getDetailUrl(testPlaceId);
         String result = "didn't work";
@@ -82,6 +85,11 @@ public class LandmarkPage extends Activity {
         setInfo(schedule, photos);
 
 
+        Toast.makeText(LandmarkPage.this, photoUrls.get(0), Toast.LENGTH_LONG).show();
+
+    }
+
+    private void setInfo(String message){
 
     }
 
@@ -112,6 +120,19 @@ public class LandmarkPage extends Activity {
     }
 
 
+    public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
+        List<String> photoUrls = new ArrayList<>();
+        JSONArray photoArray = null;
+        photoArray = jsonObject.getJSONObject("result").getJSONArray("photos");
+
+        for (int i = 0; i < photoArray.length(); i++) {
+            JSONObject photo = photoArray.getJSONObject(i);
+            String photoReference = photo.getString("photo_reference");
+            String photoUrl = getPhotoUrl(photoReference);
+            photoUrls.add(photoUrl);
+        }
+        return photoUrls;
+    }
 
     @Override
     protected void onPause() {
@@ -133,8 +154,16 @@ public class LandmarkPage extends Activity {
         StringBuilder googlePlacesDetailUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
         googlePlacesDetailUrl.append("placeid=" + placeId);
         googlePlacesDetailUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
-        Log.d("getUrl", googlePlacesDetailUrl.toString());
         return (googlePlacesDetailUrl.toString());
+    }
+
+    private String getPhotoUrl(String photoReference) {
+        StringBuilder photoUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+        photoUrl.append("maxheight=" + "600");
+        photoUrl.append("&maxwidth=" + "600");
+        photoUrl.append("&photoreference=" + photoReference);
+        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        return photoUrl.toString();
     }
 
     protected String makeHTTPRequest(String urlString) throws IOException {
