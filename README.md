@@ -40,7 +40,7 @@ private void setCameraPosition() {
 
 ### Landmark Page with Photo Cube Rotation
 
-Users enter a landmark's page upon tapping its marker in the Maps Page.
+Users visit a landmark's page upon tapping its marker in the Maps Page.
 In the landmark page, the user is presented with that landmark's overall rating, photos, its hours of availability and user reviews. The user may also swipe the photo cube to rotate it.
 
 #### Photo Cube Rotation
@@ -84,6 +84,14 @@ AREALITY is built upon an easily extensible foundation and can be used as a sand
 
 Some restaurants are truly historic and have earned their place as a landmark in AREALITY. Users will be able to make reservations to these restaurants upon visiting their landmark page.
 
+### AR
+
+Users will be able to see informtion from a nearby landmark by looking at it through their phone's camera a la Yelp Monocle.
+
+### Avatar
+
+AREALITY currently has the user portrayed as an anonymous hero. In a future release, the user will be displayed as a living, breathing, map-traversing hero complete with a customizable outfit.
+
 ### AREALITY Store
 
-Users work tirelessly to accumulate points and should be rewarded for their dedication to the game. Users will be able to purchase in-game items (e.g. stamps) in exchange for their hard-earned points. 
+Users work tirelessly to accumulate points and should be rewarded for their dedication to the game. Users will be able to purchase in-game items (e.g. stamps, avatar customization, etc.) in exchange for their hard-earned points.
