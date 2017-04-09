@@ -21,6 +21,7 @@ import java.net.URLEncoder;
 public class SignupActivity extends Activity {
     private static final String TAG = "SignupActivity";
     private static final int REQUEST_LOGIN = 0;
+    private static final int REQUEST_MAP = 0;
 
     @BindView(R.id.signupName) EditText _nameText;
     @BindView(R.id.signupEmail) EditText _emailText;
@@ -99,14 +100,14 @@ public class SignupActivity extends Activity {
                 onEmailRegistered();
             }
         } else {
-            Log.d(TAG, "success: " + result.getString("success"));
+            Log.d(TAG, "user: " + result);
             onSignupSuccess();
         }
     }
 
     public void onSignupSuccess() {
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-        startActivityForResult(intent, REQUEST_LOGIN);
+        startActivityForResult(intent, REQUEST_MAP);
     }
 
     public void onUsernameTaken() {

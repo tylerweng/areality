@@ -20,6 +20,7 @@ import butterknife.OnClick;
 
 public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
+    private static final int REQUEST_MAP = 0;
     private static final int REQUEST_SIGNUP = 0;
 
     @BindView(R.id.loginEmail) EditText _emailText;
@@ -85,7 +86,10 @@ public class LoginActivity extends Activity {
 
         PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
 
-        JSONObject result = new JSONObject(pr.execute());
+        String resultString = pr.execute();
+        JSONObject result = new JSONObject(resultString);
+
+        Log.d(TAG, "result string: " + resultString);
 
         if (result.has("error")) {
             Log.d(TAG, "error: " + result.getString("error"));
@@ -96,7 +100,7 @@ public class LoginActivity extends Activity {
                 onIncorrectPassword();
             }
         } else {
-            Log.d(TAG, "success: " + result.getString("success"));
+            Log.d(TAG, "user: " + result);
             onLoginSuccess();
         }
     }
@@ -117,9 +121,8 @@ public class LoginActivity extends Activity {
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivityForResult(intent, REQUEST_MAP);
     }
 
     public boolean validate() {

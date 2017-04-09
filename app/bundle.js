@@ -179,7 +179,7 @@ var configurePassport = function configurePassport() {
     _user2.default.findOne({ $or: [{ username: username }, { email: email }] }, function (err, user) {
       if (err) return done(err);
       if (user) return done(null, false, {
-        error: user.username == username ? 'That username is taken' : 'That email is already registered'
+        error: user.username == username ? "That username is taken" : "That email is already registered"
       });
 
       var newUser = new _user2.default();
