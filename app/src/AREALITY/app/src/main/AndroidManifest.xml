@@ -31,7 +31,9 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".LandmarkPage" />
+        <activity android:name=".LandmarkPage" >
+
+        </activity>
         <activity android:name=".MyGLActivity"></activity>
 
         <activity android:name=".SignupActivity"></activity>
