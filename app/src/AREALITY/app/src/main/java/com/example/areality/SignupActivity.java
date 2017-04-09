@@ -103,15 +103,14 @@ public class SignupActivity extends Activity {
 
                 for (int i = 0; i < emailChars.length; i++) {
                     if (emailChars[i].equals(".")) {
-                        emailChars[i] = "%2E";
+                        newEmail.append("%2E");
+                    } else {
+                        newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
                     }
-                    newEmail.append(emailChars[i]);
                 }
 
-                Log.d(TAG, "new email: " + newEmail.toString());
-
                 String urlParameters = "username=" + URLEncoder.encode(data[0], "UTF-8")
-                                     + "&email=" + URLEncoder.encode(newEmail.toString(), "UTF-8")
+                                     + "&email=" + newEmail.toString()
                                      + "&password=" + URLEncoder.encode(data[2], "UTF-8");
 
                 con.setDoOutput(true);

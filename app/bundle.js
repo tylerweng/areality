@@ -180,6 +180,8 @@ var configurePassport = function configurePassport() {
 
       var newUser = new _user2.default();
       newUser.username = username;
+      console.log("req: ");
+      console.log(req);
       newUser.email = req.query.email.split("%2E").join(".");
       newUser.passwordDigest = newUser.generateHash(password);
 
