@@ -21,8 +21,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoadingScreenActivity">
+
+        <activity android:name=".MainActivity"></activity>
+
+        <activity android:name=".MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +32,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MapsActivity">
+
+        <activity android:name=".LandmarkPage" >
         </activity>
-        <activity android:name=".LandmarkPage"></activity>
-        <activity android:name=".MyGLActivity" />
-        <activity android:name=".SignupActivity" />
+
+        <activity android:name=".LoadingScreenActivity"></activity>
+
+        <activity android:name=".MyGLActivity"></activity>
+
+        <activity android:name=".SignupActivity"></activity>
+
     </application>
 
 </manifest>

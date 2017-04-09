@@ -48,8 +48,8 @@ class MyGLSurfaceView extends GLSurfaceView {
 
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
+                mRenderer.setRot(dy/10, dx/10);
 
-                mRenderer.setRot(dy/100, dx/10);
                 mRenderer.setAngle(
                         mRenderer.getAngle() +
                                 ((dx + dy) * TOUCH_SCALE_FACTOR));
@@ -59,11 +59,6 @@ class MyGLSurfaceView extends GLSurfaceView {
         mPreviousX = x;
         mPreviousY = y;
         return true;
-    }
-
-    public void autoStart(){
-        float speedCube = 0.5f; // rotational speed for cube
-        mRenderer.setSpeedCube(speedCube);
     }
 
     public void setPhotos(String[] photos){

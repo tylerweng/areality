@@ -15,6 +15,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,27 +35,31 @@ public class LandmarkPage extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
         setContentView(R.layout.activity_landmark_page);
 
         String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
-
-//        testPlaceId = intent.getStringExtra(MapsActivity.LANDMARK_ID);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            testPlaceId= extras.getString("com.example.areality.MESSAGE");
+        }
 
         String urlString = getDetailUrl(testPlaceId);
-        String result = "didn't work";
+        String result = "";
         JSONObject jsonObject = null;
         List<String> photoUrls = new ArrayList<>();
         List<Hashtable> reviewList = new ArrayList<>();
 
-        String rating = "1.0";
+        String name = "";
+        String weekdayText = "";
+        String rating = "0.0";
+        String schedule = "";
+
         try {
             result = makeHTTPRequest(urlString);
             jsonObject = new JSONObject(result);
-            rating =jsonObject.getJSONObject("result").getString("rating");
-            Toast.makeText(LandmarkPage.this, rating, Toast.LENGTH_LONG).show();
-//            Toast.makeText(MapsActivity.this, "Connection Suspended", Toast.LENGTH_LONG).show();
-
+            name = jsonObject.getJSONObject("result").getString("name");
+            rating = jsonObject.getJSONObject("result").getString("rating");
+            schedule = getSchedule(jsonObject);
             reviewList = getReviewList(jsonObject);
             photoUrls = getPhotoUrlsList(jsonObject);
         } catch (IOException e) {
@@ -63,33 +68,23 @@ public class LandmarkPage extends Activity {
             e.printStackTrace();
         }
 
-        String schedule = "Schedules. " + "\n"+
-                "3";
         String photos[] = new String[photoUrls.size()];
-
-
         photos = photoUrls.toArray(photos);
-        setInfo(schedule,reviewList, photos, Float.valueOf(rating));
-
-
-        Hashtable review = reviewList.get(0);
-        String reviewText = review.get("reviewText").toString();
-
-
+        setInfo(name,schedule,reviewList, photos, Float.valueOf(rating));
     }
 
-    private void setInfo(String schedule, List<Hashtable> reviews, String[] photos, float rating){
+    private void setInfo(String name, String schedule, List<Hashtable> reviews, String[] photos, float rating){
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
         TableLayout layout = (TableLayout) findViewById(R.id.tableView);
 
+        TextView title = (TextView) findViewById(R.id.name);
+        title.setText(name);
         //first child is schedule
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(schedule);
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setRating(2.7f);
-
-
+        ratingBar.setRating(rating);
 
         for (int i = 1; i < 6; i++) {
             Hashtable review = reviews.get(i-1);
@@ -112,9 +107,6 @@ public class LandmarkPage extends Activity {
         List<Hashtable> reviewList = new ArrayList<>();
         JSONArray reviewArray = null;
         reviewArray = jsonObject.getJSONObject("result").getJSONArray("reviews");
-
-
-
         for (int i = 0; i < 5; i++) {
             Hashtable<String, String> review = new Hashtable<>();
             JSONObject reviewDetail = reviewArray.getJSONObject(i);
@@ -129,7 +121,6 @@ public class LandmarkPage extends Activity {
         return reviewList;
     }
 
-
     public List<String> getPhotoUrlsList(JSONObject jsonObject) throws JSONException {
         List<String> photoUrls = new ArrayList<>();
         JSONArray photoArray = null;
@@ -142,6 +133,17 @@ public class LandmarkPage extends Activity {
             photoUrls.add(photoUrl);
         }
         return photoUrls;
+    }
+
+    private String getSchedule(JSONObject jsonObject) throws JSONException{
+        JSONArray scheduleArr = jsonObject.getJSONObject("result").getJSONObject("opening_hours").getJSONArray("weekday_text");
+        String schedule = "Opening Times";
+
+        for (int i =0; i < scheduleArr.length(); i++){
+            String time = scheduleArr.getString(i);
+            schedule += "\n" + time;
+        }
+        return schedule;
     }
 
     @Override
