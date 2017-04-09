@@ -180,7 +180,7 @@ var configurePassport = function configurePassport() {
 
       var newUser = new _user2.default();
       newUser.username = username;
-      newUser.email = req.body.email.split("%2E").join(".");
+      newUser.email = req.body.email;
       newUser.passwordDigest = newUser.generateHash(password);
 
       newUser.save(function (err) {
@@ -339,8 +339,9 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  console.log("req: ");
-  console.log(req);
+  console.log("req.user: ");
+  // console.log(Object.keys(req.sessionStore.sessions[Object.keys(req.sessionStore.sessions)[0]]));
+  consooe.log(req.user);
 
   _user2.default.findOne({ _id: req.user }, function (err, user) {
     console.log("found user: ");

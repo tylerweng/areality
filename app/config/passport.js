@@ -25,7 +25,7 @@ const configurePassport = () => {
 
         const newUser = new User();
         newUser.username = username;
-        newUser.email = req.body.email.split("%2E").join(".");
+        newUser.email = req.body.email;
         newUser.passwordDigest = newUser.generateHash(password);
 
         newUser.save(err => {
