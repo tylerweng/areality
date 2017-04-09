@@ -9,8 +9,8 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  console.log("req.user: ");
-  console.log(req.user);
+  console.log("req: ");
+  console.log(req);
 
   User.findOne({ _id: req.user }, (err, user) => {
     console.log("found user: ");
