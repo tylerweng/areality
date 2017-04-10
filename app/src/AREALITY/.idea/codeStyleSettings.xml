@@ -60,7 +60,13 @@
           </extensions>
         </Objective-C-extensions>
         <XML>
+<<<<<<< HEAD
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+=======
+          <option name="XML_KEEP_LINE_BREAKS" value="false" />
+          <option name="XML_ALIGN_ATTRIBUTES" value="false" />
+          <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
+>>>>>>> f4df77336a6c66b672cddc017717003cf4b2f820
         </XML>
         <codeStyleSettings language="XML">
           <option name="FORCE_REARRANGE_MODE" value="1" />
