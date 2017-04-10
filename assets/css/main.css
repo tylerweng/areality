@@ -4122,6 +4122,7 @@
 
 		#footer .copyright {
 			font-size: 0.8em;
+			margin-top: 5em;
 		}
 
 		@media screen and (max-width: 980px) {
@@ -4148,7 +4149,19 @@
 
 	}
 
+
+.icons {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+}
+
 .col {
+	padding: 0 20px;
 	display: flex;
 	flex-direction: column;
+}
+
+.fa-github, .fa-linkedin {
+	font-size: 24px !important;
 }
