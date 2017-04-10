@@ -46,11 +46,19 @@
             android:layout_height="30dp"
             android:background="@drawable/gradientmap"/>
 
-        <Button
-            android:id="@+id/profileButton"
-            android:layout_width="wrap_content"
+        <RelativeLayout
             android:layout_height="wrap_content"
-            android:text="@string/profileText" />
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/profileButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/profileText" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
