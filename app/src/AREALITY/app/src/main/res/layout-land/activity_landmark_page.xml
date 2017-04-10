@@ -14,32 +14,30 @@
         android:layout_width="315dp"
         android:layout_height="218dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="-8dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        tools:layout_editor_absoluteY="49dp" />
+        android:layout_marginLeft="-176dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        tools:layout_editor_absoluteY="-9dp"
-        android:layout_marginLeft="162dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginLeft="147dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/glsurfaceview" />
 
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="249dp"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="36dp"
         android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="38dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        tools:layout_editor_absoluteY="268dp"
-        tools:layout_editor_absoluteX="31dp"
-        android:id="@+id/linearLayout">
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <RatingBar
             android:id="@+id/ratingBar"
@@ -52,8 +50,8 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="250dp"
-        android:layout_height="314dp"
+        android:layout_width="253dp"
+        android:layout_height="279dp"
         android:fillViewport="true"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="4dp"
@@ -62,8 +60,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.76"
-        tools:layout_editor_absoluteY="-19dp"
-        tools:layout_editor_absoluteX="326dp">
+        tools:layout_editor_absoluteY="22dp"
+        tools:layout_editor_absoluteX="332dp">
 
         <TableLayout
             android:id="@+id/tableView"
