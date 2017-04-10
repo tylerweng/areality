@@ -30,9 +30,6 @@ class MyGLSurfaceView extends GLSurfaceView {
         setRenderer(mRenderer);
     }
 
-
-
-
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;
     private float mPreviousY;
