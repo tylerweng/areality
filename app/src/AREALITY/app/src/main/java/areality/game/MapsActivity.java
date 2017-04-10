@@ -124,11 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     loadSeenLandmarks();
 
-    try {
-      addPoints(10);
-    } catch (Exception e) {
-      Log.d(TAG, "error: " + e);
-    }
   }
 
   private void loadSeenLandmarks() {
@@ -149,6 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   private boolean seenLandmark(String landmarkId) {
     return seenLandmarks.contains(landmarkId);
   }
+
 
   private void addLandmark(String landmarkId) throws Exception {
     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
