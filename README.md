@@ -1,9 +1,12 @@
 # AREALITY
 
-[AREALITY][AREALITY] is your world reimagined. Inspired Foursquare and Pokémon Go, AREALITY is an Android app that rewards users for discovering local landmarks.
+[AREALITY][AREALITY] is your world reimagined. Inspired by Foursquare and Pokémon Go, AREALITY is an Android app that rewards users for discovering local landmarks.
 
 AREALITY is a group project by Diane Zheng, Michael Hooton, Terry O'Shea and Tyler Weng.
 
+[Download][Download]
+
+[Download]: https://play.google.com/store/apps/details?id=areality.game
 [AREALITY]: https://tylerweng.github.io/areality
 
 ## Overall Structure
