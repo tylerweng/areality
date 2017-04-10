@@ -195,8 +195,9 @@ var configurePassport = function configurePassport() {
   }));
 
   _passport2.default.use('local-signin', new LocalStrategy({
-    usernameField: 'email'
-  }, function (email, password, done) {
+    usernameField: 'email',
+    passReqToCallback: true
+  }, function (req, email, password, done) {
     email = req.body.email || req.query.email;
     console.log("email: ");
     console.log(email);

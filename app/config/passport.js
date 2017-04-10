@@ -41,13 +41,14 @@ const configurePassport = () => {
   ));
 
   passport.use('local-signin', new LocalStrategy({
-      usernameField: 'email'
+      usernameField: 'email',
+      passReqToCallback: true
     },
-    (email, password, done) => {
+    (req, email, password, done) => {
       email = req.body.email || req.query.email;
       console.log("email: ");
       console.log(email);
-      
+
       User.findOne({ email: email }, (err, user) => {
         if (err) return done(err);
         if (!user) return done(null, false, { error: "That user could not be found" });
