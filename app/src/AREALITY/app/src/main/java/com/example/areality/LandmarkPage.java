@@ -38,10 +38,10 @@ public class LandmarkPage extends Activity {
         setContentView(R.layout.activity_landmark_page);
 
         String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
-        Bundle extras = getIntent().getExtras();
-        if(extras != null) {
-            testPlaceId= extras.getString("com.example.areality.MESSAGE");
-        }
+//        Bundle extras = getIntent().getExtras();
+//        if(extras != null) {
+//            testPlaceId= extras.getString("com.example.areality.MESSAGE");
+//        }
 
         String urlString = getDetailUrl(testPlaceId);
         String result = "";
@@ -94,7 +94,7 @@ public class LandmarkPage extends Activity {
 
                 for (int x = 0; x < row.getChildCount(); x++) {
                     TextView view = (TextView) row.getChildAt(x);
-                    String entry = "<h2>"+review.get("authorName").toString() + "</h2>" + "<br></br>"
+                    String entry = "<h3>"+review.get("authorName").toString() + "</h3>"
                                  + review.get("reviewText").toString();
                     view.setText((Html.fromHtml(entry)));
                 }
@@ -136,11 +136,14 @@ public class LandmarkPage extends Activity {
 
     private String getSchedule(JSONObject jsonObject) throws JSONException{
         JSONArray scheduleArr = jsonObject.getJSONObject("result").getJSONObject("opening_hours").getJSONArray("weekday_text");
-        String schedule = "<h3>"+"Opening Times" + "</h3>" + "<br></br>";
+        String schedule = "<h3>"+"Opening Times" + "</h3>";
 
         for (int i =0; i < scheduleArr.length(); i++){
             String time = scheduleArr.getString(i);
-            schedule += "<br></br>" + time;
+            if(i>0){
+                schedule +=  "<br></br>";
+            }
+            schedule +=time;
         }
         return schedule;
     }
