@@ -84,10 +84,10 @@ public class LoginActivity extends Activity {
         String urlParameters = "email=" + newEmail.toString()
                              + "&password=" + URLEncoder.encode(password, "UTF-8");
 
-        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
+        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/login", urlParameters);
 
         JSONObject result = new JSONObject(pr.execute());
-        
+
         if (result.has("error")) {
             Log.d(TAG, "error: " + result.getString("error"));
             progressDialog.hide();
@@ -96,10 +96,6 @@ public class LoginActivity extends Activity {
             } else {
                 onIncorrectPassword();
             }
-        } else if (result.has("message")) {
-            progressDialog.hide();
-            Toast.makeText(getBaseContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
-            _loginButton.setEnabled(true);
         } else {
             Log.d(TAG, "user: " + result);
             onLoginSuccess();
@@ -112,7 +108,7 @@ public class LoginActivity extends Activity {
     }
 
     public void onIncorrectPassword() {
-        _passwordText.setError("That username is taken");
+        _passwordText.setError("That password is incorrect");
         _loginButton.setEnabled(true);
     }
 
