@@ -265,16 +265,6 @@ router.route('/signup').post(function (req, res, next) {
   })(req, res, next);
 });
 
-router.route('/error').get(function (req, res) {
-  res.json(req.session.flash);
-});
-
-// router.route('/login').post(passport.authenticate('local-signin', {
-//   successRedirect: '/api/profile',
-//   failureRedirect: '/api/error',
-//   failureFlash: true
-// }));
-
 router.route('/login').post(function (req, res, next) {
   _passport2.default.authenticate('local-signin', function (err, user, info) {
     if (err) {
@@ -287,19 +277,7 @@ router.route('/login').post(function (req, res, next) {
   })(req, res, next);
 });
 
-function logIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    console.log("in middleware, req.user: ");
-    console.log(req.user);
-
-    res.user = req.user;
-    return next();
-  }
-  console.log("was not authenticated");
-  console.log("req.user: ");
-  console.log(req.user);
-  return next();
-}
+router.route('/addCoins').post(usersController.addCoins);
 
 exports.default = router;
 
@@ -362,7 +340,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.patchUser = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
+exports.addCoins = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
 
 var _passport = __webpack_require__(0);
 
@@ -393,7 +371,14 @@ var deleteUser = exports.deleteUser = function deleteUser(req, res) {
   });
 };
 
-var patchUser = exports.patchUser = function patchUser(req, res) {};
+var addCoins = exports.addCoins = function addCoins(req, res) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $inc: { "points": req.query.points } }, { returnNewDocument: true }, function (err, user) {
+    if (err) res.status(500).send(err);
+    if (!user) res.status(401).json({ error: "User not found" });
+    res.status(200).send(user);
+  });
+};
 
 /***/ }),
 /* 13 */

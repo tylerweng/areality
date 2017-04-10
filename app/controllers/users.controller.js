@@ -20,6 +20,16 @@ export const deleteUser = (req, res) => {
   });
 }
 
-export const patchUser = (req, res) => {
-
+export const addCoins = (req, res) => {
+  const username = req.body.username || req.query.username;
+  User.findOneAndUpdate(
+    { username: username.toLowerCase() },
+    { $inc: { "points": req.query.points } },
+    { returnNewDocument: true },
+    (err, user) => {
+      if (err) res.status(500).send(err);
+      if (!user) res.status(401).json({ error: "User not found" });
+      res.status(200).send(user);
+    }
+  );
 };
