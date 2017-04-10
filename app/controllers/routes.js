@@ -23,16 +23,6 @@ router.route('/signup').post((req, res, next) => {
   })(req, res, next);
 });
 
-router.route('/error').get((req, res) => {
-  res.json(req.session.flash);
-});
-
-// router.route('/login').post(passport.authenticate('local-signin', {
-//   successRedirect: '/api/profile',
-//   failureRedirect: '/api/error',
-//   failureFlash: true
-// }));
-
 router.route('/login').post((req, res, next) => {
   passport.authenticate('local-signin', (err, user, info) => {
     if (err) {
@@ -45,18 +35,7 @@ router.route('/login').post((req, res, next) => {
   })(req, res, next);
 });
 
-function logIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    console.log("in middleware, req.user: ");
-    console.log(req.user);
-
-    res.user = req.user;
-    return next();
-  }
-  console.log("was not authenticated");
-  console.log("req.user: ");
-  console.log(req.user);
-  return next();
-}
+router.route('/addCoins').post(usersController.addCoins);
+router.route('/addLandmark').post(usersController.addLandmark);
 
 export default router;
