@@ -82,6 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   Location mLastLocation;
   Marker mCurrLocationMarker;
   LocationRequest mLocationRequest;
+  Location mLastLocationUpdateRequest;
 
   private Projection projection;
   private Circle mClickDisplay;
@@ -307,25 +308,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Log.d("onLocationChanged", "entered");
 
     mLastLocation = location;
-//        if (mCurrLocationMarker != null) {
-//            mCurrLocationMarker.remove();
-//        }
     mLat = location.getLatitude();
     mLong = location.getLongitude();
 
-    //move map camera
     setCameraPosition();
 
     Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", mLat, mLong));
 
-    //stop location updates
-    if (mGoogleApiClient != null) {
-      LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-      Log.d("onLocationChanged", "Removing Location Updates");
+    if(mLastLocationUpdateRequest == null || location.distanceTo(mLastLocationUpdateRequest) > 100) {
+      mLastLocationUpdateRequest = location;
+      setPlacesMarkers();
     }
-    Log.d("onLocationChanged", "Exit");
-
-    setPlacesMarkers();
   }
 
   private void setPlacesMarkers() {
@@ -337,7 +330,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     getNearbyPlacesData = new GetNearbyPlacesData(mGoogleApiClient);
     getNearbyPlacesData.execute(DataTransfer);
-//    Toast.makeText(MapsActivity.this, "Nearby Landmarks", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -470,6 +462,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
           List<HashMap<String, String>> nearbyPlaces = getNearbyPlacesData.getPlacesList();
 
+          double shortestDistance = LAT_LONG_TOUCH_CUTOFF_DISTANCE;
+          HashMap<String, String> closestPlaceToTouch = null;
+
           for (int i = 0; i < nearbyPlaces.size(); i++) {
             HashMap<String, String> googlePlace = nearbyPlaces.get(i);
 
@@ -477,15 +472,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = Double.parseDouble(googlePlace.get("lng"));
             double selfMarkerDistance = Math.pow(mLat - lat, 2) + Math.pow(mLong - lng, 2);
             double markerDistance = Math.pow(lat - clickPos.latitude, 2) + Math.pow(lng - clickPos.longitude, 2);
-            if(Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE  &&
-                    Math.sqrt(selfMarkerDistance) < TOUCH_CUTOFF_DISTANCE) {
-              // For testing click distance/etc
-//              Toast.makeText(MapsActivity.this, googlePlace.get("place_name"), Toast.LENGTH_SHORT).show();
-              Intent intent = new Intent(this, LandmarkPage.class);
-              String landmarkId = googlePlace.get("place_id");
-              intent.putExtra(LANDMARK_ID, landmarkId);
-              startActivity(intent);
+
+            if(Math.sqrt(selfMarkerDistance) < TOUCH_CUTOFF_DISTANCE &&
+                Math.sqrt(markerDistance) < shortestDistance) {
+              shortestDistance = Math.sqrt(markerDistance);
+              closestPlaceToTouch = googlePlace;
             }
+          }
+          
+          if(closestPlaceToTouch != null) {
+            Intent intent = new Intent(this, LandmarkPage.class);
+            String landmarkId = closestPlaceToTouch.get("place_id");
+            intent.putExtra(LANDMARK_ID, landmarkId);
+            startActivity(intent);
           }
         }
     }
@@ -511,5 +510,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         .build();
     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camera));
     projection = mMap.getProjection();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    if (mGoogleApiClient != null) {
+      LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+      Log.d("onLocationChanged", "Removing Location Updates");
+    }
+    Log.d("onLocationChanged", "Exit");
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+//    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//      if (ContextCompat.checkSelfPermission(this,
+//          Manifest.permission.ACCESS_FINE_LOCATION)
+//          == PackageManager.PERMISSION_GRANTED) {
+//        buildGoogleApiClient();
+//      }
+//    } else {
+//      buildGoogleApiClient();
+//    }
   }
 }
