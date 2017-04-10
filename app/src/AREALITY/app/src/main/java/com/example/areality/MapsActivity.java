@@ -148,6 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       // } catch(Exception e) {
       //     Log.d(TAG, "error: " + e);
       // }
+  }
 
   private boolean seenLandmark(String landmarkId) {
       return seenLandmarks.contains(landmarkId);
