@@ -4,6 +4,8 @@
 
 AREALITY is a group project by Diane Zheng, Michael Hooton, Terry O'Shea and Tyler Weng.
 
+[Download]: https://play.google.com/store/apps/details?id=areality.game
+
 [AREALITY]: https://tylerweng.github.io/areality
 
 ## Overall Structure
