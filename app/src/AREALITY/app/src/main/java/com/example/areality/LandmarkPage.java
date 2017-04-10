@@ -38,10 +38,10 @@ public class LandmarkPage extends Activity {
         setContentView(R.layout.activity_landmark_page);
 
         String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
-//        Bundle extras = getIntent().getExtras();
-//        if(extras != null) {
-//            testPlaceId= extras.getString("com.example.areality.MESSAGE");
-//        }
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            testPlaceId= extras.getString("com.example.areality.MESSAGE");
+        }
 
         String urlString = getDetailUrl(testPlaceId);
         String result = "";
