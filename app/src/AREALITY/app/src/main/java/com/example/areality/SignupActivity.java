@@ -119,8 +119,7 @@ public class SignupActivity extends Activity {
 
             // add landmark ids
             editor.putInt("landmark_ids_size", 0);
-
-            editor.commit();
+            editor.apply();
 
             onSignupSuccess();
         }

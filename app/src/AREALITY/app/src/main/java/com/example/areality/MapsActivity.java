@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.Manifest;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -146,7 +148,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       // } catch(Exception e) {
       //     Log.d(TAG, "error: " + e);
       // }
-  }
 
   private boolean seenLandmark(String landmarkId) {
       return seenLandmarks.contains(landmarkId);
@@ -193,75 +194,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
    * it inside the SupportMapFragment. This method will only be triggered once the user has
    * installed Google Play services and returned to the app.
    */
-  @Override
-  public void onMapReady(GoogleMap googleMap) {
-    mMap = googleMap;
+   @Override
+   public void onMapReady(GoogleMap googleMap) {
+     mMap = googleMap;
 
-    //Initialize Google Play Services
-    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (ContextCompat.checkSelfPermission(this,
-          Manifest.permission.ACCESS_FINE_LOCATION)
-          == PackageManager.PERMISSION_GRANTED) {
-        buildGoogleApiClient();
-      }
-    } else {
-      buildGoogleApiClient();
-    }
+     //Initialize Google Play Services
+     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+       if (ContextCompat.checkSelfPermission(this,
+           Manifest.permission.ACCESS_FINE_LOCATION)
+           == PackageManager.PERMISSION_GRANTED) {
+         buildGoogleApiClient();
+       }
+     } else {
+       buildGoogleApiClient();
+     }
 
-    mMap.getUiSettings().setCompassEnabled(false);
-    mMap.getUiSettings().setMapToolbarEnabled(false);
-    mMap.getUiSettings().setMyLocationButtonEnabled(false);
-    mMap.getUiSettings().setAllGesturesEnabled(false);
-    mMap.setBuildingsEnabled(false);
-    mMap.setIndoorEnabled(false);
-    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+     mMap.getUiSettings().setCompassEnabled(false);
+     mMap.getUiSettings().setMapToolbarEnabled(false);
+     mMap.getUiSettings().setMyLocationButtonEnabled(false);
+     mMap.getUiSettings().setAllGesturesEnabled(false);
+     mMap.setBuildingsEnabled(false);
+     mMap.setIndoorEnabled(false);
+     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-    try {
-      boolean success = mMap.setMapStyle(
-          MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
-      );
+     try {
+       boolean success = mMap.setMapStyle(
+           MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
+       );
 
-      if (!success) {
-        Log.e("MapsActivity", "Style parsing failed.");
-      }
-    } catch (Resources.NotFoundException e) {
-      Log.e("MapsActivity", "Can't find style. Error: ", e);
-    }
-    mLat = 0;
-    mLong = 0;
-    setSelfPositionMarker();
-    setCameraPosition();
-  }
+       if (!success) {
+         Log.e("MapsActivity", "Style parsing failed.");
+       }
+     } catch (Resources.NotFoundException e) {
+       Log.e("MapsActivity", "Can't find style. Error: ", e);
+     }
+     mLat = 0;
+     mLong = 0;
+     setSelfPositionMarker();
+     setCameraPosition();
+   }
 
-  protected synchronized void buildGoogleApiClient() {
-    mGoogleApiClient = new GoogleApiClient.Builder(this)
-        .addConnectionCallbacks(this)
-        .addOnConnectionFailedListener(this)
-        .addApi(LocationServices.API)
-        .build();
-    mGoogleApiClient.connect();
-  }
+   protected synchronized void buildGoogleApiClient() {
+     mGoogleApiClient = new GoogleApiClient.Builder(this)
+         .addConnectionCallbacks(this)
+         .addOnConnectionFailedListener(this)
+         .addApi(LocationServices.API)
+         .build();
+     mGoogleApiClient.connect();
+   }
 
-  private void setSelfPositionMarker() {
-    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-        .position(new LatLng(mLat, mLong))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-  }
+   private void setSelfPositionMarker() {
+     mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+         .position(new LatLng(mLat, mLong))
+         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+   }
 
-  @Override
-  public void onConnected(Bundle bundle) {
-    Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-    setSelfPositionMarker();
-    mLocationRequest = new LocationRequest();
-    mLocationRequest.setInterval(1000);
-    mLocationRequest.setFastestInterval(1000);
-    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-    if (ContextCompat.checkSelfPermission(this,
-        Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED) {
-      LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
-  }
+   @Override
+   public void onConnected(Bundle bundle) {
+     Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+     setSelfPositionMarker();
+     mLocationRequest = new LocationRequest();
+     mLocationRequest.setInterval(1000);
+     mLocationRequest.setFastestInterval(1000);
+     mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+     if (ContextCompat.checkSelfPermission(this,
+         Manifest.permission.ACCESS_FINE_LOCATION)
+         == PackageManager.PERMISSION_GRANTED) {
+       LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+     }
+   }
 
   private String getUrl(double latitude, double longitude, String nearbyPlace) {
     StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
