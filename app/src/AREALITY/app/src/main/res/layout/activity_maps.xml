@@ -11,8 +11,8 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="368dp"
         android:layout_height="503dp"
-        tools:layout_editor_absoluteY="-280dp"
-        tools:layout_editor_absoluteX="-475dp" />
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="0dp"
