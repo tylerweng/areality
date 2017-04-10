@@ -36,5 +36,6 @@ router.route('/login').post((req, res, next) => {
 });
 
 router.route('/addCoins').post(usersController.addCoins);
+router.route('/addLandmark').post(usersController.addLandmark);
 
 export default router;

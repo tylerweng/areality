@@ -118,7 +118,8 @@ var userSchema = mongoose.Schema({
   email: { type: String, trim: true, required: true },
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
-  badgeIds: { type: [Number], default: [] }
+  badgeIds: { type: [Number], default: [] },
+  landmarkIds: { type: [Number], default: [] }
 });
 
 userSchema.methods.generateHash = function (password) {
@@ -278,6 +279,7 @@ router.route('/login').post(function (req, res, next) {
 });
 
 router.route('/addCoins').post(usersController.addCoins);
+router.route('/addLandmark').post(usersController.addLandmark);
 
 exports.default = router;
 
@@ -340,7 +342,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addCoins = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
+exports.addLandmark = exports.addCoins = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
 
 var _passport = __webpack_require__(0);
 
@@ -351,6 +353,8 @@ var _user = __webpack_require__(4);
 var _user2 = _interopRequireDefault(_user);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var getUsers = exports.getUsers = function getUsers(req, res) {
   _user2.default.find({}, function (err, users) {
@@ -373,10 +377,22 @@ var deleteUser = exports.deleteUser = function deleteUser(req, res) {
 
 var addCoins = exports.addCoins = function addCoins(req, res) {
   var username = req.body.username || req.query.username;
-  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $inc: { "points": req.query.points } }, { returnNewDocument: true }, function (err, user) {
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $inc: { "points": req.body.points || req.query.points } }, { returnNewDocument: true }, function (err, user) {
     if (err) res.status(500).send(err);
     if (!user) res.status(401).json({ error: "User not found" });
-    res.status(200).send(user);
+    res.status(200).json(user);
+  });
+};
+
+var addLandmark = exports.addLandmark = function addLandmark(req, res) {
+  var username = req.body.username || req.query.username;
+  var landmark = req.body.landmark || req.query.landmark;
+
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarkIds: parseInt(landmark) } }, function (err, user) {
+    if (err) res.status(500).send(err);
+    if (!user) res.status(401).json({ error: "User not found" });
+    user.landmarkIds = [].concat(_toConsumableArray(user.landmarkIds), [parseInt(landmark)]);
+    res.status(200).json(user);
   });
 };
 
