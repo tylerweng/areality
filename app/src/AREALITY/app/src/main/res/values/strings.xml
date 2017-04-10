@@ -8,4 +8,7 @@
     <string name="loginButtonText">LOG IN</string>
     <string name="loginLinkText">Already have an account? Log in</string>
     <string name="signupLinkText">New here? Sign up</string>
+    <string name="profileText">profile</string>
+    <string name="toMapText">back</string>
+    <string name="logoutText">log out</string>
 </resources>
