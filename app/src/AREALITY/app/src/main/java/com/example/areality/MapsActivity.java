@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.Manifest;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -208,6 +210,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       buildGoogleApiClient();
     }
 
+<<<<<<< HEAD
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        Log.d("MapActivity", "username here on map: " + pref.getString("username", null));
+=======
     mMap.getUiSettings().setCompassEnabled(false);
     mMap.getUiSettings().setMapToolbarEnabled(false);
     mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -226,6 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       }
     } catch (Resources.NotFoundException e) {
       Log.e("MapsActivity", "Can't find style. Error: ", e);
+>>>>>>> f4df77336a6c66b672cddc017717003cf4b2f820
     }
     mLat = 0;
     mLong = 0;
