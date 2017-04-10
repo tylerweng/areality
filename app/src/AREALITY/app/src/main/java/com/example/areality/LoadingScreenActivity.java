@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LoadingScreenActivity extends Activity
 {
@@ -22,6 +23,8 @@ public class LoadingScreenActivity extends Activity
 
         new LoadViewTask().execute();
 
+        Log.d("context", context.toString());
+
     }
 
     private class LoadViewTask extends AsyncTask<Void, Integer, Void>
@@ -29,7 +32,7 @@ public class LoadingScreenActivity extends Activity
         @Override
         protected void onPreExecute()
         {
-            ProgressDialog.show(LoadingScreenActivity.this,"Loading...",
+            progressDialog = ProgressDialog.show(LoadingScreenActivity.this,"Loading...",
                     "Initializing AREALITY...", false, false);
         }
 
