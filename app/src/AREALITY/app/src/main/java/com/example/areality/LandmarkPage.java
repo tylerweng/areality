@@ -167,7 +167,7 @@ public class LandmarkPage extends Activity {
 
         StringBuilder googlePlacesDetailUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
         googlePlacesDetailUrl.append("placeid=" + placeId);
-        googlePlacesDetailUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        googlePlacesDetailUrl.append("&key=" + "AIzaSyB3IPyQhFjPS0kysn8Fh9xxhZ2SN12ek1Y");
         return (googlePlacesDetailUrl.toString());
     }
 
@@ -176,7 +176,7 @@ public class LandmarkPage extends Activity {
         photoUrl.append("maxheight=" + "600");
         photoUrl.append("&maxwidth=" + "600");
         photoUrl.append("&photoreference=" + photoReference);
-        photoUrl.append("&key=" + "AIzaSyD3FM6gEwhGLsi8ig7ebIZr4g46RgkrnQQ");
+        photoUrl.append("&key=" + "AIzaSyB3IPyQhFjPS0kysn8Fh9xxhZ2SN12ek1Y");
         return photoUrl.toString();
     }
 
