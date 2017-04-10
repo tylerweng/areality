@@ -59,8 +59,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   private float mDownY;
   private Date mDownTime;
   private final float TOUCH_CLICK_CUTOFF_TIME = 1000;
-  private final float TOUCH_CLICK_CUTOFF_LENGTH = 10;
-  private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 0.0003;
+  private final float TOUCH_CLICK_CUTOFF_LENGTH = 15;
+  private final double TOUCH_CUTOFF_DISTANCE = 0.0025;
+  private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 0.0004;
 
   private GoogleMap mMap;
   private int PROXIMITY_RADIUS = 1000;
@@ -384,8 +385,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
+            double selfMarkerDistance = Math.pow(mLat - lat, 2) + Math.pow(mLong - lng, 2);
             double markerDistance = Math.pow(lat - clickPos.latitude, 2) + Math.pow(lng - clickPos.longitude, 2);
-            if(Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE ) {
+            if(Math.sqrt(markerDistance) < LAT_LONG_TOUCH_CUTOFF_DISTANCE  &&
+                    Math.sqrt(selfMarkerDistance) < TOUCH_CUTOFF_DISTANCE) {
               // For testing click distance/etc
 //              Toast.makeText(MapsActivity.this, googlePlace.get("place_name"), Toast.LENGTH_SHORT).show();
               Intent intent = new Intent(this, LandmarkPage.class);
