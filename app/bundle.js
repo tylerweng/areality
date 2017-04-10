@@ -197,6 +197,10 @@ var configurePassport = function configurePassport() {
   _passport2.default.use('local-signin', new LocalStrategy({
     usernameField: 'email'
   }, function (email, password, done) {
+    email = req.body.email || req.query.email;
+    console.log("email: ");
+    console.log(email);
+
     _user2.default.findOne({ email: email }, function (err, user) {
       if (err) return done(err);
       if (!user) return done(null, false, { error: "That user could not be found" });
