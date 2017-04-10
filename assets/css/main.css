@@ -2771,14 +2771,12 @@
 
 		.spotlight .image {
 			width: 30%;
-			border-radius: 100%;
 			margin: 0 3em 0 0;
 			display: block;
 		}
 
 			.spotlight .image img {
 				display: block;
-				border-radius: 100%;
 				width: 100%;
 			}
 
