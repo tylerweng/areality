@@ -146,6 +146,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     return seenLandmarks.contains(landmarkId);
   }
 
+
+  private void addLandmark(String landmarkId) throws Exception {
+    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
+    String username = pref.getString("username", "");
+    String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
+            + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
+    HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
+
+    JSONObject result = new JSONObject(pr.execute());
+
+    if (result.has("error")) {
+      Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
+    } else {
+      SharedPreferences.Editor editor = pref.edit();
+      int newSize = pref.getInt("landmark_ids_size", 0) + 1;
+      editor.putInt("landmark_ids_size", newSize);
+      editor.putString("landmark_id_" + newSize, landmarkId);
+      seenLandmarks.add(landmarkId);
+    }
+  }
+
+  private void addPoints(int points) throws Exception {
+    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
+    String username = pref.getString("username", "");
+    String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
+                         + "&points=" + URLEncoder.encode(String.valueOf(points), "UTF-8");
+    HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addCoins", urlParameters, "POST");
+
+    JSONObject result = new JSONObject(pr.execute());
+
+    if (result.has("error")) {
+      Toast.makeText(getBaseContext(), "Could not add points", Toast.LENGTH_LONG).show();
+    } else {
+      SharedPreferences.Editor editor = pref.edit();
+      int newPoints = pref.getInt("points", 0);
+      newPoints += points;
+      editor.putInt("points", newPoints);
+      editor.commit();
+    }
+  }
+
   private boolean CheckGooglePlayServices() {
     GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
     int result = googleAPI.isGooglePlayServicesAvailable(this);
