@@ -37,16 +37,14 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class PhotoCube {
-    /*
- * A photo cube with 6 pictures (textures) on its 6 faces.
- */
 
     private FloatBuffer vertexBuffer;  // Vertex Buffer
     private FloatBuffer texBuffer;     // Texture Coords Buffer
     private MediaStore.Images.Media mstore = new MediaStore.Images.Media();
 
     private int numFaces = 6;
-    private int[] imageFileIDs = {  // Image file IDs
+    //Backup images
+    private int[] imageFileIDs = {
             R.drawable.pic1,
             R.drawable.pic2,
             R.drawable.pic3,
@@ -68,6 +66,7 @@ public class PhotoCube {
 
         // Read images. Find the aspect ratio and adjust the vertices accordingly.
         for (int face = 0; face < numFaces; face++) {
+            //if images passed in, use these as cube faces
             if (urlsLength > face) {
                 try {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -78,8 +77,6 @@ public class PhotoCube {
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     bitmap[face] = BitmapFactory.decodeStream(input);
-                    String dummy = "sdlf";
-
                 } catch (IOException e) {
                 }
             }
@@ -119,7 +116,7 @@ public class PhotoCube {
                     faceLeft,  faceTop,    0.0f,  // 2. left-top-front
                     faceRight, faceTop,    0.0f,  // 3. right-top-front
             };
-            vertexBuffer.put(vertices);  // Populate
+            vertexBuffer.put(vertices);
         }
         vertexBuffer.position(0);    // Rewind
 
