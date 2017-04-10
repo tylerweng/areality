@@ -70,7 +70,7 @@ public class LoadingScreenActivity extends Activity
         protected void onPostExecute(Void result)
         {
             progressDialog.dismiss();
-            Intent intent = new Intent(context, MapsActivity.class);
+            Intent intent = new Intent(context, SignupActivity.class);
             startActivity(intent);
         }
     }
