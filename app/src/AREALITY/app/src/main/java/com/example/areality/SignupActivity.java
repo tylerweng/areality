@@ -2,6 +2,7 @@ package com.example.areality;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -44,8 +45,15 @@ public class SignupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
-        ButterKnife.bind(this);
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        if (pref.getString("username", "").length() == 0) {
+            setContentView(R.layout.activity_signup);
+            ButterKnife.bind(this);
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            startActivityForResult(intent, REQUEST_MAP);
+        }
     }
 
     public void signup() throws Exception {
@@ -88,7 +96,7 @@ public class SignupActivity extends Activity {
                              + "&email=" + newEmail.toString()
                              + "&password=" + URLEncoder.encode(password, "UTF-8");
 
-        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
+        HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/signup", urlParameters, "POST");
         JSONObject result = new JSONObject(pr.execute());
 
         if (result.has("error")) {
@@ -101,6 +109,16 @@ public class SignupActivity extends Activity {
             }
         } else {
             Log.d(TAG, "user: " + result);
+
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            Log.d(TAG, "points: " + result.get("points"));
+            editor.putString("username", result.get("username").toString());
+            editor.putString("email", result.get("email").toString());
+            editor.putInt("points", Integer.valueOf(result.get("points").toString()));
+            // add badges
+            editor.commit();
+
             onSignupSuccess();
         }
     }
