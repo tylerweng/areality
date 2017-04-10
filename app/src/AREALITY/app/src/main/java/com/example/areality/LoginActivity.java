@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.net.URLEncoder;
+
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -17,6 +20,7 @@ import butterknife.OnClick;
 
 public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
+    private static final int REQUEST_MAP = 0;
     private static final int REQUEST_SIGNUP = 0;
 
     @BindView(R.id.loginEmail) EditText _emailText;
@@ -24,7 +28,11 @@ public class LoginActivity extends Activity {
     @BindView(R.id.loginButton) Button _loginButton;
 
     @OnClick(R.id.loginButton) void submit() {
-        login();
+        try {
+            login();
+        } catch(Exception e) {
+            Log.d(TAG, "request could not be completed: " + e);
+        }
     }
 
     @OnClick(R.id.signupLink) void switchToSignup() {
@@ -39,7 +47,7 @@ public class LoginActivity extends Activity {
         ButterKnife.bind(this);
     }
 
-    public void login() {
+    public void login() throws Exception {
         Log.d(TAG, "Login");
 
         if (!validate()) {
@@ -61,7 +69,47 @@ public class LoginActivity extends Activity {
         Log.d(TAG, email);
         Log.d(TAG, password);
 
-        // implement login logic
+        // make HTTP post request
+        String[] emailChars = email.split("");
+        StringBuilder newEmail = new StringBuilder();
+
+        for (int i = 0; i < emailChars.length; i++) {
+            if (emailChars[i].equals(".")) {
+                newEmail.append("%2E");
+            } else {
+                newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
+            }
+        }
+
+        String urlParameters = "email=" + newEmail.toString()
+                             + "&password=" + URLEncoder.encode(password, "UTF-8");
+
+        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/login", urlParameters);
+
+        JSONObject result = new JSONObject(pr.execute());
+
+        if (result.has("error")) {
+            Log.d(TAG, "error: " + result.getString("error"));
+            progressDialog.hide();
+            if (result.getString("error").equals("That user could not be found")) {
+                onUserNotFound();
+            } else {
+                onIncorrectPassword();
+            }
+        } else {
+            Log.d(TAG, "user: " + result);
+            onLoginSuccess();
+        }
+    }
+
+    public void onUserNotFound() {
+        Toast.makeText(getBaseContext(), "That user could not be found", Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
+    }
+
+    public void onIncorrectPassword() {
+        _passwordText.setError("That password is incorrect");
+        _loginButton.setEnabled(true);
     }
 
     public void onLoginFailed() {
@@ -70,9 +118,8 @@ public class LoginActivity extends Activity {
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivityForResult(intent, REQUEST_MAP);
     }
 
     public boolean validate() {

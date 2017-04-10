@@ -9,14 +9,9 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  User.findOne({ username: req.params.username.toLowerCase() }, (err, user) => {
+  User.findOne({ username: req.username }, (err, user) => {
     res.json({ user });
   });
-};
-
-export const postUser = (req, res) => {
-  console.log(req);
-  res.json(req.user);
 };
 
 export const deleteUser = (req, res) => {

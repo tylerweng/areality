@@ -14,32 +14,46 @@ const configurePassport = () => {
     });
   });
 
-  passport.use('local-register', new LocalStrategy(
-    (username, password, done) => {
+  passport.use('local-register', new LocalStrategy({
+      passReqToCallback: true
+    },
+    (req, username, password, done) => {
       username = username.toLowerCase();
-      User.findOne({ username: username }, (err, user) => {
+      const email = req.body.email || req.query.email;
+
+      User.findOne({ $or: [{ username: username }, { email: email }] }, (err, user) => {
         if (err) return done(err);
-        if (user) return done(null, false, { message: "That username is taken." });
+        if (user) return done(null, false, {
+          error: user.username == username ? "That username is taken" : "That email is already registered"
+        });
 
         const newUser = new User();
         newUser.username = username;
+        newUser.email = email;
         newUser.passwordDigest = newUser.generateHash(password);
 
         newUser.save(err => {
           if (err) return done(err);
-          return done(null, newUser);
+          return done(null, newUser, { success: `Welcome, ${newUser.username}!` });
         });
       });
     }
   ));
 
-  passport.use('local-signin', new LocalStrategy(
-    (username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
+  passport.use('local-signin', new LocalStrategy({
+      usernameField: 'email',
+      passReqToCallback: true
+    },
+    (req, email, password, done) => {
+      email = req.body.email || req.query.email;
+      console.log("email: ");
+      console.log(email);
+
+      User.findOne({ email: email }, (err, user) => {
         if (err) return done(err);
-        if (!user) return done(null, false, { message: "That user could not be found." });
-        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { message: "Incorrect password." });
-        return done(null, user);
+        if (!user) return done(null, false, { error: "That user could not be found" });
+        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
+        return done(null, user, { success: `Welcome, ${user.username}!` });
       });
     }
   ));

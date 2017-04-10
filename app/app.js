@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import flash from 'connect-flash';
 import passport from 'passport';
 import routes from './controllers/routes';
 import configurePassport from './config/passport';
@@ -17,8 +19,10 @@ mongoose.connect(process.env.MLAB_URI, err => {
   configurePassport();
 
   app.use(express.static(__dirname + '/assets'));
+  app.use(cookieParser(process.env.SESSION_SECRET));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+  app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session());
 

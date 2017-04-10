@@ -10,16 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import java.net.*;
-import java.io.*;
+import java.net.URLEncoder;
 
 public class SignupActivity extends Activity {
     private static final String TAG = "SignupActivity";
     private static final int REQUEST_LOGIN = 0;
+    private static final int REQUEST_MAP = 0;
 
     @BindView(R.id.signupName) EditText _nameText;
     @BindView(R.id.signupEmail) EditText _emailText;
@@ -32,7 +34,11 @@ public class SignupActivity extends Activity {
     }
 
     @OnClick(R.id.signupButton) void submit() {
-        signup();
+        try {
+            signup();
+        } catch(Exception e) {
+            Log.d(TAG, "request could not be completed: " + e);
+        }
     }
 
     @Override
@@ -42,7 +48,7 @@ public class SignupActivity extends Activity {
         ButterKnife.bind(this);
     }
 
-    public void signup() {
+    public void signup() throws Exception {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
@@ -66,13 +72,52 @@ public class SignupActivity extends Activity {
         Log.d(TAG, email);
         Log.d(TAG, password);
 
-        // implement signup logic
+        // make HTTP post request
+        String[] emailChars = email.split("");
+        StringBuilder newEmail = new StringBuilder();
+
+        for (int i = 0; i < emailChars.length; i++) {
+            if (emailChars[i].equals(".")) {
+                newEmail.append("%2E");
+            } else {
+                newEmail.append(URLEncoder.encode(emailChars[i], "UTF-8"));
+            }
+        }
+
+        String urlParameters = "username=" + URLEncoder.encode(name, "UTF-8")
+                             + "&email=" + newEmail.toString()
+                             + "&password=" + URLEncoder.encode(password, "UTF-8");
+
+        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/signup", urlParameters);
+        JSONObject result = new JSONObject(pr.execute());
+
+        if (result.has("error")) {
+            Log.d(TAG, "error: " + result.getString("error"));
+            progressDialog.hide();
+            if (result.getString("error").equals("That username is taken")) {
+                onUsernameTaken();
+            } else {
+                onEmailRegistered();
+            }
+        } else {
+            Log.d(TAG, "user: " + result);
+            onSignupSuccess();
+        }
     }
 
     public void onSignupSuccess() {
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivityForResult(intent, REQUEST_MAP);
+    }
+
+    public void onUsernameTaken() {
+        _nameText.setError("That username is taken");
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
+    }
+
+    public void onEmailRegistered() {
+        _emailText.setError("That email is already registered");
+        _signupButton.setEnabled(true);
     }
 
     public void onSignupFailed() {
