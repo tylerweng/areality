@@ -85,7 +85,7 @@ public class LandmarkPage extends Activity {
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         ratingBar.setRating(rating);
 
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i < 6 && i < reviews.size() + 1; i++) {
             Hashtable review = reviews.get(i-1);
             View child = layout.getChildAt(i);
 
