@@ -479,7 +479,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
               closestPlaceToTouch = googlePlace;
             }
           }
-          
+
           if(closestPlaceToTouch != null) {
             Intent intent = new Intent(this, LandmarkPage.class);
             String landmarkId = closestPlaceToTouch.get("place_id");
@@ -526,14 +526,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   public void onResume() {
     super.onResume();
 
-//    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//      if (ContextCompat.checkSelfPermission(this,
-//          Manifest.permission.ACCESS_FINE_LOCATION)
-//          == PackageManager.PERMISSION_GRANTED) {
-//        buildGoogleApiClient();
-//      }
-//    } else {
-//      buildGoogleApiClient();
-//    }
+    if(mGoogleApiClient == null) {
+      Log.d("onResume", "api client is null");
+    } else if(!mGoogleApiClient.isConnected()) {
+      Log.d("onResume", "reconnecting google api client");
+      mGoogleApiClient.connect();
+    } else {
+      Log.d("onResume", "asking google api client for location updates");
+      if (ContextCompat.checkSelfPermission(this,
+          Manifest.permission.ACCESS_FINE_LOCATION)
+          == PackageManager.PERMISSION_GRANTED) {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+      }
+    }
   }
 }
