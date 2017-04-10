@@ -2,6 +2,7 @@ package com.example.areality;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -204,6 +205,9 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        Log.d("MapActivity", "username here on map: " + pref.getString("username", null));
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {

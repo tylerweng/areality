@@ -2,6 +2,7 @@ package com.example.areality;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -84,7 +85,7 @@ public class LoginActivity extends Activity {
         String urlParameters = "email=" + newEmail.toString()
                              + "&password=" + URLEncoder.encode(password, "UTF-8");
 
-        PostRequest pr = new PostRequest("https://areality.herokuapp.com/api/login", urlParameters);
+        HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/login", urlParameters, "POST");
 
         JSONObject result = new JSONObject(pr.execute());
 
@@ -98,6 +99,15 @@ public class LoginActivity extends Activity {
             }
         } else {
             Log.d(TAG, "user: " + result);
+
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            Log.d(TAG, "points: " + result.get("points"));
+            editor.putString("username", result.get("username").toString());
+            editor.putString("email", result.get("email").toString());
+            editor.putInt("points", Integer.valueOf(result.get("points").toString()));
+            // add badges
+            editor.commit();
             onLoginSuccess();
         }
     }

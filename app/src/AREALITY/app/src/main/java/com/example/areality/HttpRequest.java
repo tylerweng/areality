@@ -14,19 +14,21 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Terry on 4/9/17.
  */
 
-public class PostRequest {
+public class HttpRequest {
     private static final String TAG = "PostRequest";
     private String requestUrl;
     private String requestParams;
+    private String requestMethod;
 
-    public PostRequest(String url, String params) {
+    public HttpRequest(String url, String params, String method) {
         requestUrl = url;
         requestParams = params;
+        requestMethod = method;
     }
 
     public String execute() throws Exception {
-        PostTask pu = new PostTask();
-        return pu.execute(requestParams).get();
+        PostTask pt = new PostTask();
+        return pt.execute(requestParams).get();
     }
 
     private class PostTask extends AsyncTask<String, String, String> {
@@ -37,7 +39,7 @@ public class PostRequest {
                 URL areality = new URL(requestUrl);
                 HttpsURLConnection con = (HttpsURLConnection) areality.openConnection();
 
-                con.setRequestMethod("POST");
+                con.setRequestMethod(requestMethod);
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");
                 con.setDoOutput(true);
 
@@ -48,7 +50,7 @@ public class PostRequest {
                 dos.close();
 
                 int responseCode = con.getResponseCode();
-                Log.d(TAG, "\nSending 'POST' request to URL: " + areality);
+                Log.d(TAG, "\nSending '" + requestMethod + "' request to URL: " + areality);
                 Log.d(TAG, "Post parameters: " + params[0]);
                 Log.d(TAG, "Response code: " + responseCode);
 
