@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -138,18 +139,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
 
       seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
-//      Log.d(TAG, "size of seen: " + String.valueOf(seenLandmarks.size()));
-//      Log.d(TAG, "contains 25?: " + String.valueOf(seenLandmarks.contains("25")));
+
+      // for testing
+      try {
+          addLandmark("weflknasd");
+      } catch(Exception e) {
+          Log.d(TAG, "error: " + e);
+      }
   }
 
   private boolean seenLandmark(String landmarkId) {
       return seenLandmarks.contains(landmarkId);
   }
 
-  private void addLandmark(String landmarkId) {
-      HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/", urlParameters, "POST");
+  private void addLandmark(String landmarkId) throws Exception {
+      SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
+      String username = pref.getString("username", "");
+      String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
+                           + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
+      HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
 
       JSONObject result = new JSONObject(pr.execute());
+
+      if (result.has("error")) {
+          Log.d(TAG, "extreme error here");
+          Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
+      } else {
+          seenLandmarks.add(landmarkId);
+      }
   }
 
   private boolean CheckGooglePlayServices() {
