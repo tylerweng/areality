@@ -1,6 +1,7 @@
 package com.example.areality;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -39,9 +40,17 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
     GoogleApiClient.ConnectionCallbacks,
@@ -49,62 +58,99 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     View.OnTouchListener,
     LocationListener {
 
-  public static final String LANDMARK_ID = "com.example.areality.MESSAGE";
+    public static final String LANDMARK_ID = "com.example.areality.MESSAGE";
+    private static final String TAG = "MapsActivity";
 
-  private float mAngle;
-  private float mPreviousX;
-  private float mPreviousY;
-  private double mLat;
-  private double mLong;
+    private float mAngle;
+    private float mPreviousX;
+    private float mPreviousY;
+    private double mLat;
+    private double mLong;
 
-  private float mDownX;
-  private float mDownY;
-  private Date mDownTime;
-  private final float TOUCH_CLICK_CUTOFF_TIME = 1000;
-  private final float TOUCH_CLICK_CUTOFF_LENGTH = 15;
-  private final double TOUCH_CUTOFF_DISTANCE = 0.0025;
-  private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 0.0004;
+    private float mDownX;
+    private float mDownY;
+    private Date mDownTime;
+    private final float TOUCH_CLICK_CUTOFF_TIME = 1000;
+    private final float TOUCH_CLICK_CUTOFF_LENGTH = 15;
+    private final double TOUCH_CUTOFF_DISTANCE = 0.0025;
+    private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 0.0004;
 
-  private GoogleMap mMap;
-  private int PROXIMITY_RADIUS = 1000;
-  GoogleApiClient mGoogleApiClient;
-  Location mLastLocation;
-  Marker mCurrLocationMarker;
-  LocationRequest mLocationRequest;
+    private GoogleMap mMap;
+    private int PROXIMITY_RADIUS = 1000;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    LocationRequest mLocationRequest;
 
-  private Projection projection;
-  private Circle mClickDisplay;
+    private Projection projection;
+    private Circle mClickDisplay;
 
-  private GetNearbyPlacesData getNearbyPlacesData;
+    private GetNearbyPlacesData getNearbyPlacesData;
+
+    private static final int REQUEST_PROFILE = 0;
+    private Set<String> seenLandmarks;
+
+    @OnClick(R.id.profileButton) void switchToProfile() {
+        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivityForResult(intent, 0);
+    }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_maps);
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_maps);
+      ButterKnife.bind(this);
 
-    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      checkLocationPermission();
-    }
+      if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+          checkLocationPermission();
+      }
 
-    //Check if Google Play Services Available or not
-    if (!CheckGooglePlayServices()) {
-      Log.d("onCreate", "Finishing test case since Google Play Services are not available");
-      finish();
-    } else {
-      Log.d("onCreate", "Google Play Services available.");
-    }
+      // Check if Google Play Services Available or not
+      if (!CheckGooglePlayServices()) {
+          Log.d("onCreate", "Finishing test case since Google Play Services are not available");
+          finish();
+      } else {
+          Log.d("onCreate", "Google Play Services available.");
+      }
 
-    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.map);
-    mapFragment.getMapAsync(this);
+      // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+      SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+          .findFragmentById(R.id.map);
+      mapFragment.getMapAsync(this);
 
-    mAngle = 0;
-    View view = findViewById(R.id.map_overlay);
-    view.setOnTouchListener(this);
+      mAngle = 0;
+      View view = findViewById(R.id.map_overlay);
+      view.setOnTouchListener(this);
+
+      loadSeenLandmarks();
   }
 
+  private void loadSeenLandmarks() {
+      SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+      int size = pref.getInt("landmark_ids_size", 0);
+      Log.d(TAG, "initial size: " + String.valueOf(size));
 
+      String[] seenArray = new String[size];
+      for (int i = 0; i < size; i++) {
+          seenArray[i] = pref.getString("landmark_id_" + i, null);
+      }
+
+      Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
+
+      seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
+//      Log.d(TAG, "size of seen: " + String.valueOf(seenLandmarks.size()));
+//      Log.d(TAG, "contains 25?: " + String.valueOf(seenLandmarks.contains("25")));
+  }
+
+  private boolean seenLandmark(String landmarkId) {
+      return seenLandmarks.contains(landmarkId);
+  }
+
+  private void addLandmark(String landmarkId) {
+      HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/", urlParameters, "POST");
+
+      JSONObject result = new JSONObject(pr.execute());
+  }
 
   private boolean CheckGooglePlayServices() {
     GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();

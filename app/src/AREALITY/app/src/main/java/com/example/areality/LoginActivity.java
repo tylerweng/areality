@@ -106,8 +106,21 @@ public class LoginActivity extends Activity {
             editor.putString("username", result.get("username").toString());
             editor.putString("email", result.get("email").toString());
             editor.putInt("points", Integer.valueOf(result.get("points").toString()));
-            // add badges
-            editor.commit();
+
+            // add landmark ids
+            String[] landmarkIds = result.get("landmarkIds").toString().split(",");
+            editor.putInt("landmark_ids_size", landmarkIds.length);
+            for (int i = 0; i < landmarkIds.length; i++) {
+                if (i == 0) {
+                    editor.putString("landmark_id_" + i, landmarkIds[i].substring(1));
+                } else if (i == landmarkIds.length - 1) {
+                    editor.putString("landmark_id_" + i, landmarkIds[i].substring(0, landmarkIds[i].length() - 1));
+                } else {
+                    editor.putString("landmark_id_" + i, landmarkIds[i]);
+                }
+            }
+
+            editor.apply();
             onLoginSuccess();
         }
     }

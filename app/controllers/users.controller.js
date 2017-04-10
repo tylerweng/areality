@@ -40,11 +40,11 @@ export const addLandmark = (req, res) => {
 
   User.findOneAndUpdate(
     { username: username.toLowerCase() },
-    { $push: { landmarkIds: parseInt(landmark) } },
+    { $push: { landmarkIds: landmark } },
     (err, user) => {
       if (err) res.status(500).send(err);
       if (!user) res.status(401).json({ error: "User not found" });
-      user.landmarkIds = [...user.landmarkIds, parseInt(landmark)];
+      user.landmarkIds = [...user.landmarkIds, landmark];
       res.status(200).json(user);
     }
   );
