@@ -1,9 +1,9 @@
 package com.example.areality;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
@@ -50,7 +50,6 @@ public class LandmarkPage extends Activity {
         List<Hashtable> reviewList = new ArrayList<>();
 
         String name = "";
-        String weekdayText = "";
         String rating = "0.0";
         String schedule = "";
 
@@ -95,9 +94,9 @@ public class LandmarkPage extends Activity {
 
                 for (int x = 0; x < row.getChildCount(); x++) {
                     TextView view = (TextView) row.getChildAt(x);
-                    String entry = review.get("authorName").toString() + "\n"
+                    String entry = "<b>"+review.get("authorName").toString() + "</b>" + "<br></br>"
                                  + review.get("reviewText").toString();
-                    view.setText(entry);
+                    view.setText((Html.fromHtml(entry)));
                 }
             }
         }
