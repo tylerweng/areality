@@ -34,7 +34,6 @@
 
         <activity android:name=".MapsActivity" />
         <activity android:name=".LandmarkPage" />
-        <activity android:name=".MyGLActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity" />
     </application>
