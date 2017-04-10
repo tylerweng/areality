@@ -94,7 +94,7 @@ public class LandmarkPage extends Activity {
 
                 for (int x = 0; x < row.getChildCount(); x++) {
                     TextView view = (TextView) row.getChildAt(x);
-                    String entry = "<b>"+review.get("authorName").toString() + "</b>" + "<br></br>"
+                    String entry = "<h2>"+review.get("authorName").toString() + "</h2>" + "<br></br>"
                                  + review.get("reviewText").toString();
                     view.setText((Html.fromHtml(entry)));
                 }
@@ -136,11 +136,11 @@ public class LandmarkPage extends Activity {
 
     private String getSchedule(JSONObject jsonObject) throws JSONException{
         JSONArray scheduleArr = jsonObject.getJSONObject("result").getJSONObject("opening_hours").getJSONArray("weekday_text");
-        String schedule = "Opening Times";
+        String schedule = "<h3>"+"Opening Times" + "</h3>" + "<br></br>";
 
         for (int i =0; i < scheduleArr.length(); i++){
             String time = scheduleArr.getString(i);
-            schedule += "\n" + time;
+            schedule += "<br></br>" + time;
         }
         return schedule;
     }
