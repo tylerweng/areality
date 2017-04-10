@@ -6,7 +6,7 @@ AREALITY is a group project by Diane Zheng, Michael Hooton, Terry O'Shea and Tyl
 
 ## Overall Structure
 
-AREALITY was built using a Java/Android front-end client and a Node.js backend following the Express.js application framework with a MongoDB database.
+AREALITY was built in one week using a Java/Android front-end client and a Node.js backend following the Express.js application framework with a MongoDB database.
 
 ### Technologies & Frameworks
 
@@ -80,18 +80,24 @@ public boolean onTouchEvent(MotionEvent e) {
 
 Users accumulate points upon discovery and entry of a new landmark. Users are also awarded badges upon accomplishing certain feats (e.g. "Walked 5 km", "Explored 3 days in a row ", etc.).
 
+## Goals
+
+AREALITY was the first major collaborative coding project for all developers as well as each of our first's ventures into Android development. As such, the two major goals for this project were:
+
+- [x] Learning the fundamentals of Android development and familiarizing ourselves with Android Studio
+- [x] Adhering to an effective collaborative workflow and working together to rapidly push iterative code
+
 ## New Directions
 
 AREALITY is built upon an easily extensible foundation and can be used as a sandbox to create any sort of app based upon discovery and navigation. Future avenues include:
 
 ### Integration with OpenTable API
 
-Some restaurants are truly historic and have earned their place as a landmark in AREALITY. Users will be able to make reservations to these restaurants upon visiting their landmark page.
+Certain restaurants are truly historic and have earned their place as a landmark in AREALITY. Users will be able to make reservations to these restaurants upon visiting their landmark page.
 
 ### AR
 
 Users will be able to see information from a nearby landmark by looking at it through their phone's camera a la Yelp Monocle.
-
 
 ### Integration with Google Account
 

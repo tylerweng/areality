@@ -139,6 +139,15 @@ public class PhotoCube {
         texBuffer.position(0);   // Rewind
     }
 
+    //future add filter
+    public Bitmap changePic(Bitmap bitmap) {
+        int W = bitmap.getWidth();
+        int H = bitmap.getHeight();
+        int px;
+
+        return bitmap;
+    }
+
     // Render the shape
     public void draw(GL10 gl) {
         gl.glFrontFace(GL10.GL_CCW);
