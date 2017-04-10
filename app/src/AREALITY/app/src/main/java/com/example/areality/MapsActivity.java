@@ -159,6 +159,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       Log.d(TAG, "extreme error here");
       Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
     } else {
+      SharedPreferences.Editor editor = pref.edit();
+      int newSize = pref.getInt("landmark_ids_size", 0) + 1;
+      editor.putInt("landmark_ids_size", newSize);
+      editor.putString("landmark_id_" + newSize, landmarkId);
       seenLandmarks.add(landmarkId);
     }
   }
