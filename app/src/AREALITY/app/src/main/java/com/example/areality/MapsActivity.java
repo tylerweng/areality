@@ -15,7 +15,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -101,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     View view = findViewById(R.id.map_overlay);
     view.setOnTouchListener(this);
   }
+
 
 
   private boolean CheckGooglePlayServices() {
