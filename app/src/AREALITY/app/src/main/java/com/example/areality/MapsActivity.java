@@ -1,6 +1,7 @@
 package com.example.areality;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -39,9 +40,18 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
     GoogleApiClient.ConnectionCallbacks,
@@ -50,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationListener {
 
   public static final String LANDMARK_ID = "com.example.areality.MESSAGE";
+  private static final String TAG = "MapsActivity";
 
   private float mAngle;
   private float mPreviousX;
@@ -77,10 +88,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
   private GetNearbyPlacesData getNearbyPlacesData;
 
+  private static final int REQUEST_PROFILE = 0;
+  private Set<String> seenLandmarks;
+
+  @OnClick(R.id.profileButton) void switchToProfile() {
+    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+    startActivityForResult(intent, 0);
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_maps);
+    ButterKnife.bind(this);
 
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       checkLocationPermission();
@@ -102,9 +122,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     mAngle = 0;
     View view = findViewById(R.id.map_overlay);
     view.setOnTouchListener(this);
+
+    loadSeenLandmarks();
   }
 
+  private void loadSeenLandmarks() {
+    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+    int size = pref.getInt("landmark_ids_size", 0);
+    Log.d(TAG, "initial size: " + String.valueOf(size));
 
+    String[] seenArray = new String[size];
+    for (int i = 0; i < size; i++) {
+      seenArray[i] = pref.getString("landmark_id_" + i, null);
+    }
+
+    Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
+
+    seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
+  }
+
+  private boolean seenLandmark(String landmarkId) {
+    return seenLandmarks.contains(landmarkId);
+  }
+
+  private void addLandmark(String landmarkId) throws Exception {
+    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
+    String username = pref.getString("username", "");
+    String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
+            + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
+    HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
+
+    JSONObject result = new JSONObject(pr.execute());
+
+    if (result.has("error")) {
+      Log.d(TAG, "extreme error here");
+      Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
+    } else {
+      seenLandmarks.add(landmarkId);
+    }
+  }
 
   private boolean CheckGooglePlayServices() {
     GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();

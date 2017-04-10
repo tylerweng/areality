@@ -46,6 +46,12 @@
             android:layout_height="30dp"
             android:background="@drawable/gradientmap"/>
 
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profileText" />
+
     </RelativeLayout>
 
 </LinearLayout>

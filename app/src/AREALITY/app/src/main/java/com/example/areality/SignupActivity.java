@@ -116,8 +116,10 @@ public class SignupActivity extends Activity {
             editor.putString("username", result.get("username").toString());
             editor.putString("email", result.get("email").toString());
             editor.putInt("points", Integer.valueOf(result.get("points").toString()));
-            // add badges
-            editor.commit();
+
+            // add landmark ids
+            editor.putInt("landmark_ids_size", 0);
+            editor.apply();
 
             onSignupSuccess();
         }
