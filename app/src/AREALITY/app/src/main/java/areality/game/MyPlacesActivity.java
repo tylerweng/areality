@@ -49,7 +49,7 @@ import butterknife.OnClick;
 public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private static final String LANDMARK_ID = "Landmark Marker";
+    private static final String LANDMARK_ID = "com.example.areality.MESSAGE";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private List<String> landmarkIds = new ArrayList<>();
     GoogleApiClient mGoogleApiClient;
