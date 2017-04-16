@@ -22,19 +22,22 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="areality.game.MainActivity" />
-        <activity android:name="areality.game.LoadingScreenActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".LoadingScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="areality.game.MapsActivity"></activity>
-        <activity android:name="areality.game.LandmarkPage"></activity>
-        <activity android:name="areality.game.SignupActivity" />
-        <activity android:name="areality.game.LoginActivity" />
-        <activity android:name="areality.game.ProfileActivity"></activity>
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".LandmarkPage" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".MyPlacesActivity">
+
+        </activity>
     </application>
 
 </manifest>

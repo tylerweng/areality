@@ -11,8 +11,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ProfileActivity extends Activity {
+
+    private static final int REQUEST_MY_PLACES = 0;
     private static final int REQUEST_MAP = 0;
     private static final int REQUEST_LOGIN = 0;
+
+    @OnClick(R.id.myPlacesButton) void myPlaces() {
+        Intent intent = new Intent(getApplicationContext(), MyPlacesActivity.class);
+        startActivityForResult(intent, REQUEST_MY_PLACES);
+    }
 
     @OnClick(R.id.toMapButton) void switchToMap() {
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
