@@ -38,7 +38,8 @@ import butterknife.OnClick;
 public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private List<String> landmarkIds = new ArrayList<>();
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -62,18 +63,9 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map2);
-        mapFragment.getMapAsync((OnMapReadyCallback) this);
+        mapFragment.getMapAsync(this);
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        int landmarkCount = pref.getInt("landmark_ids_size", 0);
-
-        List<String> landmarkIds = new ArrayList<>();
-
-        for (int i = 1; i <= landmarkCount; i++) {
-            String numString = Integer.toString(i);
-            String landmarkId = pref.getString("landmark_id_" + numString, "No Landmark Id!");
-            landmarkIds.add(landmarkId);
-        }
+        retrieveLandmarkIds();
 
         Toast.makeText(getBaseContext(), landmarkIds.get(0), Toast.LENGTH_LONG).show();
     }
@@ -86,11 +78,7 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        setMarkers();
     }
 
     public boolean checkLocationPermission() {
@@ -135,6 +123,25 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
             return false;
         }
         return true;
+    }
+
+    private void retrieveLandmarkIds() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        int landmarkCount = pref.getInt("landmark_ids_size", 0);
+
+        for (int i = 1; i <= landmarkCount; i++) {
+            String numString = Integer.toString(i);
+            String landmarkId = pref.getString("landmark_id_" + numString, "No Landmark Id!");
+            landmarkIds.add(landmarkId);
+        }
+    }
+
+    private void setMarkers() {
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
     }
 
 }
