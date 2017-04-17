@@ -4164,3 +4164,9 @@
 .fa-github, .fa-linkedin {
 	font-size: 24px !important;
 }
+
+#try-header {
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+}
