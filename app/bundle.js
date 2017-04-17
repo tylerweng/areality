@@ -113,17 +113,19 @@ Object.defineProperty(exports, "__esModule", {
 var mongoose = __webpack_require__(2);
 var bcrypt = __webpack_require__(14);
 
+var landmarkSchema = mongoose.Schema({
+  id: { type: String, trim: true, required: true },
+  lat: { type: String, trim: true, required: true },
+  lon: { type: String, trim: true, required: true }
+});
+
 var userSchema = mongoose.Schema({
   username: { type: String, trim: true, required: true },
   email: { type: String, trim: true, required: true },
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] },
-  landmarks: { type: [{
-      id: String,
-      lat: String,
-      lon: String
-    }], default: [] },
+  landmarks: { type: [landmarkSchema], default: [] },
   streak: { type: Number, default: 1 },
   lastLogin: { type: Date, default: Date.now() }
 });
