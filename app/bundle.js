@@ -402,6 +402,10 @@ var addLandmark = exports.addLandmark = function addLandmark(req, res) {
   var landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
   var landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
 
+  console.log('landmarkId: ' + landmarkId);
+  console.log('landmarkLat: ' + landmarkLat);
+  console.log('landmarkLon: ' + landmarkLon);
+
   var newLandmark = {
     id: landmarkId,
     lat: landmarkLat,

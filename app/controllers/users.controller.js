@@ -40,6 +40,10 @@ export const addLandmark = (req, res) => {
   const landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
   const landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
 
+  console.log(`landmarkId: ${landmarkId}`);
+  console.log(`landmarkLat: ${landmarkLat}`);
+  console.log(`landmarkLon: ${landmarkLon}`);
+
   const newLandmark = {
     id: landmarkId,
     lat: landmarkLat,
