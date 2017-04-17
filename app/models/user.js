@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] },
-  landmarks: { type: [landmarkSchema], default: [] },
+  landmarks: [landmarkSchema],
   streak: { type: Number, default: 1 },
   lastLogin: { type: Date, default: Date.now() }
 });
