@@ -7,7 +7,13 @@ const userSchema = mongoose.Schema({
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] },
-  landmarkIds: { type: [Number], default: [] }
+  landmarks: { type: [{
+    id: String,
+    lat: String,
+    lon: String
+  }], default: [] },
+  streak: { type: Number, default: 1 },
+  lastLogin: { type: Date, default: Date.now() }
 });
 
 userSchema.methods.generateHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
