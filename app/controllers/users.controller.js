@@ -9,13 +9,15 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  User.findOne({ username: req.username }, (err, user) => {
+  const username = req.body.username || req.query.username;
+  User.findOne({ username: username.toLowerCase() }, (err, user) => {
     res.json({ user });
   });
 };
 
 export const deleteUser = (req, res) => {
-  User.findOneAndDelete({ username: req.params.username.toLowerCase() }, (err, user) => {
+  const username = req.body.username || req.query.username;
+  User.findOneAndDelete({ username: username.toLowerCase() }, (err, user) => {
     res.json({ user });
   });
 }
@@ -36,15 +38,27 @@ export const addCoins = (req, res) => {
 
 export const addLandmark = (req, res) => {
   const username = req.body.username || req.query.username;
-  const landmark = req.body.landmark || req.query.landmark;
+  const landmarkId = req.body.landmarkId || req.query.landmarkId;
+  const landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
+  const landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
+
+  console.log(`landmarkId: ${landmarkId}`);
+  console.log(`landmarkLat: ${landmarkLat}`);
+  console.log(`landmarkLon: ${landmarkLon}`);
+
+  const newLandmark = {
+    id: landmarkId,
+    lat: landmarkLat,
+    lon: landmarkLon
+  };
 
   User.findOneAndUpdate(
     { username: username.toLowerCase() },
-    { $push: { landmarkIds: parseInt(landmark) } },
+    { $push: { landmarks: newLandmark } },
     (err, user) => {
       if (err) res.status(500).send(err);
       if (!user) res.status(401).json({ error: "User not found" });
-      user.landmarkIds = [...user.landmarkIds, parseInt(landmark)];
+      user.landmarks = [...user.landmarks, newLandmark];
       res.status(200).json(user);
     }
   );

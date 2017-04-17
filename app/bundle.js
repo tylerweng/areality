@@ -113,13 +113,21 @@ Object.defineProperty(exports, "__esModule", {
 var mongoose = __webpack_require__(2);
 var bcrypt = __webpack_require__(14);
 
-var userSchema = mongoose.Schema({
+var landmarkSchema = new mongoose.Schema({
+  id: String,
+  lat: String,
+  lon: String
+});
+
+var userSchema = new mongoose.Schema({
   username: { type: String, trim: true, required: true },
   email: { type: String, trim: true, required: true },
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] },
-  landmarkIds: { type: [Number], default: [] }
+  landmarks: { type: [landmarkSchema], default: [] },
+  streak: { type: Number, default: 1 },
+  lastLogin: { type: Date, default: Date.now() }
 });
 
 userSchema.methods.generateHash = function (password) {
@@ -370,13 +378,15 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  _user2.default.findOne({ username: req.username }, function (err, user) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOne({ username: username.toLowerCase() }, function (err, user) {
     res.json({ user: user });
   });
 };
 
 var deleteUser = exports.deleteUser = function deleteUser(req, res) {
-  _user2.default.findOneAndDelete({ username: req.params.username.toLowerCase() }, function (err, user) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOneAndDelete({ username: username.toLowerCase() }, function (err, user) {
     res.json({ user: user });
   });
 };
@@ -392,12 +402,24 @@ var addCoins = exports.addCoins = function addCoins(req, res) {
 
 var addLandmark = exports.addLandmark = function addLandmark(req, res) {
   var username = req.body.username || req.query.username;
-  var landmark = req.body.landmark || req.query.landmark;
+  var landmarkId = req.body.landmarkId || req.query.landmarkId;
+  var landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
+  var landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
 
-  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarkIds: parseInt(landmark) } }, function (err, user) {
+  console.log('landmarkId: ' + landmarkId);
+  console.log('landmarkLat: ' + landmarkLat);
+  console.log('landmarkLon: ' + landmarkLon);
+
+  var newLandmark = {
+    id: landmarkId,
+    lat: landmarkLat,
+    lon: landmarkLon
+  };
+
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarks: newLandmark } }, function (err, user) {
     if (err) res.status(500).send(err);
     if (!user) res.status(401).json({ error: "User not found" });
-    user.landmarkIds = [].concat(_toConsumableArray(user.landmarkIds), [parseInt(landmark)]);
+    user.landmarks = [].concat(_toConsumableArray(user.landmarks), [newLandmark]);
     res.status(200).json(user);
   });
 };
