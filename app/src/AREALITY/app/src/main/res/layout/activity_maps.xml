@@ -32,7 +32,7 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.example.areality.MapsActivity"
+            tools:context="com.example.areality.areality.MapsActivity"
             tools:layout="@layout/activity_maps" />
 
         <View
@@ -46,19 +46,15 @@
             android:layout_height="30dp"
             android:background="@drawable/gradientmap"/>
 
-        <RelativeLayout
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/profileButton"
             android:layout_width="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <Button
-                android:id="@+id/profileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/profileText" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:text="@string/profileText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 

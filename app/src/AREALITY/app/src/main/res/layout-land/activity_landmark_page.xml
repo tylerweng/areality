@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="com.example.areality.LandmarkPage"
+    tools:context="com.example.areality.areality.LandmarkPage"
     tools:layout_editor_absoluteY="73dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <com.example.areality.MyGLSurfaceView
+    <areality.game.MyGLSurfaceView
         android:id="@+id/glsurfaceview"
         android:layout_width="315dp"
         android:layout_height="218dp"

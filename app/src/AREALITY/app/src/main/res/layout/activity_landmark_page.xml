@@ -5,16 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="com.example.areality.LandmarkPage"
+    tools:context="areality.game.LandmarkPage"
     tools:layout_editor_absoluteY="73dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <com.example.areality.MyGLSurfaceView
+    <areality.game.MyGLSurfaceView
         android:id="@+id/glsurfaceview"
         android:layout_width="316dp"
         android:layout_height="245dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/my_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.433" />
 

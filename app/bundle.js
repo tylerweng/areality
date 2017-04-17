@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -111,14 +111,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var mongoose = __webpack_require__(2);
-var bcrypt = __webpack_require__(13);
+var bcrypt = __webpack_require__(14);
 
 var userSchema = mongoose.Schema({
   username: { type: String, trim: true, required: true },
   email: { type: String, trim: true, required: true },
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
-  badgeIds: { type: [Number], default: [] }
+  badgeIds: { type: [Number], default: [] },
+  landmarkIds: { type: [Number], default: [] }
 });
 
 userSchema.methods.generateHash = function (password) {
@@ -146,7 +147,7 @@ var _passport = __webpack_require__(0);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _passportLocal = __webpack_require__(14);
+var _passportLocal = __webpack_require__(15);
 
 var _passportLocal2 = _interopRequireDefault(_passportLocal);
 
@@ -232,11 +233,11 @@ var _express = __webpack_require__(1);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _users = __webpack_require__(12);
+var _users = __webpack_require__(13);
 
 var usersController = _interopRequireWildcard(_users);
 
-var _badges = __webpack_require__(11);
+var _badges = __webpack_require__(12);
 
 var badgesController = _interopRequireWildcard(_badges);
 
@@ -265,16 +266,6 @@ router.route('/signup').post(function (req, res, next) {
   })(req, res, next);
 });
 
-router.route('/error').get(function (req, res) {
-  res.json(req.session.flash);
-});
-
-// router.route('/login').post(passport.authenticate('local-signin', {
-//   successRedirect: '/api/profile',
-//   failureRedirect: '/api/error',
-//   failureFlash: true
-// }));
-
 router.route('/login').post(function (req, res, next) {
   _passport2.default.authenticate('local-signin', function (err, user, info) {
     if (err) {
@@ -287,19 +278,8 @@ router.route('/login').post(function (req, res, next) {
   })(req, res, next);
 });
 
-function logIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    console.log("in middleware, req.user: ");
-    console.log(req.user);
-
-    res.user = req.user;
-    return next();
-  }
-  console.log("was not authenticated");
-  console.log("req.user: ");
-  console.log(req.user);
-  return next();
-}
+router.route('/addCoins').post(usersController.addCoins);
+router.route('/addLandmark').post(usersController.addLandmark);
 
 exports.default = router;
 
@@ -319,16 +299,22 @@ module.exports = require("connect-flash");
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("dotenv");
+module.exports = require("cookie-parser");
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = require("express-session");
+module.exports = require("dotenv");
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-session");
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -353,7 +339,7 @@ var router = function router(app) {
 exports.default = router;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -362,7 +348,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.patchUser = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
+exports.addLandmark = exports.addCoins = exports.deleteUser = exports.getUser = exports.getUsers = undefined;
 
 var _passport = __webpack_require__(0);
 
@@ -373,6 +359,8 @@ var _user = __webpack_require__(4);
 var _user2 = _interopRequireDefault(_user);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var getUsers = exports.getUsers = function getUsers(req, res) {
   _user2.default.find({}, function (err, users) {
@@ -393,22 +381,41 @@ var deleteUser = exports.deleteUser = function deleteUser(req, res) {
   });
 };
 
-var patchUser = exports.patchUser = function patchUser(req, res) {};
+var addCoins = exports.addCoins = function addCoins(req, res) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $inc: { "points": req.body.points || req.query.points } }, { returnNewDocument: true }, function (err, user) {
+    if (err) res.status(500).send(err);
+    if (!user) res.status(401).json({ error: "User not found" });
+    res.status(200).json(user);
+  });
+};
 
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
+var addLandmark = exports.addLandmark = function addLandmark(req, res) {
+  var username = req.body.username || req.query.username;
+  var landmark = req.body.landmark || req.query.landmark;
 
-module.exports = require("bcrypt-nodejs");
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarkIds: parseInt(landmark) } }, function (err, user) {
+    if (err) res.status(500).send(err);
+    if (!user) res.status(401).json({ error: "User not found" });
+    user.landmarkIds = [].concat(_toConsumableArray(user.landmarkIds), [parseInt(landmark)]);
+    res.status(200).json(user);
+  });
+};
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-local");
+module.exports = require("bcrypt-nodejs");
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-local");
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -422,7 +429,7 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _expressSession = __webpack_require__(10);
+var _expressSession = __webpack_require__(11);
 
 var _expressSession2 = _interopRequireDefault(_expressSession);
 
@@ -430,7 +437,7 @@ var _bodyParser = __webpack_require__(7);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _cookieParser = __webpack_require__(16);
+var _cookieParser = __webpack_require__(9);
 
 var _cookieParser2 = _interopRequireDefault(_cookieParser);
 
@@ -452,7 +459,7 @@ var _passport4 = _interopRequireDefault(_passport3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(9).config({ silent: true });
+__webpack_require__(10).config({ silent: true });
 
 var app = (0, _express2.default)();
 
@@ -476,206 +483,6 @@ _mongoose2.default.connect(process.env.MLAB_URI, function (err) {
   });
 });
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/*!
- * cookie-parser
- * Copyright(c) 2014 TJ Holowaychuk
- * Copyright(c) 2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-
-
-/**
- * Module dependencies.
- * @private
- */
-
-var cookie = __webpack_require__(17);
-var signature = __webpack_require__(18);
-
-/**
- * Module exports.
- * @public
- */
-
-module.exports = cookieParser;
-module.exports.JSONCookie = JSONCookie;
-module.exports.JSONCookies = JSONCookies;
-module.exports.signedCookie = signedCookie;
-module.exports.signedCookies = signedCookies;
-
-/**
- * Parse Cookie header and populate `req.cookies`
- * with an object keyed by the cookie names.
- *
- * @param {string|array} [secret] A string (or array of strings) representing cookie signing secret(s).
- * @param {Object} [options]
- * @return {Function}
- * @public
- */
-
-function cookieParser(secret, options) {
-  return function cookieParser(req, res, next) {
-    if (req.cookies) {
-      return next();
-    }
-
-    var cookies = req.headers.cookie;
-    var secrets = !secret || Array.isArray(secret)
-      ? (secret || [])
-      : [secret];
-
-    req.secret = secrets[0];
-    req.cookies = Object.create(null);
-    req.signedCookies = Object.create(null);
-
-    // no cookies
-    if (!cookies) {
-      return next();
-    }
-
-    req.cookies = cookie.parse(cookies, options);
-
-    // parse signed cookies
-    if (secrets.length !== 0) {
-      req.signedCookies = signedCookies(req.cookies, secrets);
-      req.signedCookies = JSONCookies(req.signedCookies);
-    }
-
-    // parse JSON cookies
-    req.cookies = JSONCookies(req.cookies);
-
-    next();
-  };
-}
-
-/**
- * Parse JSON cookie string.
- *
- * @param {String} str
- * @return {Object} Parsed object or undefined if not json cookie
- * @public
- */
-
-function JSONCookie(str) {
-  if (typeof str !== 'string' || str.substr(0, 2) !== 'j:') {
-    return undefined;
-  }
-
-  try {
-    return JSON.parse(str.slice(2));
-  } catch (err) {
-    return undefined;
-  }
-}
-
-/**
- * Parse JSON cookies.
- *
- * @param {Object} obj
- * @return {Object}
- * @public
- */
-
-function JSONCookies(obj) {
-  var cookies = Object.keys(obj);
-  var key;
-  var val;
-
-  for (var i = 0; i < cookies.length; i++) {
-    key = cookies[i];
-    val = JSONCookie(obj[key]);
-
-    if (val) {
-      obj[key] = val;
-    }
-  }
-
-  return obj;
-}
-
-/**
- * Parse a signed cookie string, return the decoded value.
- *
- * @param {String} str signed cookie string
- * @param {string|array} secret
- * @return {String} decoded value
- * @public
- */
-
-function signedCookie(str, secret) {
-  if (typeof str !== 'string') {
-    return undefined;
-  }
-
-  if (str.substr(0, 2) !== 's:') {
-    return str;
-  }
-
-  var secrets = !secret || Array.isArray(secret)
-    ? (secret || [])
-    : [secret];
-
-  for (var i = 0; i < secrets.length; i++) {
-    var val = signature.unsign(str.slice(2), secrets[i]);
-
-    if (val !== false) {
-      return val;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Parse signed cookies, returning an object containing the decoded key/value
- * pairs, while removing the signed key from obj.
- *
- * @param {Object} obj
- * @param {string|array} secret
- * @return {Object}
- * @public
- */
-
-function signedCookies(obj, secret) {
-  var cookies = Object.keys(obj);
-  var dec;
-  var key;
-  var ret = Object.create(null);
-  var val;
-
-  for (var i = 0; i < cookies.length; i++) {
-    key = cookies[i];
-    val = obj[key];
-    dec = signedCookie(val, secret);
-
-    if (val !== dec) {
-      ret[key] = dec;
-      delete obj[key];
-    }
-  }
-
-  return ret;
-}
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = require("cookie");
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = require("cookie-signature");
 
 /***/ })
 /******/ ]);

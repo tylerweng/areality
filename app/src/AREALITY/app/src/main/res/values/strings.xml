@@ -11,4 +11,5 @@
     <string name="profileText">profile</string>
     <string name="toMapText">back</string>
     <string name="logoutText">log out</string>
+    <string name="myPlacesText">My Places</string>
 </resources>

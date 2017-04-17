@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.areality.ProfileActivity">
+    tools:context="areality.game.ProfileActivity">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -18,6 +18,12 @@
             android:orientation="vertical"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="0dp">
+
+            <Button
+                android:id="@+id/myPlacesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myPlacesText" />
 
             <Button
                 android:id="@+id/toMapButton"
