@@ -52,16 +52,6 @@ public class PhotoCube {
             //if images passed in, use these as cube faces
             if (urlsLength > face) {
                 try {
-//                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//                    StrictMode.setThreadPolicy(policy);
-//                    URL url = new URL(photos[face]);
-//                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                    connection.setDoInput(true);
-//                    connection.connect();
-//                    InputStream input = connection.getInputStream();
-//                    bitmap[face] = BitmapFactory.decodeStream(input);
-
-                    //much cleaner way to do this
                       bitmap[face] = BitmapFactory.decodeStream((InputStream)new URL(photos[face]).getContent());
                 } catch (IOException e) {
                 }
@@ -121,6 +111,7 @@ public class PhotoCube {
         }
         texBuffer.position(0);   // Rewind
     }
+
 
     //future add filter
     public Bitmap changePic(Bitmap bitmap) {

@@ -71,8 +71,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   private Date mDownTime;
   private final float TOUCH_CLICK_CUTOFF_TIME = 1000;
   private final float TOUCH_CLICK_CUTOFF_LENGTH = 15;
-  private final double TOUCH_CUTOFF_DISTANCE = 0.0025;
-  private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 0.0004;
+  private final double TOUCH_CUTOFF_DISTANCE = 25;
+  private final double LAT_LONG_TOUCH_CUTOFF_DISTANCE = 4;
 
   private GoogleMap mMap;
   private int PROXIMITY_RADIUS = 1000;

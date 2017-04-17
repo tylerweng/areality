@@ -35,30 +35,28 @@ import java.util.Set;
 public class LandmarkPage extends Activity {
 
     private static final String TAG = "LandmarkPage";
+    private String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
     private Set<String> seenLandmarks;
+    private String urlString;
+    private String result;
+    private JSONObject jsonObject;
+    private List<String> photoUrls = new ArrayList<>();
+    private List<Hashtable> reviewList = new ArrayList<>();
+    private String name;
+    private String rating;
+    private String schedule;
 
     private MyGLSurfaceView glView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_landmark_page);
 
-        String testPlaceId = "ChIJN1t_tDeuEmsRUsoyG83frY4";
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             testPlaceId= extras.getString("com.example.areality.MESSAGE");
         }
-
-        String urlString = getDetailUrl(testPlaceId);
-        String result = "";
-        JSONObject jsonObject = null;
-        List<String> photoUrls = new ArrayList<>();
-        List<Hashtable> reviewList = new ArrayList<>();
-
-        String name = "";
-        String rating = "0.0";
-        String schedule = "";
+        urlString = getDetailUrl(testPlaceId);
 
         try {
             result = makeHTTPRequest(urlString);
@@ -68,15 +66,11 @@ public class LandmarkPage extends Activity {
             schedule = getSchedule(jsonObject);
             reviewList = getReviewList(jsonObject);
             photoUrls = getPhotoUrlsList(jsonObject);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
-        String photos[] = new String[photoUrls.size()];
-        photos = photoUrls.toArray(photos);
-        setInfo(name,schedule,reviewList, photos, Float.valueOf(rating));
+        setInfo(name,schedule,reviewList, Float.valueOf(rating));
 
         try {
             addPoints(10);
@@ -91,6 +85,16 @@ public class LandmarkPage extends Activity {
         } catch (Exception e) {
             Log.d(TAG, "error: " + e);
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String photos[] = new String[photoUrls.size()];
+        photos = photoUrls.toArray(photos);
+        setPhotos(photos);
 
     }
 
@@ -154,9 +158,12 @@ public class LandmarkPage extends Activity {
         }
     }
 
-    private void setInfo(String name, String schedule, List<Hashtable> reviews, String[] photos, float rating){
+    private void setPhotos(String[] photos) {
         glView = (MyGLSurfaceView) findViewById(R.id.glsurfaceview);
         glView.setPhotos(photos);
+    }
+
+    private void setInfo(String name, String schedule, List<Hashtable> reviews, float rating){
         TableLayout layout = (TableLayout) findViewById(R.id.tableView);
 
         TextView title = (TextView) findViewById(R.id.name);
