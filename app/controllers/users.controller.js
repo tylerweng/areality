@@ -9,13 +9,15 @@ export const getUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  User.findOne({ username: req.username }, (err, user) => {
+  const username = req.body.username || req.query.username;
+  User.findOne({ username: username.toLowerCase() }, (err, user) => {
     res.json({ user });
   });
 };
 
 export const deleteUser = (req, res) => {
-  User.findOneAndDelete({ username: req.params.username.toLowerCase() }, (err, user) => {
+  const username = req.body.username || req.query.username;
+  User.findOneAndDelete({ username: username.toLowerCase() }, (err, user) => {
     res.json({ user });
   });
 }

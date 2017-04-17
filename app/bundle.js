@@ -125,7 +125,7 @@ var userSchema = new mongoose.Schema({
   passwordDigest: { type: String, required: true },
   points: { type: Number, default: 0 },
   badgeIds: { type: [Number], default: [] },
-  landmarks: [landmarkSchema],
+  landmarks: { type: [landmarkSchema], default: [] },
   streak: { type: Number, default: 1 },
   lastLogin: { type: Date, default: Date.now() }
 });
@@ -378,13 +378,15 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 };
 
 var getUser = exports.getUser = function getUser(req, res) {
-  _user2.default.findOne({ username: req.username }, function (err, user) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOne({ username: username.toLowerCase() }, function (err, user) {
     res.json({ user: user });
   });
 };
 
 var deleteUser = exports.deleteUser = function deleteUser(req, res) {
-  _user2.default.findOneAndDelete({ username: req.params.username.toLowerCase() }, function (err, user) {
+  var username = req.body.username || req.query.username;
+  _user2.default.findOneAndDelete({ username: username.toLowerCase() }, function (err, user) {
     res.json({ user: user });
   });
 };
