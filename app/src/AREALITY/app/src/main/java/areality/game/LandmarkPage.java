@@ -92,7 +92,7 @@ public class LandmarkPage extends Activity {
             Double lat = location.getDouble("lat");
             Double lng = location.getDouble("lng");
 
-            addLandmark(testPlaceId, stringifyLatLon(lat), stringifyLatLon(lng), name);
+            addLandmark(testPlaceId, lat, lng, name);
         } catch (Exception e) {
             Log.d(TAG, "error: " + e);
         }
@@ -162,14 +162,14 @@ public class LandmarkPage extends Activity {
         }
     }
 
-    private void addLandmark(String landmarkId, String landmarkLat, String landmarkLon, String landmarkName) throws Exception {
+    private void addLandmark(String landmarkId, Double landmarkLat, Double landmarkLon, String landmarkName) throws Exception {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
         String username = pref.getString("username", "");
         String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
                 + "&landmarkId=" + URLEncoder.encode(landmarkId, "UTF-8")
-                + "&landmarkLat=" + URLEncoder.encode(landmarkLat, "UTF-8")
-                + "&landmarkLon=" + URLEncoder.encode(landmarkLon, "UTF-8")
+                + "&landmarkLat=" + stringifyLatLon(landmarkLat)
+                + "&landmarkLon=" + stringifyLatLon(landmarkLon)
                 + "&landmarkName=" + URLEncoder.encode(landmarkName, "UTF-8");
         HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
 
@@ -181,7 +181,9 @@ public class LandmarkPage extends Activity {
             SharedPreferences.Editor editor = pref.edit();
             int newSize = pref.getInt("landmark_ids_size", 0) + 1;
             editor.putInt("landmark_ids_size", newSize);
-            editor.putString("landmark_id_" + newSize, landmarkId);
+            String newLandmark = "{ id: \"" + landmarkId + "\", lat: " + landmarkLat.toString() + ", lon: " + landmarkLon.toString() + ", name: \"" + landmarkName + "\" }";
+            Log.d(TAG, "new landmark JSON: " + newLandmark);
+            editor.putString("landmark_id_" + newSize, newLandmark);
             editor.commit();
             seenLandmarks.add(landmarkId);
         }
