@@ -211,10 +211,11 @@ var configurePassport = function configurePassport() {
     console.log("email: ");
     console.log(email);
 
-    _user2.default.findOne({ email: email }, function (err, user) {
+    _user2.default.findOne({ email: email }, { _id: 0, __v: 0, "landmarks._id": 0 }, function (err, user) {
       if (err) return done(err);
       if (!user) return done(null, false, { error: "That user could not be found" });
       if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
+
       return done(null, user, { success: 'Welcome, ' + user.username + '!' });
     });
   }));
@@ -371,7 +372,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var getUsers = exports.getUsers = function getUsers(req, res) {
-  _user2.default.find({}, function (err, users) {
+  _user2.default.find({}, { _id: 0, __v: 0, "landmarks._id": 0 }, function (err, users) {
     if (err) throw err;
     res.json({ users: users });
   });
@@ -379,7 +380,7 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
 
 var getUser = exports.getUser = function getUser(req, res) {
   var username = req.body.username || req.query.username;
-  _user2.default.findOne({ username: username.toLowerCase() }, function (err, user) {
+  _user2.default.findOne({ username: username.toLowerCase() }, { _id: 0, __v: 0, "landmarks._id": 0 }, function (err, user) {
     res.json({ user: user });
   });
 };

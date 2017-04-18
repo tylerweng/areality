@@ -2,7 +2,7 @@ import passport from 'passport';
 import User from '../models/user';
 
 export const getUsers = (req, res) => {
-  User.find({}, (err, users) => {
+  User.find({}, { _id: 0, __v: 0, "landmarks._id": 0 }, (err, users) => {
     if (err) throw err;
     res.json({ users });
   });
@@ -10,8 +10,11 @@ export const getUsers = (req, res) => {
 
 export const getUser = (req, res) => {
   const username = req.body.username || req.query.username;
-  User.findOne({ username: username.toLowerCase() }, (err, user) => {
-    res.json({ user });
+  User.findOne(
+    { username: username.toLowerCase() },
+    { _id: 0, __v: 0, "landmarks._id": 0 },
+    (err, user) => {
+      res.json({ user });
   });
 };
 

@@ -87,7 +87,8 @@ public class LandmarkPage extends Activity {
         loadSeenLandmarks();
 
         try {
-            addLandmark(testPlaceId);
+            // if lat string or lon string have periods/other special characters, will have to address that here
+            addLandmark(testPlaceId, "LAT_STRING_HERE", "LON_STRING_HERE");
         } catch (Exception e) {
             Log.d(TAG, "error: " + e);
         }
@@ -99,14 +100,20 @@ public class LandmarkPage extends Activity {
         int size = pref.getInt("landmark_ids_size", 0);
         Log.d(TAG, "initial size: " + String.valueOf(size));
 
-        String[] seenArray = new String[size];
+        JSONObject[] seenArray = new JSONObject[size];
+        String[] seenIds = new String[size];
         for (int i = 0; i < size; i++) {
-            seenArray[i] = pref.getString("landmark_id_" + i, null);
+            try {
+                seenArray[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
+                seenIds[i] = seenArray[i].getString("id");
+            } catch (JSONException e) {
+                Log.e("MapsActivity", "JSON error: ", e);
+            }
         }
 
         Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
 
-        seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
+        seenLandmarks = new HashSet<String>(Arrays.asList(seenIds));
     }
 
     private void addPoints(int points) throws Exception {
@@ -132,12 +139,14 @@ public class LandmarkPage extends Activity {
         }
     }
 
-    private void addLandmark(String landmarkId) throws Exception {
+    private void addLandmark(String landmarkId, String landmarkLat, String landmarkLon) throws Exception {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
         String username = pref.getString("username", "");
         String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
-                + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
+                + "&landmarkId=" + URLEncoder.encode(landmarkId, "UTF-8")
+                + "&landmarkLat=" + URLEncoder.encode(landmarkLat, "UTF-8")
+                + "&landmarkLon=" + URLEncoder.encode(landmarkLon, "UTF-8");
         HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
 
         JSONObject result = new JSONObject(pr.execute());
