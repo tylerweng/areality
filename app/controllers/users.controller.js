@@ -42,9 +42,12 @@ export const addCoins = (req, res) => {
 export const addLandmark = (req, res) => {
   const username = req.body.username || req.query.username;
   const landmarkId = req.body.landmarkId || req.query.landmarkId;
-  const landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
-  const landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
   const landmarkName = req.body.landmarkName || req.query.landmarkName;
+  let landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
+  let landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
+
+  landmarkLat = landmarkLat.split("%2E").join(".");
+  landmarkLon = landmarkLon.split("%2E").join(".");
 
   const newLandmark = {
     id: landmarkId,

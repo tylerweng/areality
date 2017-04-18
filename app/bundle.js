@@ -209,8 +209,6 @@ var configurePassport = function configurePassport() {
     passReqToCallback: true
   }, function (req, email, password, done) {
     email = req.body.email || req.query.email;
-    console.log("email: ");
-    console.log(email);
 
     _user2.default.findOne({ email: email }, { _id: 0, __v: 0, "landmarks._id": 0 }, function (err, user) {
       if (err) return done(err);
@@ -405,9 +403,12 @@ var addCoins = exports.addCoins = function addCoins(req, res) {
 var addLandmark = exports.addLandmark = function addLandmark(req, res) {
   var username = req.body.username || req.query.username;
   var landmarkId = req.body.landmarkId || req.query.landmarkId;
+  var landmarkName = req.body.landmarkName || req.query.landmarkName;
   var landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
   var landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
-  var landmarkName = req.body.landmarkName || req.query.landmarkName;
+
+  landmarkLat = landmarkLat.split("%2E").join(".");
+  landmarkLon = landmarkLon.split("%2E").join(".");
 
   var newLandmark = {
     id: landmarkId,

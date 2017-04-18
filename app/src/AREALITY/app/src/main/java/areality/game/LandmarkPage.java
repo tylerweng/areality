@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -87,8 +88,11 @@ public class LandmarkPage extends Activity {
         loadSeenLandmarks();
 
         try {
-            // if lat string or lon string have periods/other special characters, will have to address that here
-            addLandmark(testPlaceId, "LAT_STRING_HERE", "LON_STRING_HERE");
+            JSONObject location = jsonObject.getJSONObject("result").getJSONObject("geometry").getJSONObject("location");
+            Double lat = location.getDouble("lat");
+            Double lng = location.getDouble("lng");
+
+            addLandmark(testPlaceId, stringifyLatLon(lat), stringifyLatLon(lng), name);
         } catch (Exception e) {
             Log.d(TAG, "error: " + e);
         }
@@ -116,6 +120,25 @@ public class LandmarkPage extends Activity {
         seenLandmarks = new HashSet<String>(Arrays.asList(seenIds));
     }
 
+    private String stringifyLatLon(Double l) {
+        String[] lChars = l.toString().split("");
+        StringBuilder newL = new StringBuilder();
+
+        for (int i = 0; i < lChars.length; i++) {
+            if (lChars[i].equals(".")) {
+                newL.append("%2E");
+            } else {
+                try {
+                    newL.append(URLEncoder.encode(lChars[i], "UTF-8"));
+                } catch(UnsupportedEncodingException e) {
+                    Log.d(TAG, "error: " + e);
+                }
+            }
+        }
+
+        return newL.toString();
+    }
+
     private void addPoints(int points) throws Exception {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
@@ -139,14 +162,15 @@ public class LandmarkPage extends Activity {
         }
     }
 
-    private void addLandmark(String landmarkId, String landmarkLat, String landmarkLon) throws Exception {
+    private void addLandmark(String landmarkId, String landmarkLat, String landmarkLon, String landmarkName) throws Exception {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
         String username = pref.getString("username", "");
         String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
                 + "&landmarkId=" + URLEncoder.encode(landmarkId, "UTF-8")
                 + "&landmarkLat=" + URLEncoder.encode(landmarkLat, "UTF-8")
-                + "&landmarkLon=" + URLEncoder.encode(landmarkLon, "UTF-8");
+                + "&landmarkLon=" + URLEncoder.encode(landmarkLon, "UTF-8")
+                + "&landmarkName=" + URLEncoder.encode(landmarkName, "UTF-8");
         HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
 
         JSONObject result = new JSONObject(pr.execute());

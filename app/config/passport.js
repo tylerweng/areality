@@ -46,8 +46,6 @@ const configurePassport = () => {
     },
     (req, email, password, done) => {
       email = req.body.email || req.query.email;
-      console.log("email: ");
-      console.log(email);
 
       User.findOne(
         { email: email },
