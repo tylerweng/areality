@@ -43,7 +43,7 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
     private GoogleMap mMap;
     private static final String LANDMARK_ID = "com.example.areality.MESSAGE";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private List<String> landmarkIds = new ArrayList<>();
+    private JSONObject[] landmarks;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -51,6 +51,8 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_places);
         ButterKnife.bind(this);
+
+        Log.d("MyPlacesActivity", "here in onCreate");
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -79,7 +81,7 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        retrieveLandmarkIds();
+        retrieveLandmarks();
         setMarkers();
     }
 
@@ -127,44 +129,47 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
         return true;
     }
 
-    private void retrieveLandmarkIds() {
+    private void retrieveLandmarks() {
+        Log.d("MyPlacesActivity", "here in retrieveLandmarks");
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         int landmarkCount = pref.getInt("landmark_ids_size", 0);
+        landmarks = new JSONObject[landmarkCount];
 
         for (int i = 1; i <= landmarkCount; i++) {
-            String numString = Integer.toString(i);
-            String landmarkId = pref.getString("landmark_id_" + numString, "No Landmark Id!");
-            landmarkIds.add(landmarkId);
+            try {
+                landmarks[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
+            } catch (JSONException e) {
+                Log.e("ProfileActivity", "JSON error: ", e);
+            }
         }
     }
 
     private void setMarkers() {
 
-        Toast.makeText(getBaseContext(), landmarkIds.get(0), Toast.LENGTH_LONG).show();
-
-        for (int i = 0; i < landmarkIds.size(); i++) {
-            String landmarkId = landmarkIds.get(i);
-            String detailUrl = getDetailUrl(landmarkId);
-            String result = "";
+        for (int i = 0; i < landmarks.length; i++) {
+            String id = "";
             String name = "";
-            JSONObject jsonObject = null;
-            LatLng latLng = null;
+            LatLng latLng = new LatLng(0, 0);
+
             try {
-                result = makeHTTPRequest(detailUrl);
-                jsonObject = new JSONObject(result);
-                name = jsonObject.getJSONObject("result").getString("name");
-                latLng = getLatLng(jsonObject);
-            } catch (IOException e) {
-                e.printStackTrace();
+                id = landmarks[i].getString("id");
+                name = landmarks[i].getString("name");
+                Double lat = landmarks[i].getDouble("lat");
+                Double lon = landmarks[i].getDouble("lon");
+                latLng = new LatLng(lat, lon);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Log.d("MyPlacesActivity", "latLng object: " + latLng);
+
             mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(name)
-                    .snippet(landmarkId));
+                    .snippet(id));
 
-            if (i == landmarkIds.size() - 1) mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            if (i == landmarks.length - 1) mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {

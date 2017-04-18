@@ -46,14 +46,16 @@ const configurePassport = () => {
     },
     (req, email, password, done) => {
       email = req.body.email || req.query.email;
-      console.log("email: ");
-      console.log(email);
 
-      User.findOne({ email: email }, (err, user) => {
-        if (err) return done(err);
-        if (!user) return done(null, false, { error: "That user could not be found" });
-        if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
-        return done(null, user, { success: `Welcome, ${user.username}!` });
+      User.findOne(
+        { email: email },
+        { _id: 0, __v: 0, "landmarks._id": 0 },
+        (err, user) => {
+          if (err) return done(err);
+          if (!user) return done(null, false, { error: "That user could not be found" });
+          if (!user.validPassword(password, user.passwordDigest)) return done(null, false, { error: "Incorrect password" });
+
+          return done(null, user, { success: `Welcome, ${user.username}!` });
       });
     }
   ));

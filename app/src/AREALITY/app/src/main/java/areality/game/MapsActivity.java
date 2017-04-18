@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -131,61 +132,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int size = pref.getInt("landmark_ids_size", 0);
     Log.d(TAG, "initial size: " + String.valueOf(size));
 
-    String[] seenArray = new String[size];
+    JSONObject[] seenArray = new JSONObject[size];
+    String[] seenIds = new String[size];
     for (int i = 0; i < size; i++) {
-      seenArray[i] = pref.getString("landmark_id_" + i, null);
+      try {
+          seenArray[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
+          seenIds[i] = seenArray[i].getString("id");
+      } catch (JSONException e) {
+        Log.e("MapsActivity", "JSON error: ", e);
+      }
     }
 
     Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
 
-    seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
+    seenLandmarks = new HashSet<String>(Arrays.asList(seenIds));
   }
 
   private boolean seenLandmark(String landmarkId) {
     return seenLandmarks.contains(landmarkId);
-  }
-
-
-  private void addLandmark(String landmarkId) throws Exception {
-    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-
-    String username = pref.getString("username", "");
-    String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
-            + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
-    HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
-
-    JSONObject result = new JSONObject(pr.execute());
-
-    if (result.has("error")) {
-      Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
-    } else {
-      SharedPreferences.Editor editor = pref.edit();
-      int newSize = pref.getInt("landmark_ids_size", 0) + 1;
-      editor.putInt("landmark_ids_size", newSize);
-      editor.putString("landmark_id_" + newSize, landmarkId);
-      seenLandmarks.add(landmarkId);
-    }
-  }
-
-  private void addPoints(int points) throws Exception {
-    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-
-    String username = pref.getString("username", "");
-    String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
-                         + "&points=" + URLEncoder.encode(String.valueOf(points), "UTF-8");
-    HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addCoins", urlParameters, "POST");
-
-    JSONObject result = new JSONObject(pr.execute());
-
-    if (result.has("error")) {
-      Toast.makeText(getBaseContext(), "Could not add points", Toast.LENGTH_LONG).show();
-    } else {
-      SharedPreferences.Editor editor = pref.edit();
-      int newPoints = pref.getInt("points", 0);
-      newPoints += points;
-      editor.putInt("points", newPoints);
-      editor.commit();
-    }
   }
 
   private boolean CheckGooglePlayServices() {

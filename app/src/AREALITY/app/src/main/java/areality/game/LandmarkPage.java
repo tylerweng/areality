@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -87,7 +88,11 @@ public class LandmarkPage extends Activity {
         loadSeenLandmarks();
 
         try {
-            addLandmark(testPlaceId);
+            JSONObject location = jsonObject.getJSONObject("result").getJSONObject("geometry").getJSONObject("location");
+            Double lat = location.getDouble("lat");
+            Double lng = location.getDouble("lng");
+
+            addLandmark(testPlaceId, lat, lng, name);
         } catch (Exception e) {
             Log.d(TAG, "error: " + e);
         }
@@ -99,14 +104,39 @@ public class LandmarkPage extends Activity {
         int size = pref.getInt("landmark_ids_size", 0);
         Log.d(TAG, "initial size: " + String.valueOf(size));
 
-        String[] seenArray = new String[size];
+        JSONObject[] seenArray = new JSONObject[size];
+        String[] seenIds = new String[size];
         for (int i = 0; i < size; i++) {
-            seenArray[i] = pref.getString("landmark_id_" + i, null);
+            try {
+                seenArray[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
+                seenIds[i] = seenArray[i].getString("id");
+            } catch (JSONException e) {
+                Log.e("MapsActivity", "JSON error: ", e);
+            }
         }
 
         Log.d(TAG, "seenArray: " + Arrays.toString(seenArray));
 
-        seenLandmarks = new HashSet<String>(Arrays.asList(seenArray));
+        seenLandmarks = new HashSet<String>(Arrays.asList(seenIds));
+    }
+
+    private String stringifyLatLon(Double l) {
+        String[] lChars = l.toString().split("");
+        StringBuilder newL = new StringBuilder();
+
+        for (int i = 0; i < lChars.length; i++) {
+            if (lChars[i].equals(".")) {
+                newL.append("%2E");
+            } else {
+                try {
+                    newL.append(URLEncoder.encode(lChars[i], "UTF-8"));
+                } catch(UnsupportedEncodingException e) {
+                    Log.d(TAG, "error: " + e);
+                }
+            }
+        }
+
+        return newL.toString();
     }
 
     private void addPoints(int points) throws Exception {
@@ -132,12 +162,15 @@ public class LandmarkPage extends Activity {
         }
     }
 
-    private void addLandmark(String landmarkId) throws Exception {
+    private void addLandmark(String landmarkId, Double landmarkLat, Double landmarkLon, String landmarkName) throws Exception {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
         String username = pref.getString("username", "");
         String urlParameters = "username=" + URLEncoder.encode(username, "UTF-8")
-                + "&landmark=" + URLEncoder.encode(landmarkId, "UTF-8");
+                + "&landmarkId=" + URLEncoder.encode(landmarkId, "UTF-8")
+                + "&landmarkLat=" + stringifyLatLon(landmarkLat)
+                + "&landmarkLon=" + stringifyLatLon(landmarkLon)
+                + "&landmarkName=" + URLEncoder.encode(landmarkName, "UTF-8");
         HttpRequest pr = new HttpRequest("https://areality.herokuapp.com/api/addLandmark", urlParameters, "POST");
 
         JSONObject result = new JSONObject(pr.execute());
@@ -148,7 +181,9 @@ public class LandmarkPage extends Activity {
             SharedPreferences.Editor editor = pref.edit();
             int newSize = pref.getInt("landmark_ids_size", 0) + 1;
             editor.putInt("landmark_ids_size", newSize);
-            editor.putString("landmark_id_" + newSize, landmarkId);
+            String newLandmark = "{ id: \"" + landmarkId + "\", lat: " + landmarkLat.toString() + ", lon: " + landmarkLon.toString() + ", name: \"" + landmarkName + "\" }";
+            Log.d(TAG, "new landmark JSON: " + newLandmark);
+            editor.putString("landmark_id_" + newSize, newLandmark);
             editor.commit();
             seenLandmarks.add(landmarkId);
         }

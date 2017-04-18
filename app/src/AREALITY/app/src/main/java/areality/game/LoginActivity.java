@@ -108,19 +108,22 @@ public class LoginActivity extends Activity {
             editor.putInt("points", Integer.valueOf(result.get("points").toString()));
 
             // add landmark ids
-            String[] landmarkIds = result.get("landmarkIds").toString().split(",");
-            editor.putInt("landmark_ids_size", landmarkIds.length);
-            for (int i = 0; i < landmarkIds.length; i++) {
+            String[] seenLandmarks = result.get("landmarks").toString().split("\\},\\{");
+            editor.putInt("landmark_ids_size", seenLandmarks.length);
+
+            for (int i = 0; i < seenLandmarks.length; i++) {
                 if (i == 0) {
-                    editor.putString("landmark_id_" + i, landmarkIds[i].substring(1));
-                } else if (i == landmarkIds.length - 1) {
-                    editor.putString("landmark_id_" + i, landmarkIds[i].substring(0, landmarkIds[i].length() - 1));
+                    editor.putString("landmark_id_" + (i + 1), seenLandmarks[i].substring(1) + "}");
+                } else if (i == seenLandmarks.length - 1) {
+                    editor.putString("landmark_id_" + (i + 1), "{" + seenLandmarks[i].substring(0, seenLandmarks[i].length() - 1));
                 } else {
-                    editor.putString("landmark_id_" + i, landmarkIds[i]);
+                    editor.putString("landmark_id_" + (i + 1), "{" + seenLandmarks[i] + "}");
                 }
             }
 
             editor.apply();
+            Log.d(TAG, "first seen landmark: " + pref.getString("landmark_id_1", null));
+            Log.d(TAG, "last seen landmark: " + pref.getString("landmark_id_" + (seenLandmarks.length), null));
             onLoginSuccess();
         }
     }
