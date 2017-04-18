@@ -44,20 +44,19 @@ export const addLandmark = (req, res) => {
   const landmarkId = req.body.landmarkId || req.query.landmarkId;
   const landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
   const landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
-
-  console.log(`landmarkId: ${landmarkId}`);
-  console.log(`landmarkLat: ${landmarkLat}`);
-  console.log(`landmarkLon: ${landmarkLon}`);
+  const landmarkName = req.body.landmarkName || req.query.landmarkName;
 
   const newLandmark = {
     id: landmarkId,
     lat: landmarkLat,
-    lon: landmarkLon
+    lon: landmarkLon,
+    name: landmarkName
   };
 
   User.findOneAndUpdate(
     { username: username.toLowerCase() },
     { $push: { landmarks: newLandmark } },
+    { projection: { _id: 0, __v: 0, "landmarks._id": 0 } },
     (err, user) => {
       if (err) res.status(500).send(err);
       if (!user) res.status(401).json({ error: "User not found" });

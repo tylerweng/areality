@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt-nodejs');
 const landmarkSchema = new mongoose.Schema({
   id: String,
   lat: String,
-  lon: String
+  lon: String,
+  name: String
 });
 
 const userSchema = new mongoose.Schema({

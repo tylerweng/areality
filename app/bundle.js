@@ -116,7 +116,8 @@ var bcrypt = __webpack_require__(14);
 var landmarkSchema = new mongoose.Schema({
   id: String,
   lat: String,
-  lon: String
+  lon: String,
+  name: String
 });
 
 var userSchema = new mongoose.Schema({
@@ -406,18 +407,16 @@ var addLandmark = exports.addLandmark = function addLandmark(req, res) {
   var landmarkId = req.body.landmarkId || req.query.landmarkId;
   var landmarkLat = req.body.landmarkLat || req.query.landmarkLat;
   var landmarkLon = req.body.landmarkLon || req.query.landmarkLon;
-
-  console.log('landmarkId: ' + landmarkId);
-  console.log('landmarkLat: ' + landmarkLat);
-  console.log('landmarkLon: ' + landmarkLon);
+  var landmarkName = req.body.landmarkName || req.query.landmarkName;
 
   var newLandmark = {
     id: landmarkId,
     lat: landmarkLat,
-    lon: landmarkLon
+    lon: landmarkLon,
+    name: landmarkName
   };
 
-  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarks: newLandmark } }, function (err, user) {
+  _user2.default.findOneAndUpdate({ username: username.toLowerCase() }, { $push: { landmarks: newLandmark } }, { projection: { _id: 0, __v: 0, "landmarks._id": 0 } }, function (err, user) {
     if (err) res.status(500).send(err);
     if (!user) res.status(401).json({ error: "User not found" });
     user.landmarks = [].concat(_toConsumableArray(user.landmarks), [newLandmark]);
