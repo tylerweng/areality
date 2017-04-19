@@ -133,16 +133,22 @@ public class MyPlacesActivity extends FragmentActivity implements OnMapReadyCall
         Log.d("MyPlacesActivity", "here in retrieveLandmarks");
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        int landmarkCount = pref.getInt("landmark_ids_size", 0);
+        int landmarkCount = pref.getInt("landmarks_size", 0);
         landmarks = new JSONObject[landmarkCount];
 
-        for (int i = 1; i <= landmarkCount; i++) {
+        for (int i = 0; i < landmarkCount; i++) {
             try {
-                landmarks[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
+                landmarks[i] = new JSONObject();
+                landmarks[i].put("id", pref.getString("landmark_" + i + "_id", null));
+                landmarks[i].put("name", pref.getString("landmark_" + i + "_name", null));
+                landmarks[i].put("lat", pref.getString("landmark_" + i + "_lat", null));
+                landmarks[i].put("lon", pref.getString("landmark_" + i + "_lon", null));
             } catch (JSONException e) {
                 Log.e("ProfileActivity", "JSON error: ", e);
             }
         }
+
+        // ["landmarks_size", "landmark_0_id", "landmark_0_lat", "landmark_0_lon", "landmark_0_name"]
     }
 
     private void setMarkers() {

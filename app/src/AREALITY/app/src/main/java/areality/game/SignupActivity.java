@@ -118,7 +118,7 @@ public class SignupActivity extends Activity {
             editor.putInt("points", Integer.valueOf(result.get("points").toString()));
 
             // add landmark ids
-            editor.putInt("landmark_ids_size", 0);
+            editor.putInt("landmarks_size", 0);
             editor.apply();
 
             onSignupSuccess();

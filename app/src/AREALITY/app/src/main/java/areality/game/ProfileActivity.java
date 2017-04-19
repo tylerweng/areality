@@ -54,20 +54,9 @@ public class ProfileActivity extends Activity {
 
         String username = pref.getString("username", null);
         int points = pref.getInt("points", 0);
-        int landmarkCount = pref.getInt("landmark_ids_size", 0);
+        int landmarkCount = pref.getInt("landmarks_size", 0);
 
         int size = pref.getInt("landmark_ids_size", 0);
-
-        // array of JSON objects with lat, lon, and id attributes for use on map
-        JSONObject[] seenCoords = new JSONObject[size];
-
-        for (int i = 0; i < size; i++) {
-            try {
-                seenCoords[i] = new JSONObject(pref.getString("landmark_id_" + (i + 1), null));
-            } catch (JSONException e) {
-                Log.e("ProfileActivity", "JSON error: ", e);
-            }
-        }
 
         TextView usernameView = (TextView) findViewById(R.id.profileName);
         usernameView.setText(username);
@@ -77,8 +66,5 @@ public class ProfileActivity extends Activity {
 
         TextView landmarkCountView = (TextView) findViewById(R.id.profileLandmarkCount);
         landmarkCountView.setText("Total landmarks: " + Integer.toString(landmarkCount));
-
-        TextView coordsListView = (TextView) findViewById(R.id.profileCoordsList);
-        coordsListView.setText("Visited landmark coordinates: " + Arrays.toString(seenCoords));
     }
 }
