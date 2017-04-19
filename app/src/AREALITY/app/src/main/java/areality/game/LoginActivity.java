@@ -14,6 +14,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,21 +110,29 @@ public class LoginActivity extends Activity {
 
             // add landmark ids
             String[] seenLandmarks = result.get("landmarks").toString().split("\\},\\{");
-            editor.putInt("landmark_ids_size", seenLandmarks.length);
+            editor.putInt("landmarks_size", seenLandmarks.length);
 
             for (int i = 0; i < seenLandmarks.length; i++) {
+                String data = seenLandmarks[i];
+
                 if (i == 0) {
-                    editor.putString("landmark_id_" + (i + 1), seenLandmarks[i].substring(1) + "}");
+                    data = data.substring(1);
                 } else if (i == seenLandmarks.length - 1) {
-                    editor.putString("landmark_id_" + (i + 1), "{" + seenLandmarks[i].substring(0, seenLandmarks[i].length() - 1));
+                    data = data.substring(1, seenLandmarks[i].length() - 1);
                 } else {
-                    editor.putString("landmark_id_" + (i + 1), "{" + seenLandmarks[i] + "}");
+                    data = data.substring(0, seenLandmarks[i].length() - 1);
                 }
+
+                String[] dataArray = data.split("\"");
+
+                editor.putString("landmark_" + i + "_id", dataArray[15]);
+                editor.putString("landmark_" + i + "_lat", dataArray[11]);
+                editor.putString("landmark_" + i + "_lon", dataArray[7]);
+                editor.putString("landmark_" + i + "_name", dataArray[3]);
             }
 
             editor.apply();
-            Log.d(TAG, "first seen landmark: " + pref.getString("landmark_id_1", null));
-            Log.d(TAG, "last seen landmark: " + pref.getString("landmark_id_" + (seenLandmarks.length), null));
+
             onLoginSuccess();
         }
     }

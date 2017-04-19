@@ -179,11 +179,14 @@ public class LandmarkPage extends Activity {
             Toast.makeText(getBaseContext(), "Could not save landmark", Toast.LENGTH_LONG).show();
         } else {
             SharedPreferences.Editor editor = pref.edit();
-            int newSize = pref.getInt("landmark_ids_size", 0) + 1;
-            editor.putInt("landmark_ids_size", newSize);
-            String newLandmark = "{ id: \"" + landmarkId + "\", lat: " + landmarkLat.toString() + ", lon: " + landmarkLon.toString() + ", name: \"" + landmarkName + "\" }";
-            Log.d(TAG, "new landmark JSON: " + newLandmark);
-            editor.putString("landmark_id_" + newSize, newLandmark);
+            int newSize = pref.getInt("landmarks_size", 0);
+            editor.putInt("landmarks_size", newSize + 1);
+
+            editor.putString("landmark_" + newSize + "_id", landmarkId);
+            editor.putString("landmark_" + newSize + "_lat", landmarkLat.toString());
+            editor.putString("landmark_" + newSize + "_lon", landmarkLon.toString());
+            editor.putString("landmark_" + newSize + "_name", landmarkName);
+
             editor.commit();
             seenLandmarks.add(landmarkId);
         }
