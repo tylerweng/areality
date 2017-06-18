@@ -3643,7 +3643,13 @@
 		background-image: url("images/overlay.png"), url("images/pattern-size1.svg");
 		background-position: top left, center center;
 		background-attachment: fixed, fixed;
-		background-size: auto, cover;
+		background-size: cover;
+		text-shadow:
+		 -1px -1px 0 #000,
+		  1px -1px 0 #000,
+		  -1px 1px 0 #000,
+		   1px 1px 0 #000;
+		background-repeat: no-repeat;
 		height: 100vh;
 		min-height: 35em;
 	}
@@ -3681,7 +3687,6 @@
 			#header .button.special {
 				box-shadow: none;
 				background-color: #ffffff;
-				color: #4696e5 !important;
 			}
 
 		#header label {
